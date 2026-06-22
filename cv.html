@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Juan Andres Baron Baron — CV</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23121620'/%3E%3Cg fill='none' stroke='%235B8CF0' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M40 30 L24 50 L40 70'/%3E%3Cpath d='M60 30 L76 50 L60 70'/%3E%3C/g%3E%3C/svg%3E" />
+  <style>
+    :root {
+      --ink: #1A2233;
+      --ink-soft: #45506A;
+      --muted: #6B7689;
+      --line: #E2E7F0;
+      --accent: #2E5BD6;
+      --accent-deep: #1E3E9C;
+      --bg: #EEF1F7;
+      --paper: #FFFFFF;
+      --mono: "JetBrains Mono", ui-monospace, monospace;
+      --display: "Space Grotesk", "Segoe UI", sans-serif;
+      --body: "Inter", -apple-system, sans-serif;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: var(--bg); color: var(--ink); font-family: var(--body); line-height: 1.5; -webkit-font-smoothing: antialiased; padding: 40px 16px 80px; }
+
+    /* ===== Toolbar (screen only) ===== */
+    .toolbar { position: fixed; top: 20px; right: 20px; display: flex; gap: 10px; z-index: 50; }
+    .tb-btn { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 0.8rem; font-weight: 500; padding: 11px 18px; border-radius: 10px; cursor: pointer; text-decoration: none; border: 1px solid var(--line); transition: transform .25s ease, box-shadow .25s ease, background .25s; }
+    .tb-btn svg { width: 16px; height: 16px; }
+    .tb-primary { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 8px 24px rgba(46,91,214,0.32); }
+    .tb-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 32px rgba(46,91,214,0.4); }
+    .tb-ghost { background: #fff; color: var(--ink); }
+    .tb-ghost:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(26,34,51,0.12); }
+
+    /* ===== Sheet ===== */
+    .sheet { max-width: 880px; margin: 0 auto; background: var(--paper); border-radius: 6px; overflow: hidden; box-shadow: 0 30px 80px rgba(26,34,51,0.18); }
+
+    /* ===== Header ===== */
+    .head { padding: 46px 52px 34px; position: relative; background:
+        radial-gradient(600px 260px at 88% -40%, rgba(46,91,214,0.10), transparent 70%), var(--paper); border-bottom: 1px solid var(--line); }
+    .head-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; }
+    .name { font-family: var(--display); font-weight: 700; font-size: 2.5rem; letter-spacing: -0.02em; line-height: 1.04; color: var(--ink); }
+    .role { font-family: var(--mono); font-size: 0.95rem; color: var(--accent); margin-top: 8px; letter-spacing: 0.01em; }
+    .mono-mark { width: 50px; height: 50px; border: 1.5px solid var(--accent); border-radius: 12px; display: grid; place-items: center; flex-shrink: 0; }
+    .mono-mark svg { width: 28px; height: 28px; }
+    .contacts { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 22px; }
+    .contacts a, .contacts span { display: inline-flex; align-items: center; gap: 7px; font-family: var(--mono); font-size: 0.78rem; color: var(--ink-soft); text-decoration: none; }
+    .contacts svg { width: 14px; height: 14px; color: var(--accent); flex-shrink: 0; }
+    .contacts a:hover { color: var(--accent); }
+
+    /* ===== Body grid ===== */
+    .body { display: grid; grid-template-columns: 1fr 1.9fr; }
+    .aside { padding: 34px 30px 40px 52px; border-right: 1px solid var(--line); }
+    .main { padding: 34px 52px 44px 38px; }
+
+    .sec { margin-bottom: 30px; }
+    .sec:last-child { margin-bottom: 0; }
+    .sec-h { font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); margin-bottom: 16px; display: flex; align-items: center; gap: 9px; }
+    .sec-h::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+
+    /* skills */
+    .skill-group { margin-bottom: 14px; }
+    .skill-group b { display: block; font-family: var(--display); font-weight: 600; font-size: 0.82rem; color: var(--ink); margin-bottom: 7px; }
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tags span { font-family: var(--mono); font-size: 0.7rem; color: var(--ink-soft); background: #F3F6FC; border: 1px solid var(--line); border-radius: 5px; padding: 4px 8px; }
+
+    /* languages */
+    .lang { margin-bottom: 14px; }
+    .lang-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+    .lang-row b { font-family: var(--display); font-weight: 600; font-size: 0.86rem; }
+    .lang-row small { font-family: var(--mono); font-size: 0.68rem; color: var(--muted); }
+    .bar { height: 5px; border-radius: 5px; background: var(--line); overflow: hidden; }
+    .bar i { display: block; height: 100%; border-radius: 5px; background: linear-gradient(90deg, var(--accent), var(--accent-deep)); }
+
+    /* aside education */
+    .edu-item { margin-bottom: 14px; }
+    .edu-item b { display: block; font-family: var(--display); font-weight: 600; font-size: 0.88rem; color: var(--ink); }
+    .edu-item span { display: block; font-size: 0.8rem; color: var(--ink-soft); margin-top: 2px; }
+    .edu-item small { font-family: var(--mono); font-size: 0.7rem; color: var(--muted); }
+
+    /* profile */
+    .profile { font-size: 0.92rem; color: var(--ink-soft); line-height: 1.65; }
+
+    /* experience */
+    .job { position: relative; padding-left: 22px; padding-bottom: 22px; border-left: 1.5px solid var(--line); }
+    .job:last-child { padding-bottom: 0; }
+    .job::before { content: ""; position: absolute; left: -6px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 3px rgba(46,91,214,0.14); }
+    .job-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+    .job-title { font-family: var(--display); font-weight: 600; font-size: 1.02rem; color: var(--ink); }
+    .job-date { font-family: var(--mono); font-size: 0.72rem; color: var(--accent); white-space: nowrap; }
+    .job-org { font-size: 0.82rem; color: var(--muted); margin: 2px 0 9px; }
+    .job ul { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+    .job li { position: relative; padding-left: 16px; font-size: 0.86rem; color: var(--ink-soft); }
+    .job li::before { content: "▹"; position: absolute; left: 0; color: var(--accent); font-size: 0.74rem; top: 1px; }
+
+    /* projects */
+    .proj { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 10px 0; border-bottom: 1px dashed var(--line); }
+    .proj:last-child { border-bottom: none; }
+    .proj-l b { font-family: var(--display); font-weight: 600; font-size: 0.9rem; color: var(--ink); }
+    .proj-l p { font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
+    .proj-link { font-family: var(--mono); font-size: 0.72rem; color: var(--accent); text-decoration: none; white-space: nowrap; }
+
+    @media (max-width: 720px) {
+      .body { grid-template-columns: 1fr; }
+      .aside { border-right: none; border-bottom: 1px solid var(--line); padding: 30px 30px; }
+      .main { padding: 30px; }
+      .head { padding: 34px 30px 28px; }
+      .name { font-size: 2rem; }
+      .toolbar { position: static; justify-content: center; margin-bottom: 24px; }
+    }
+
+    /* ===== Print ===== */
+    @page { size: A4; margin: 12mm; }
+    @media print {
+      body { background: #fff; padding: 0; }
+      .toolbar { display: none !important; }
+      .sheet { box-shadow: none; max-width: none; border-radius: 0; }
+      .head { padding: 0 0 20px; }
+      .aside { padding: 22px 26px 22px 0; }
+      .main { padding: 22px 0 22px 30px; }
+      .job, .proj, .sec, .edu-item, .skill-group, .lang { break-inside: avoid; }
+      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      a { color: var(--ink-soft); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="toolbar">
+    <button class="tb-btn tb-primary" onclick="window.print()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg>
+      Download PDF
+    </button>
+    <a class="tb-btn tb-ghost" href="index.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      Portfolio
+    </a>
+  </div>
+
+  <div class="sheet">
+
+    <!-- Header -->
+    <header class="head">
+      <div class="head-top">
+        <div>
+          <h1 class="name">Juan Andres Baron Baron</h1>
+          <p class="role">Full Stack &amp; DevOps Engineer</p>
+        </div>
+        <span class="mono-mark">
+          <svg viewBox="0 0 40 40" fill="none" stroke="#2E5BD6" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 9 L6 20 L16 31"/><path d="M24 9 L34 20 L24 31"/>
+          </svg>
+        </span>
+      </div>
+      <div class="contacts">
+        <a href="mailto:juanandresbaronbaron2001@gmail.com">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 7l8 6 8-6"/></svg>
+          juanandresbaronbaron2001@gmail.com
+        </a>
+        <a href="https://www.linkedin.com/in/juan-andres-baron-baron/" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5A2.5 2.5 0 1 0 5 8.5a2.5 2.5 0 0 0 0-5zM3 9h4v12H3zM10 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21H18.6v-5.4c0-1.29-.02-2.95-1.8-2.95-1.8 0-2.08 1.4-2.08 2.85V21H10z"/></svg>
+          /in/juan-andres-baron-baron
+        </a>
+        <span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+          Pereira, Risaralda · Colombia
+        </span>
+      </div>
+    </header>
+
+    <div class="body">
+
+      <!-- Sidebar -->
+      <aside class="aside">
+        <section class="sec">
+          <h2 class="sec-h">Skills</h2>
+          <div class="skill-group"><b>Backend</b><div class="tags"><span>Java</span><span>Spring Boot</span><span>Node.js</span><span>Python</span><span>PHP</span><span>Laravel</span></div></div>
+          <div class="skill-group"><b>Frontend &amp; Mobile</b><div class="tags"><span>React.js</span><span>Vue</span><span>React Native</span><span>TypeScript</span><span>JavaScript</span><span>Bootstrap</span></div></div>
+          <div class="skill-group"><b>Cloud &amp; DevOps</b><div class="tags"><span>AWS</span><span>Azure</span><span>GCP</span><span>CI/CD</span><span>IaC</span><span>Git</span></div></div>
+          <div class="skill-group"><b>Data &amp; AI</b><div class="tags"><span>SQL</span><span>MySQL</span><span>AI Integration</span><span>Automation</span><span>SAP</span></div></div>
+        </section>
+
+        <section class="sec">
+          <h2 class="sec-h">Languages</h2>
+          <div class="lang"><div class="lang-row"><b>English</b><small>C1 · Professional</small></div><div class="bar"><i style="width:88%"></i></div></div>
+          <div class="lang"><div class="lang-row"><b>Spanish</b><small>Native</small></div><div class="bar"><i style="width:100%"></i></div></div>
+          <div class="lang"><div class="lang-row"><b>French</b><small>Learning</small></div><div class="bar"><i style="width:35%"></i></div></div>
+        </section>
+
+        <section class="sec">
+          <h2 class="sec-h">Education</h2>
+          <div class="edu-item">
+            <b>B.Sc. Software Engineering</b>
+            <span>Universidad Manuela Beltran · Bogota</span>
+            <small>2018 — 2023</small>
+          </div>
+          <div class="edu-item">
+            <b>Specialization in Python</b>
+            <span>University of Michigan · USA</span>
+            <small>Dec 2023</small>
+          </div>
+        </section>
+      </aside>
+
+      <!-- Main -->
+      <main class="main">
+        <section class="sec">
+          <h2 class="sec-h">Profile</h2>
+          <p class="profile">Full Stack &amp; DevOps Engineer with over 5 years of experience designing, building and scaling high-performance applications for global markets. I bridge robust backend architectures, dynamic frontends, cloud infrastructure, SAP service software and AI implementation to deliver end-to-end solutions that drive digital transformation. Backed by a University of Michigan specialization, I bring a deeply analytical, cloud-native approach to full-stack development, intelligent automation and system resilience.</p>
+        </section>
+
+        <section class="sec">
+          <h2 class="sec-h">Experience</h2>
+
+          <div class="job">
+            <div class="job-top">
+              <span class="job-title">Software Engineering</span>
+              <span class="job-date">Jul 2021 — Present</span>
+            </div>
+            <p class="job-org">Arago · Manizales, Caldas</p>
+            <ul>
+              <li>Manage the end-to-end software development lifecycle, from architecture design to production deployment, leveraging AI to optimize engineering workflows.</li>
+              <li>Design and develop scalable full-stack applications, ensuring high performance and a seamless user experience.</li>
+              <li>Configure, optimize and maintain servers and cloud environments (DevOps &amp; infrastructure).</li>
+              <li>Set up and automate CI/CD pipelines to streamline delivery workflows.</li>
+              <li>Implement and integrate AI solutions to automate complex workflows, and develop software for SAP service implementations.</li>
+            </ul>
+          </div>
+
+          <div class="job">
+            <div class="job-top">
+              <span class="job-title">Full Stack Developer</span>
+              <span class="job-date">Jan 2021 — Jun 2021</span>
+            </div>
+            <p class="job-org">Accedo Technologies · Pereira</p>
+            <ul>
+              <li>Updated system modules based on business requirements.</li>
+              <li>Maintained the system, monitoring and resolving potential errors.</li>
+              <li>Supported the creation of new modules to automate company processes.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="sec">
+          <h2 class="sec-h">Selected Projects</h2>
+          <div class="proj">
+            <div class="proj-l"><b>AdjenteVoz</b><p>Conversational AI voice-agent platform</p></div>
+            <a class="proj-link" href="https://adjentevoz.online/" target="_blank" rel="noopener">adjentevoz.online ↗</a>
+          </div>
+          <div class="proj">
+            <div class="proj-l"><b>Abogados del Eje</b><p>Immersive scroll-driven law-firm website</p></div>
+            <a class="proj-link" href="https://abogadosdeleje.com/" target="_blank" rel="noopener">abogadosdeleje.com ↗</a>
+          </div>
+          <div class="proj">
+            <div class="proj-l"><b>Barojas Remodeling</b><p>Conversion-focused marketing website</p></div>
+            <a class="proj-link" href="https://barojasremodeling.com" target="_blank" rel="noopener">barojasremodeling.com ↗</a>
+          </div>
+        </section>
+      </main>
+
+    </div>
+  </div>
+
+</body>
+</html>
