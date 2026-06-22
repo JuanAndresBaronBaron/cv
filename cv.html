@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Juan Andres Baron Baron — CV</title>
+  <title>Juan Andres Baron Baron - CV</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -22,17 +22,25 @@
       --display: "Space Grotesk", "Segoe UI", sans-serif;
       --body: "Inter", -apple-system, sans-serif;
     }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
     body { background: var(--bg); color: var(--ink); font-family: var(--body); line-height: 1.5; -webkit-font-smoothing: antialiased; padding: 40px 16px 80px; }
 
     /* ===== Toolbar (screen only) ===== */
-    .toolbar { position: fixed; top: 20px; right: 20px; display: flex; gap: 10px; z-index: 50; }
+    .toolbar { position: fixed; top: 20px; right: 20px; display: flex; gap: 10px; z-index: 50; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
     .tb-btn { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 0.8rem; font-weight: 500; padding: 11px 18px; border-radius: 10px; cursor: pointer; text-decoration: none; border: 1px solid var(--line); transition: transform .25s ease, box-shadow .25s ease, background .25s; }
     .tb-btn svg { width: 16px; height: 16px; }
     .tb-primary { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 8px 24px rgba(46,91,214,0.32); }
     .tb-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 32px rgba(46,91,214,0.4); }
     .tb-ghost { background: #fff; color: var(--ink); }
     .tb-ghost:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(26,34,51,0.12); }
+    .tb-lang { display: flex; gap: 2px; padding: 3px; border: 1px solid var(--line); border-radius: 10px; background: #fff; position: relative; }
+    .tb-lang button { font-family: var(--mono); font-size: 0.76rem; font-weight: 500; padding: 8px 10px; border-radius: 7px; color: var(--muted); cursor: pointer; background: none; border: none; transition: background .25s, color .25s; }
+    .tb-lang button:hover { color: var(--ink); }
+    .tb-lang button.is-active { background: var(--accent); color: #fff; }
+    .tb-lang::after { content: attr(data-tip); position: absolute; top: calc(100% + 9px); right: 0; background: var(--ink); color: #fff; font-family: var(--body); font-size: 0.72rem; font-weight: 400; line-height: 1.35; padding: 8px 12px; border-radius: 9px; max-width: 230px; opacity: 0; pointer-events: none; transform: translateY(-4px); transition: opacity .25s ease, transform .25s ease; box-shadow: 0 10px 26px rgba(26,34,51,0.22); z-index: 60; }
+    .tb-lang::before { content: ""; position: absolute; top: calc(100% + 3px); right: 16px; border: 6px solid transparent; border-bottom-color: var(--ink); opacity: 0; transition: opacity .25s ease; z-index: 60; }
+    .tb-lang:hover::after, .tb-lang:hover::before { opacity: 1; transform: translateY(0); }
 
     /* ===== Sheet ===== */
     .sheet { max-width: 880px; margin: 0 auto; background: var(--paper); border-radius: 6px; overflow: hidden; box-shadow: 0 30px 80px rgba(26,34,51,0.18); }
@@ -129,13 +137,18 @@
 <body>
 
   <div class="toolbar">
+    <div class="tb-lang" id="cvLang" role="group" aria-label="Language">
+      <button data-lang-set="en">EN</button>
+      <button data-lang-set="es">ES</button>
+      <button data-lang-set="fr">FR</button>
+    </div>
     <button class="tb-btn tb-primary" onclick="window.print()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg>
-      Download PDF
+      <span data-i18n="tb_download">Download PDF</span>
     </button>
     <a class="tb-btn tb-ghost" href="index.html">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-      Portfolio
+      <span data-i18n="tb_portfolio">Portfolio</span>
     </a>
   </div>
 
@@ -146,7 +159,7 @@
       <div class="head-top">
         <div>
           <h1 class="name">Juan Andres Baron Baron</h1>
-          <p class="role">Full Stack &amp; DevOps Engineer</p>
+          <p class="role" data-i18n="role">Full Stack &amp; DevOps Engineer</p>
         </div>
         <span class="mono-mark">
           <svg viewBox="0 0 40 40" fill="none" stroke="#2E5BD6" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
@@ -158,6 +171,10 @@
         <a href="mailto:juanandresbaronbaron2001@gmail.com">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 7l8 6 8-6"/></svg>
           juanandresbaronbaron2001@gmail.com
+        </a>
+        <a href="tel:+573102377853">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg>
+          +57 310 237 7853
         </a>
         <a href="https://www.linkedin.com/in/juan-andres-baron-baron/" target="_blank" rel="noopener">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5A2.5 2.5 0 1 0 5 8.5a2.5 2.5 0 0 0 0-5zM3 9h4v12H3zM10 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21H18.6v-5.4c0-1.29-.02-2.95-1.8-2.95-1.8 0-2.08 1.4-2.08 2.85V21H10z"/></svg>
@@ -175,31 +192,31 @@
       <!-- Sidebar -->
       <aside class="aside">
         <section class="sec">
-          <h2 class="sec-h">Skills</h2>
-          <div class="skill-group"><b>Backend</b><div class="tags"><span>Java</span><span>Spring Boot</span><span>Node.js</span><span>Python</span><span>PHP</span><span>Laravel</span></div></div>
-          <div class="skill-group"><b>Frontend &amp; Mobile</b><div class="tags"><span>React.js</span><span>Vue</span><span>React Native</span><span>TypeScript</span><span>JavaScript</span><span>Bootstrap</span></div></div>
-          <div class="skill-group"><b>Cloud &amp; DevOps</b><div class="tags"><span>AWS</span><span>Azure</span><span>GCP</span><span>CI/CD</span><span>IaC</span><span>Git</span></div></div>
-          <div class="skill-group"><b>Data &amp; AI</b><div class="tags"><span>SQL</span><span>MySQL</span><span>AI Integration</span><span>Automation</span><span>SAP</span></div></div>
+          <h2 class="sec-h" data-i18n="h_skills">Skills</h2>
+          <div class="skill-group"><b data-i18n="sg_backend">Backend</b><div class="tags"><span>Java</span><span>Spring Boot</span><span>Node.js</span><span>Python</span><span>PHP</span><span>Laravel</span></div></div>
+          <div class="skill-group"><b data-i18n="sg_frontend">Frontend &amp; Mobile</b><div class="tags"><span>React.js</span><span>Vue</span><span>React Native</span><span>TypeScript</span><span>JavaScript</span><span>Bootstrap</span></div></div>
+          <div class="skill-group"><b data-i18n="sg_cloud">Cloud &amp; DevOps</b><div class="tags"><span>AWS</span><span>Azure</span><span>GCP</span><span>CI/CD</span><span>IaC</span><span>Git</span></div></div>
+          <div class="skill-group"><b data-i18n="sg_data">Data &amp; AI</b><div class="tags"><span>SQL</span><span>MySQL</span><span>AI Integration</span><span>Automation</span><span>SAP</span></div></div>
         </section>
 
         <section class="sec">
-          <h2 class="sec-h">Languages</h2>
-          <div class="lang"><div class="lang-row"><b>English</b><small>C1 · Professional</small></div><div class="bar"><i style="width:88%"></i></div></div>
-          <div class="lang"><div class="lang-row"><b>Spanish</b><small>Native</small></div><div class="bar"><i style="width:100%"></i></div></div>
-          <div class="lang"><div class="lang-row"><b>French</b><small>Learning</small></div><div class="bar"><i style="width:35%"></i></div></div>
+          <h2 class="sec-h" data-i18n="h_langs">Languages</h2>
+          <div class="lang"><div class="lang-row"><b data-i18n="lang_en">English</b><small data-i18n="tag_pro">C1 · Professional</small></div><div class="bar"><i style="width:88%"></i></div></div>
+          <div class="lang"><div class="lang-row"><b data-i18n="lang_es">Spanish</b><small data-i18n="tag_native">Native</small></div><div class="bar"><i style="width:100%"></i></div></div>
+          <div class="lang"><div class="lang-row"><b data-i18n="lang_fr">French</b><small data-i18n="tag_learning">Learning</small></div><div class="bar"><i style="width:35%"></i></div></div>
         </section>
 
         <section class="sec">
-          <h2 class="sec-h">Education</h2>
+          <h2 class="sec-h" data-i18n="h_edu">Education</h2>
           <div class="edu-item">
-            <b>B.Sc. Software Engineering</b>
+            <b data-i18n="edu1_t">B.Sc. Software Engineering</b>
             <span>Universidad Manuela Beltran · Bogota</span>
             <small>2018 — 2023</small>
           </div>
           <div class="edu-item">
-            <b>Specialization in Python</b>
+            <b data-i18n="edu2_t">Specialization in Python</b>
             <span>University of Michigan · USA</span>
-            <small>Dec 2023</small>
+            <small data-i18n="edu2_d">Dec 2023</small>
           </div>
         </section>
       </aside>
@@ -207,54 +224,54 @@
       <!-- Main -->
       <main class="main">
         <section class="sec">
-          <h2 class="sec-h">Profile</h2>
-          <p class="profile">Full Stack &amp; DevOps Engineer with over 5 years of experience designing, building and scaling high-performance applications for global markets. I bridge robust backend architectures, dynamic frontends, cloud infrastructure, SAP service software and AI implementation to deliver end-to-end solutions that drive digital transformation. Backed by a University of Michigan specialization, I bring a deeply analytical, cloud-native approach to full-stack development, intelligent automation and system resilience.</p>
+          <h2 class="sec-h" data-i18n="h_profile">Profile</h2>
+          <p class="profile" data-i18n="profile_p">Full Stack &amp; DevOps Engineer with over 5 years of experience designing, building and scaling high-performance applications for global markets. I bridge robust backend architectures, dynamic frontends, cloud infrastructure, SAP service software and AI implementation to deliver end-to-end solutions that drive digital transformation. Backed by a University of Michigan specialization, I bring a deeply analytical, cloud-native approach to full-stack development, intelligent automation and system resilience.</p>
         </section>
 
         <section class="sec">
-          <h2 class="sec-h">Experience</h2>
+          <h2 class="sec-h" data-i18n="h_exp">Experience</h2>
 
           <div class="job">
             <div class="job-top">
-              <span class="job-title">Software Engineering</span>
-              <span class="job-date">Jul 2021 — Present</span>
+              <span class="job-title" data-i18n="job1_t">Software Engineering</span>
+              <span class="job-date" data-i18n="job1_date">Jul 2021 — Present</span>
             </div>
             <p class="job-org">Arago · Manizales, Caldas</p>
             <ul>
-              <li>Manage the end-to-end software development lifecycle, from architecture design to production deployment, leveraging AI to optimize engineering workflows.</li>
-              <li>Design and develop scalable full-stack applications, ensuring high performance and a seamless user experience.</li>
-              <li>Configure, optimize and maintain servers and cloud environments (DevOps &amp; infrastructure).</li>
-              <li>Set up and automate CI/CD pipelines to streamline delivery workflows.</li>
-              <li>Implement and integrate AI solutions to automate complex workflows, and develop software for SAP service implementations.</li>
+              <li data-i18n="job1_li1">Manage the end-to-end software development lifecycle, from architecture design to production deployment, leveraging AI to optimize engineering workflows.</li>
+              <li data-i18n="job1_li2">Design and develop scalable full-stack applications, ensuring high performance and a seamless user experience.</li>
+              <li data-i18n="job1_li3">Configure, optimize and maintain servers and cloud environments (DevOps &amp; infrastructure).</li>
+              <li data-i18n="job1_li4">Set up and automate CI/CD pipelines to streamline delivery workflows.</li>
+              <li data-i18n="job1_li5">Implement and integrate AI solutions to automate complex workflows, and develop software for SAP service implementations.</li>
             </ul>
           </div>
 
           <div class="job">
             <div class="job-top">
-              <span class="job-title">Full Stack Developer</span>
-              <span class="job-date">Jan 2021 — Jun 2021</span>
+              <span class="job-title" data-i18n="job2_t">Full Stack Developer</span>
+              <span class="job-date" data-i18n="job2_date">Jan 2021 — Jun 2021</span>
             </div>
             <p class="job-org">Accedo Technologies · Pereira</p>
             <ul>
-              <li>Updated system modules based on business requirements.</li>
-              <li>Maintained the system, monitoring and resolving potential errors.</li>
-              <li>Supported the creation of new modules to automate company processes.</li>
+              <li data-i18n="job2_li1">Updated system modules based on business requirements.</li>
+              <li data-i18n="job2_li2">Maintained the system, monitoring and resolving potential errors.</li>
+              <li data-i18n="job2_li3">Supported the creation of new modules to automate company processes.</li>
             </ul>
           </div>
         </section>
 
         <section class="sec">
-          <h2 class="sec-h">Selected Projects</h2>
+          <h2 class="sec-h" data-i18n="h_proj">Selected Projects</h2>
           <div class="proj">
-            <div class="proj-l"><b>AdjenteVoz</b><p>Conversational AI voice-agent platform</p></div>
+            <div class="proj-l"><b>AdjenteVoz</b><p data-i18n="proj1_d">Conversational AI voice-agent platform</p></div>
             <a class="proj-link" href="https://adjentevoz.online/" target="_blank" rel="noopener">adjentevoz.online ↗</a>
           </div>
           <div class="proj">
-            <div class="proj-l"><b>Abogados del Eje</b><p>Immersive scroll-driven law-firm website</p></div>
+            <div class="proj-l"><b>Abogados del Eje</b><p data-i18n="proj2_d">Immersive scroll-driven law-firm website</p></div>
             <a class="proj-link" href="https://abogadosdeleje.com/" target="_blank" rel="noopener">abogadosdeleje.com ↗</a>
           </div>
           <div class="proj">
-            <div class="proj-l"><b>Barojas Remodeling</b><p>Conversion-focused marketing website</p></div>
+            <div class="proj-l"><b>Barojas Remodeling</b><p data-i18n="proj3_d">Conversion-focused marketing website</p></div>
             <a class="proj-link" href="https://barojasremodeling.com" target="_blank" rel="noopener">barojasremodeling.com ↗</a>
           </div>
         </section>
@@ -262,6 +279,110 @@
 
     </div>
   </div>
+
+  <script>
+    var CVI18N = {
+      en: {
+        title: "Juan Andres Baron Baron - CV",
+        tip: "The CV will be downloaded in the selected language.",
+        tb_download: "Download PDF", tb_portfolio: "Portfolio",
+        role: "Full Stack & DevOps Engineer",
+        h_skills: "Skills", h_langs: "Languages", h_edu: "Education", h_profile: "Profile", h_exp: "Experience", h_proj: "Selected Projects",
+        sg_backend: "Backend", sg_frontend: "Frontend & Mobile", sg_cloud: "Cloud & DevOps", sg_data: "Data & AI",
+        lang_en: "English", lang_es: "Spanish", lang_fr: "French",
+        tag_pro: "C1 · Professional", tag_native: "Native", tag_learning: "Learning",
+        edu1_t: "B.Sc. Software Engineering", edu2_t: "Specialization in Python", edu2_d: "Dec 2023",
+        profile_p: "Full Stack & DevOps Engineer with over 5 years of experience designing, building and scaling high-performance applications for global markets. I bridge robust backend architectures, dynamic frontends, cloud infrastructure, SAP service software and AI implementation to deliver end-to-end solutions that drive digital transformation. Backed by a University of Michigan specialization, I bring a deeply analytical, cloud-native approach to full-stack development, intelligent automation and system resilience.",
+        job1_t: "Software Engineering", job1_date: "Jul 2021 — Present",
+        job1_li1: "Manage the end-to-end software development lifecycle, from architecture design to production deployment, leveraging AI to optimize engineering workflows.",
+        job1_li2: "Design and develop scalable full-stack applications, ensuring high performance and a seamless user experience.",
+        job1_li3: "Configure, optimize and maintain servers and cloud environments (DevOps & infrastructure).",
+        job1_li4: "Set up and automate CI/CD pipelines to streamline delivery workflows.",
+        job1_li5: "Implement and integrate AI solutions to automate complex workflows, and develop software for SAP service implementations.",
+        job2_t: "Full Stack Developer", job2_date: "Jan 2021 — Jun 2021",
+        job2_li1: "Updated system modules based on business requirements.",
+        job2_li2: "Maintained the system, monitoring and resolving potential errors.",
+        job2_li3: "Supported the creation of new modules to automate company processes.",
+        proj1_d: "Conversational AI voice-agent platform",
+        proj2_d: "Immersive scroll-driven law-firm website",
+        proj3_d: "Conversion-focused marketing website",
+      },
+      es: {
+        title: "Juan Andres Baron Baron - CV",
+        tip: "El CV se descargará en el idioma seleccionado.",
+        tb_download: "Descargar PDF", tb_portfolio: "Portafolio",
+        role: "Ingeniero Full Stack & DevOps",
+        h_skills: "Habilidades", h_langs: "Idiomas", h_edu: "Educación", h_profile: "Perfil", h_exp: "Experiencia", h_proj: "Proyectos destacados",
+        sg_backend: "Backend", sg_frontend: "Frontend y Móvil", sg_cloud: "Cloud y DevOps", sg_data: "Datos e IA",
+        lang_en: "Inglés", lang_es: "Español", lang_fr: "Francés",
+        tag_pro: "C1 · Profesional", tag_native: "Nativo", tag_learning: "Aprendiendo",
+        edu1_t: "Ing. de Software (Pregrado)", edu2_t: "Especialización en Python", edu2_d: "Dic 2023",
+        profile_p: "Ingeniero Full Stack & DevOps con más de 5 años de experiencia diseñando, construyendo y escalando aplicaciones de alto rendimiento para mercados globales. Uno arquitecturas backend robustas, frontends dinámicos, infraestructura cloud, software de servicios SAP e implementación de IA para entregar soluciones de extremo a extremo que impulsan la transformación digital. Respaldado por una especialización de la Universidad de Michigan, aporto un enfoque profundamente analítico y cloud-native al desarrollo full-stack, la automatización inteligente y la resiliencia de sistemas.",
+        job1_t: "Ingeniería de Software", job1_date: "Jul 2021 — Actualidad",
+        job1_li1: "Gestiono el ciclo de vida completo del software, desde el diseño de arquitectura hasta el despliegue en producción, usando IA para optimizar los flujos de ingeniería.",
+        job1_li2: "Diseño y desarrollo aplicaciones full-stack escalables, garantizando alto rendimiento y una experiencia de usuario fluida.",
+        job1_li3: "Configuro, optimizo y mantengo servidores y entornos cloud (DevOps e infraestructura).",
+        job1_li4: "Configuro y automatizo pipelines CI/CD para agilizar los flujos de entrega.",
+        job1_li5: "Implemento e integro soluciones de IA para automatizar flujos complejos, y desarrollo software para implementaciones de servicios SAP.",
+        job2_t: "Desarrollador Full Stack", job2_date: "Ene 2021 — Jun 2021",
+        job2_li1: "Actualicé módulos del sistema según los requisitos del negocio.",
+        job2_li2: "Mantuve el sistema, monitoreando y resolviendo posibles errores.",
+        job2_li3: "Apoyé la creación de nuevos módulos para automatizar procesos de la empresa.",
+        proj1_d: "Plataforma de agente de voz con IA conversacional",
+        proj2_d: "Sitio web inmersivo para firma de abogados",
+        proj3_d: "Sitio de marketing enfocado en conversión",
+      },
+      fr: {
+        title: "Juan Andres Baron Baron - CV",
+        tip: "Le CV sera téléchargé dans la langue sélectionnée.",
+        tb_download: "Télécharger le PDF", tb_portfolio: "Portfolio",
+        role: "Ingénieur Full Stack & DevOps",
+        h_skills: "Compétences", h_langs: "Langues", h_edu: "Formation", h_profile: "Profil", h_exp: "Expérience", h_proj: "Projets sélectionnés",
+        sg_backend: "Backend", sg_frontend: "Frontend & Mobile", sg_cloud: "Cloud & DevOps", sg_data: "Données & IA",
+        lang_en: "Anglais", lang_es: "Espagnol", lang_fr: "Français",
+        tag_pro: "C1 · Professionnel", tag_native: "Natif", tag_learning: "En cours",
+        edu1_t: "Licence en ingénierie logicielle", edu2_t: "Spécialisation en Python", edu2_d: "Déc. 2023",
+        profile_p: "Ingénieur Full Stack & DevOps avec plus de 5 ans d'expérience dans la conception, le développement et la mise à l'échelle d'applications haute performance pour des marchés mondiaux. Je relie des architectures backend robustes, des frontends dynamiques, une infrastructure cloud, des logiciels de service SAP et l'implémentation d'IA pour livrer des solutions de bout en bout qui génèrent la transformation digitale. Fort d'une spécialisation de l'Université du Michigan, j'apporte une approche profondément analytique et cloud-native au développement full-stack, à l'automatisation intelligente et à la résilience des systèmes.",
+        job1_t: "Ingénierie logicielle", job1_date: "Juil. 2021 — Présent",
+        job1_li1: "Je gère le cycle de vie complet du logiciel, de la conception de l'architecture au déploiement en production, en exploitant l'IA pour optimiser les workflows d'ingénierie.",
+        job1_li2: "Je conçois et développe des applications full-stack évolutives, garantissant haute performance et expérience utilisateur fluide.",
+        job1_li3: "Je configure, optimise et maintiens des serveurs et des environnements cloud (DevOps & infrastructure).",
+        job1_li4: "Je mets en place et automatise des pipelines CI/CD pour fluidifier les livraisons.",
+        job1_li5: "J'implémente et intègre des solutions d'IA pour automatiser des workflows complexes, et je développe des logiciels pour des implémentations de services SAP.",
+        job2_t: "Développeur Full Stack", job2_date: "Janv. 2021 — Juin 2021",
+        job2_li1: "Mise à jour des modules du système selon les besoins métier.",
+        job2_li2: "Maintenance du système, surveillance et résolution des erreurs potentielles.",
+        job2_li3: "Soutien à la création de nouveaux modules pour automatiser les processus de l'entreprise.",
+        proj1_d: "Plateforme d'agent vocal à IA conversationnelle",
+        proj2_d: "Site web immersif pour cabinet d'avocats",
+        proj3_d: "Site marketing axé sur la conversion",
+      },
+    };
+
+    function applyCVLang(lang) {
+      var d = CVI18N[lang] || CVI18N.en;
+      document.querySelectorAll("[data-i18n]").forEach(function (el) {
+        var k = el.getAttribute("data-i18n");
+        if (d[k] != null) el.textContent = d[k];
+      });
+      document.documentElement.setAttribute("lang", lang);
+      document.title = d.title || "Juan Andres Baron Baron - CV";
+      try { localStorage.setItem("jb-lang", lang); } catch (e) {}
+      var seg = document.getElementById("cvLang");
+      if (seg) seg.setAttribute("data-tip", d.tip || "");
+      document.querySelectorAll("#cvLang [data-lang-set]").forEach(function (b) {
+        b.classList.toggle("is-active", b.dataset.langSet === lang);
+      });
+    }
+
+    var cvLang = "en";
+    try { cvLang = localStorage.getItem("jb-lang") || "en"; } catch (e) {}
+    if (!CVI18N[cvLang]) cvLang = "en";
+    document.querySelectorAll("#cvLang [data-lang-set]").forEach(function (b) {
+      b.addEventListener("click", function () { applyCVLang(b.dataset.langSet); });
+    });
+    applyCVLang(cvLang);
+  </script>
 
 </body>
 </html>

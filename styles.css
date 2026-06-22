@@ -360,7 +360,7 @@ em { font-style: normal; }
 .contact-title { font-family: var(--display); font-weight: 600; font-size: clamp(2.4rem, 6.5vw, 5rem); letter-spacing: -0.02em; line-height: 1.04; }
 .contact-sub { margin: 20px auto 0; max-width: 480px; color: var(--txt-dim); font-size: 1.05rem; font-weight: 300; }
 
-.contact-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: clamp(40px, 6vh, 60px) auto 0; text-align: left; }
+.contact-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 16px; margin: clamp(40px, 6vh, 60px) auto 0; text-align: left; }
 .caction { display: flex; flex-direction: column; gap: 14px; padding: 26px; border: 1px solid var(--line-2); border-radius: 16px; background: var(--panel); position: relative; transition: transform .45s var(--ease), border-color .4s, box-shadow .4s; min-height: 180px; }
 .caction:hover { transform: translateY(-6px); border-color: var(--accent-a50); box-shadow: 0 22px 50px rgba(0,0,0,0.16); }
 .caction-ic { width: 46px; height: 46px; border-radius: 12px; display: grid; place-items: center; background: var(--grad-soft); color: var(--accent); }
@@ -409,7 +409,6 @@ em { font-style: normal; }
   .bento { grid-template-columns: repeat(2, 1fr); }
   .tile-lg, .tile-wide { grid-column: span 2; }
   .tile-tall { grid-row: span 1; }
-  .contact-actions { grid-template-columns: 1fr; }
 }
 @media (max-width: 900px) {
   .nav-burger { display: flex; }
