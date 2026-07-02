@@ -8,25 +8,25 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23121620'/%3E%3Cg fill='none' stroke='%235B8CF0' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M40 30 L24 50 L40 70'/%3E%3Cpath d='M60 30 L76 50 L60 70'/%3E%3C/g%3E%3C/svg%3E" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23121620'/%3E%3Cg fill='none' stroke='%237C8CFF' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M40 30 L24 50 L40 70'/%3E%3Cpath d='M60 30 L76 50 L60 70'/%3E%3C/g%3E%3C/svg%3E" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-  <!-- ===== Boot / preloader (terminal) ===== -->
-  <div class="boot" id="boot">
-    <div class="boot-window">
-      <div class="boot-bar"><span></span><span></span><span></span><i>~/juan-andres-baron-baron — zsh</i></div>
-      <pre class="boot-log" id="bootLog"></pre>
-    </div>
-    <div class="boot-curtain"></div>
+  <div class="noise" aria-hidden="true"></div>
+
+  <!-- ===== Loader ===== -->
+  <div class="loader" id="loader" aria-hidden="true">
+    <span class="loader-name">Juan Andres Baron Baron — Portfolio</span>
+    <span class="loader-count" id="loadCount">0</span>
+    <span class="loader-bar" id="loadBar"></span>
   </div>
 
   <!-- ===== Scroll progress ===== -->
   <div class="scroll-progress" id="scrollProgress"></div>
 
   <!-- ===== Custom cursor ===== -->
-  <div class="cursor" id="cursor"></div>
+  <div class="cursor" id="cursor"><span class="cursor-label" id="cursorLabel"></span></div>
   <div class="cursor-dot" id="cursorDot"></div>
 
   <!-- ===== Navigation ===== -->
@@ -39,11 +39,11 @@
       <span class="nav-logo-text">Juan Andres <em>Baron Baron</em></span>
     </a>
     <nav class="nav-links" aria-label="Main">
-      <a href="#about" class="nav-link" data-magnetic><span class="nav-idx">01.</span> about</a>
-      <a href="#stack" class="nav-link" data-magnetic><span class="nav-idx">02.</span> stack</a>
-      <a href="#pipeline" class="nav-link" data-magnetic><span class="nav-idx">03.</span> pipeline</a>
-      <a href="#work" class="nav-link" data-magnetic><span class="nav-idx">04.</span> work</a>
-      <a href="#log" class="nav-link" data-magnetic><span class="nav-idx">05.</span> log</a>
+      <a href="#about" class="nav-link" data-magnetic><span class="nav-idx">01</span> about</a>
+      <a href="#stack" class="nav-link" data-magnetic><span class="nav-idx">02</span> stack</a>
+      <a href="#pipeline" class="nav-link" data-magnetic><span class="nav-idx">03</span> pipeline</a>
+      <a href="#work" class="nav-link" data-magnetic><span class="nav-idx">04</span> work</a>
+      <a href="#log" class="nav-link" data-magnetic><span class="nav-idx">05</span> log</a>
     </nav>
     <div class="nav-right">
       <div class="seg seg-theme" id="themeSeg" role="group" aria-label="Theme">
@@ -74,15 +74,20 @@
   <!-- ===== Mobile menu overlay ===== -->
   <div class="menu-overlay" id="menuOverlay">
     <nav class="menu-links" aria-label="Mobile menu">
-      <a href="#hero" class="menu-link"><span>00.</span> home</a>
-      <a href="#about" class="menu-link"><span>01.</span> about</a>
-      <a href="#stack" class="menu-link"><span>02.</span> stack</a>
-      <a href="#pipeline" class="menu-link"><span>03.</span> pipeline</a>
-      <a href="#work" class="menu-link"><span>04.</span> work</a>
-      <a href="#log" class="menu-link"><span>05.</span> log</a>
-      <a href="#contact" class="menu-link"><span>06.</span> contact</a>
+      <a href="#hero" class="menu-link"><span>00</span> home</a>
+      <a href="#about" class="menu-link"><span>01</span> about</a>
+      <a href="#stack" class="menu-link"><span>02</span> stack</a>
+      <a href="#pipeline" class="menu-link"><span>03</span> pipeline</a>
+      <a href="#work" class="menu-link"><span>04</span> work</a>
+      <a href="#log" class="menu-link"><span>05</span> log</a>
+      <a href="#contact" class="menu-link"><span>06</span> contact</a>
     </nav>
     <div class="menu-footer">
+      <div class="seg seg-lang" role="group" aria-label="Language (mobile)">
+        <button data-lang-set="en">EN</button>
+        <button data-lang-set="es">ES</button>
+        <button data-lang-set="fr">FR</button>
+      </div>
       <a href="mailto:juanandresbaronbaron2001@gmail.com">juanandresbaronbaron2001@gmail.com</a>
       <a href="tel:+573102377853">+57 310 237 7853</a>
       <p>Pereira, Risaralda · Colombia</p>
@@ -93,87 +98,80 @@
 
     <!-- ===== HERO ===== -->
     <section class="hero" id="hero">
-      <canvas id="flowCanvas" aria-hidden="true"></canvas>
-      <div class="hero-grid-overlay" aria-hidden="true"></div>
-      <div class="hero-wrap">
-        <div class="hero-left">
-          <p class="hero-eyebrow" id="heroEyebrow">// full_stack &amp;&amp; devops_engineer</p>
-          <h1 class="hero-title">
-            <span class="scramble" data-text="Juan Andres">Juan Andres</span>
-            <span class="scramble grad" data-text="Baron Baron">Baron Baron</span>
-          </h1>
-          <p class="hero-tagline">
-            <span data-i18n="hero_build">I build</span> <span class="rotate" id="rotateWord">scalable systems</span><span class="caret caret-lg">_</span>
-          </p>
-          <p class="hero-blurb" data-i18n="hero_blurb">
-            5+ years engineering resilient backends, dynamic frontends, cloud infrastructure
-            and AI-driven automation for global markets.
-          </p>
-          <div class="hero-cta">
-            <a href="cv.html" target="_blank" rel="noopener" class="btn btn-primary" data-magnetic>
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4v11M7 11l5 5 5-5M5 20h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              <span data-i18n="cv_download">Download CV</span>
-            </a>
-            <a href="#work" class="btn btn-ghost" data-magnetic>
-              <span>view_work()</span>
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </a>
-            <a href="https://www.linkedin.com/in/juan-andres-baron-baron/" target="_blank" rel="noopener" class="btn btn-ghost" data-magnetic><span>LinkedIn ↗</span></a>
-          </div>
-        </div>
+      <div class="mesh" aria-hidden="true"><i></i><i></i><i></i></div>
+      <canvas id="glCanvas" aria-hidden="true"></canvas>
 
-        <div class="hero-right">
-          <div class="codecard" data-tilt>
-            <div class="codecard-bar">
-              <span class="cc-dot"></span><span class="cc-dot"></span><span class="cc-dot"></span>
-              <i class="codecard-file">engineer.ts</i>
-            </div>
-            <pre class="code" id="codeBlock"><code><span class="cl"><span class="t-key">const</span> <span class="t-var">engineer</span> = {</span>
-<span class="cl">  name:    <span class="t-str">'Juan Andres Baron Baron'</span>,</span>
-<span class="cl">  role:    <span class="t-str">'Full Stack &amp; DevOps'</span>,</span>
-<span class="cl">  base:    <span class="t-str">'Colombia · remote'</span>,</span>
-<span class="cl">  exp:     <span class="t-num">5</span> + <span class="t-str">'+ years'</span>,</span>
-<span class="cl">  stack:   [<span class="t-str">'Java'</span>, <span class="t-str">'Node'</span>, <span class="t-str">'React'</span>, <span class="t-str">'Python'</span>],</span>
-<span class="cl">  cloud:   [<span class="t-str">'AWS'</span>, <span class="t-str">'Azure'</span>, <span class="t-str">'GCP'</span>],</span>
-<span class="cl">  focus:   [<span class="t-str">'scalability'</span>, <span class="t-str">'AI'</span>, <span class="t-str">'automation'</span>],</span>
-<span class="cl">  open:    <span class="t-bool">true</span>, <span class="t-com">// open to work</span></span>
-<span class="cl">}</span></code></pre>
-          </div>
+      <div class="hero-inner" id="heroInner">
+        <p class="hero-eyebrow" id="heroEyebrow">
+          <span class="avail-pill"><span class="avail-dot"></span><span data-i18n="hero_avail">Available for work</span></span>
+          <span>// full_stack &amp;&amp; devops_engineer</span>
+        </p>
+        <h1 class="hero-title" id="heroTitle">
+          <span class="line" data-split>Juan Andres</span>
+          <span class="line grad" data-split>Baron Baron</span>
+        </h1>
+        <p class="hero-tagline">
+          <span data-i18n="hero_build">I build</span> <span class="rotate" id="rotateWord">scalable systems</span><span class="caret">_</span>
+        </p>
+        <p class="hero-blurb" data-i18n="hero_blurb">
+          5+ years engineering resilient backends, dynamic frontends, cloud infrastructure
+          and AI-driven automation for global markets.
+        </p>
+        <div class="hero-cta">
+          <a href="cv.html" target="_blank" rel="noopener" class="btn btn-primary" data-magnetic>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4v11M7 11l5 5 5-5M5 20h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span data-i18n="cv_download">Download CV</span>
+          </a>
+          <a href="#work" class="btn btn-ghost" data-magnetic>
+            <span>view_work()</span>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <a href="https://www.linkedin.com/in/juan-andres-baron-baron/" target="_blank" rel="noopener" class="btn btn-ghost" data-magnetic><span>LinkedIn ↗</span></a>
         </div>
       </div>
-      <div class="hero-scroll" id="heroScroll">
-        <span data-i18n="scroll">scroll</span>
-        <div class="hero-scroll-line"></div>
+
+      <div class="hero-foot" id="heroFoot">
+        <span class="hero-scroll"><span data-i18n="scroll">scroll</span><span class="hero-scroll-line"></span></span>
+        <span class="hero-coords">4.8133° N, 75.6961° W — PEI</span>
       </div>
     </section>
 
-    <!-- ===== Status ticker ===== -->
-    <div class="ticker" aria-hidden="true">
-      <div class="ticker-track" id="tickerTrack">
-        <span>▹ JAVA</span><span>▹ SPRING BOOT</span><span>▹ NODE.JS</span><span>▹ PYTHON</span><span>▹ LARAVEL</span><span>▹ REACT</span><span>▹ VUE</span><span>▹ REACT NATIVE</span><span>▹ TYPESCRIPT</span><span>▹ AWS</span><span>▹ AZURE</span><span>▹ GCP</span><span>▹ CI/CD</span><span>▹ SQL</span><span>▹ AI</span><span>▹ SAP</span>
-        <span>▹ JAVA</span><span>▹ SPRING BOOT</span><span>▹ NODE.JS</span><span>▹ PYTHON</span><span>▹ LARAVEL</span><span>▹ REACT</span><span>▹ VUE</span><span>▹ REACT NATIVE</span><span>▹ TYPESCRIPT</span><span>▹ AWS</span><span>▹ AZURE</span><span>▹ GCP</span><span>▹ CI/CD</span><span>▹ SQL</span><span>▹ AI</span><span>▹ SAP</span>
+    <!-- ===== Ticker ===== -->
+    <div class="ticker" id="ticker" aria-hidden="true">
+      <div class="ticker-inner" id="tickerInner">
+        <div class="ticker-track"><span><i>▹</i> <b>JAVA</b></span><span><i>▹</i> <b>SPRING BOOT</b></span><span><i>▹</i> <b>NODE.JS</b></span><span><i>▹</i> <b>PYTHON</b></span><span><i>▹</i> <b>LARAVEL</b></span><span><i>▹</i> <b>REACT</b></span><span><i>▹</i> <b>VUE</b></span><span><i>▹</i> <b>REACT NATIVE</b></span><span><i>▹</i> <b>TYPESCRIPT</b></span><span><i>▹</i> <b>AWS</b></span><span><i>▹</i> <b>AZURE</b></span><span><i>▹</i> <b>GCP</b></span><span><i>▹</i> <b>CI/CD</b></span><span><i>▹</i> <b>SQL</b></span><span><i>▹</i> <b>AI</b></span><span><i>▹</i> <b>SAP</b></span></div>
+        <div class="ticker-track"><span><i>▹</i> <b>JAVA</b></span><span><i>▹</i> <b>SPRING BOOT</b></span><span><i>▹</i> <b>NODE.JS</b></span><span><i>▹</i> <b>PYTHON</b></span><span><i>▹</i> <b>LARAVEL</b></span><span><i>▹</i> <b>REACT</b></span><span><i>▹</i> <b>VUE</b></span><span><i>▹</i> <b>REACT NATIVE</b></span><span><i>▹</i> <b>TYPESCRIPT</b></span><span><i>▹</i> <b>AWS</b></span><span><i>▹</i> <b>AZURE</b></span><span><i>▹</i> <b>GCP</b></span><span><i>▹</i> <b>CI/CD</b></span><span><i>▹</i> <b>SQL</b></span><span><i>▹</i> <b>AI</b></span><span><i>▹</i> <b>SAP</b></span></div>
       </div>
     </div>
 
-    <!-- ===== ABOUT (whoami) ===== -->
+    <!-- ===== ABOUT ===== -->
     <section class="about" id="about">
-      <div class="about-inner">
+      <div class="wrap">
         <p class="section-label"><span class="sl-num">// 01</span> <span class="sl-cmd">whoami</span></p>
-        <h2 class="about-text" id="aboutText" data-i18n="about_text">I design, build and scale high-performance systems — bridging robust backends, dynamic frontends and cloud-native infrastructure into intelligent, end-to-end solutions that drive real digital transformation.</h2>
-        <div class="about-meta">
-          <div class="am-item"><span class="am-k">role</span><span class="am-v">Software Engineer @ Arago</span></div>
-          <div class="am-item"><span class="am-k">since</span><span class="am-v" data-i18n="am_since">2021 → present</span></div>
-          <div class="am-item"><span class="am-k">edu</span><span class="am-v">U. of Michigan · Python Spec.</span></div>
-          <div class="am-item"><span class="am-k">langs</span><span class="am-v" data-i18n="am_langs">EN C1 · ES native · FR learning</span></div>
+        <div class="about-grid">
+          <figure class="about-photo" data-tilt>
+            <img src="profile.jpg" alt="Juan Andres Baron Baron" loading="lazy" />
+            <span class="photo-veil" id="photoVeil"></span>
+            <figcaption class="photo-tag">~/pereira · colombia</figcaption>
+          </figure>
+          <div>
+            <h2 class="about-text" id="aboutText" data-i18n="about_text">I design, build and scale high-performance systems — bridging robust backends, dynamic frontends and cloud-native infrastructure into intelligent, end-to-end solutions that drive real digital transformation.</h2>
+          </div>
+        </div>
+        <div class="stats">
+          <div class="stat"><span class="stat-num"><span class="stat-val" data-to="5">0</span>+</span><p class="stat-label" data-i18n="st1_l">years of experience</p></div>
+          <div class="stat"><span class="stat-num"><span class="stat-val" data-to="3">0</span></span><p class="stat-label" data-i18n="st2_l">products live in production</p></div>
+          <div class="stat"><span class="stat-num"><span class="stat-val" data-to="100">0</span>+</span><p class="stat-label" data-i18n="st3_l">technology certifications</p></div>
+          <div class="stat"><span class="stat-num"><span class="stat-val" data-to="3">0</span></span><p class="stat-label" data-i18n="st4_l">clouds: AWS · Azure · GCP</p></div>
         </div>
       </div>
     </section>
 
-    <!-- ===== STACK (bento grid) ===== -->
+    <!-- ===== STACK ===== -->
     <section class="stack" id="stack">
-      <div class="stack-inner">
+      <div class="wrap">
         <p class="section-label"><span class="sl-num">// 02</span> <span class="sl-cmd">cat stack.json</span></p>
-        <h2 class="stack-title" data-i18n="stack_title">Core capabilities</h2>
+        <h2 class="sec-title" data-reveal data-i18n="stack_title">Core capabilities</h2>
         <div class="bento">
           <article class="tile tile-lg" data-reveal>
             <div class="tile-top"><svg class="tile-icon" viewBox="0 0 48 48"><path d="M16 12l-8 12 8 12M32 12l8 12-8 12M27 8l-6 32"/></svg><span class="tile-tag">backend</span></div>
@@ -227,7 +225,7 @@
       </div>
     </section>
 
-    <!-- ===== PIPELINE (scroll-driven CI/CD canvas) ===== -->
+    <!-- ===== PIPELINE (Apple scrollmation) ===== -->
     <section class="pipeline" id="pipeline">
       <div class="pipeline-pin">
         <p class="section-label pipeline-label"><span class="sl-num">// 03</span> <span class="sl-cmd">run --pipeline</span></p>
@@ -242,65 +240,84 @@
       </div>
     </section>
 
-    <!-- ===== WORK / PROJECTS ===== -->
+    <!-- ===== WORK (horizontal scrollmation) ===== -->
     <section class="work" id="work">
-      <div class="work-inner">
-        <p class="section-label"><span class="sl-num">// 04</span> <span class="sl-cmd">ls ./projects</span></p>
-        <h2 class="work-title" data-i18n="work_title">Shipped to production</h2>
-
-        <div class="repos">
-          <a href="https://adjentevoz.online/" target="_blank" rel="noopener" class="repo" data-reveal data-tilt>
-            <div class="repo-bar">
-              <svg class="repo-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V7a6 6 0 0 1 12 0v2M5 9h14a1 1 0 0 1 1 1v8a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3v-8a1 1 0 0 1 1-1z"/></svg>
-              <span class="repo-path">juan-andres-baron-baron / <strong>adjentevoz</strong></span>
-              <span class="repo-status">● live</span>
-            </div>
-            <div class="repo-body">
-              <h3>AdjenteVoz</h3>
-              <p data-i18n="r1_p">A conversational AI voice-agent platform — intelligent, automated phone interactions powered by modern LLM and voice technology.</p>
-              <div class="repo-tags"><span class="lang-dot dot-ai"></span>AI / LLM <span class="lang-dot dot-js"></span>Voice <span class="lang-dot dot-cloud"></span>Automation</div>
-              <span class="repo-visit"><span data-i18n="open">open</span> adjentevoz.online <i>↗</i></span>
-            </div>
-          </a>
-
-          <a href="https://abogadosdeleje.com/" target="_blank" rel="noopener" class="repo" data-reveal data-tilt>
-            <div class="repo-bar">
-              <svg class="repo-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V7a6 6 0 0 1 12 0v2M5 9h14a1 1 0 0 1 1 1v8a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3v-8a1 1 0 0 1 1-1z"/></svg>
-              <span class="repo-path">juan-andres-baron-baron / <strong>abogados-del-eje</strong></span>
-              <span class="repo-status">● live</span>
-            </div>
-            <div class="repo-body">
-              <h3>Abogados del Eje</h3>
-              <p data-i18n="r2_p">An immersive, scroll-driven website for a Colombian law firm — animated canvas, smooth scrolling and a premium motion design system.</p>
-              <div class="repo-tags"><span class="lang-dot dot-js"></span>Frontend <span class="lang-dot dot-anim"></span>GSAP <span class="lang-dot dot-cloud"></span>Canvas</div>
-              <span class="repo-visit"><span data-i18n="open">open</span> abogadosdeleje.com <i>↗</i></span>
-            </div>
-          </a>
-
-          <a href="https://barojasremodeling.com" target="_blank" rel="noopener" class="repo" data-reveal data-tilt>
-            <div class="repo-bar">
-              <svg class="repo-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V7a6 6 0 0 1 12 0v2M5 9h14a1 1 0 0 1 1 1v8a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3v-8a1 1 0 0 1 1-1z"/></svg>
-              <span class="repo-path">juan-andres-baron-baron / <strong>barojas-remodeling</strong></span>
-              <span class="repo-status">● live</span>
-            </div>
-            <div class="repo-body">
-              <h3>Barojas Remodeling</h3>
-              <p data-i18n="r3_p">A modern marketing site for a US remodeling company — clean, conversion-focused design that showcases services and drives leads.</p>
-              <div class="repo-tags"><span class="lang-dot dot-js"></span>Frontend <span class="lang-dot dot-cloud"></span>Web <span class="lang-dot dot-anim"></span>SEO / Leads</div>
-              <span class="repo-visit"><span data-i18n="open">open</span> barojasremodeling.com <i>↗</i></span>
-            </div>
-          </a>
+      <div class="work-head">
+        <div>
+          <p class="section-label"><span class="sl-num">// 04</span> <span class="sl-cmd">ls ./projects</span></p>
+          <h2 class="sec-title" data-i18n="work_title">Shipped to production</h2>
         </div>
+        <span class="work-hint"><span data-i18n="work_hint">scroll to explore</span><svg viewBox="0 0 30 12"><path d="M0 6h26M21 1l6 5-6 5"/></svg></span>
+      </div>
+
+      <div class="work-stage" id="workStage">
+        <div class="work-track" id="workTrack">
+
+          <a href="https://adjentevoz.online/" target="_blank" rel="noopener" class="panel" data-cursor="open ↗">
+            <span class="panel-num">01</span>
+            <div class="panel-art">
+              <div class="art art-adjente"></div>
+              <div class="mock">
+                <div class="mock-bar"><b></b><b></b><b></b><i>adjentevoz.online</i></div>
+                <div class="mock-body"><span></span><span></span><span></span><span></span></div>
+              </div>
+            </div>
+            <div class="panel-body">
+              <div class="panel-title-row"><h3>AdjenteVoz</h3><span class="panel-status">● live</span></div>
+              <p data-i18n="r1_p">A conversational AI voice-agent platform — intelligent, automated phone interactions powered by modern LLM and voice technology.</p>
+              <div class="panel-tags"><span>AI / LLM</span><span>Voice</span><span>Automation</span></div>
+              <span class="panel-visit"><span data-i18n="open">open</span> adjentevoz.online <i>↗</i></span>
+            </div>
+          </a>
+
+          <a href="https://abogadosdeleje.com/" target="_blank" rel="noopener" class="panel" data-cursor="open ↗">
+            <span class="panel-num">02</span>
+            <div class="panel-art">
+              <div class="art art-abogados"></div>
+              <div class="mock">
+                <div class="mock-bar"><b></b><b></b><b></b><i>abogadosdeleje.com</i></div>
+                <div class="mock-body"><span></span><span></span><span></span><span></span></div>
+              </div>
+            </div>
+            <div class="panel-body">
+              <div class="panel-title-row"><h3>Abogados del Eje</h3><span class="panel-status">● live</span></div>
+              <p data-i18n="r2_p">An immersive, scroll-driven website for a Colombian law firm — animated canvas, smooth scrolling and a premium motion design system.</p>
+              <div class="panel-tags"><span>Frontend</span><span>GSAP</span><span>Canvas</span></div>
+              <span class="panel-visit"><span data-i18n="open">open</span> abogadosdeleje.com <i>↗</i></span>
+            </div>
+          </a>
+
+          <a href="https://barojasremodeling.com" target="_blank" rel="noopener" class="panel" data-cursor="open ↗">
+            <span class="panel-num">03</span>
+            <div class="panel-art">
+              <div class="art art-barojas"></div>
+              <div class="mock">
+                <div class="mock-bar"><b></b><b></b><b></b><i>barojasremodeling.com</i></div>
+                <div class="mock-body"><span></span><span></span><span></span><span></span></div>
+              </div>
+            </div>
+            <div class="panel-body">
+              <div class="panel-title-row"><h3>Barojas Remodeling</h3><span class="panel-status">● live</span></div>
+              <p data-i18n="r3_p">A modern marketing site for a US remodeling company — clean, conversion-focused design that showcases services and drives leads.</p>
+              <div class="panel-tags"><span>Frontend</span><span>Web</span><span>SEO / Leads</span></div>
+              <span class="panel-visit"><span data-i18n="open">open</span> barojasremodeling.com <i>↗</i></span>
+            </div>
+          </a>
+
+        </div>
+        <div class="work-progress"><i id="workProgress"></i></div>
+        <div class="work-stage-bottom"></div>
       </div>
     </section>
 
-    <!-- ===== GIT LOG (experience + education) ===== -->
+    <!-- ===== GIT LOG ===== -->
     <section class="gitlog" id="log">
-      <div class="gitlog-inner">
+      <div class="wrap">
         <p class="section-label"><span class="sl-num">// 05</span> <span class="sl-cmd">git log --oneline</span></p>
-        <h2 class="gitlog-title" data-i18n="log_title">My commit history</h2>
+        <h2 class="sec-title" data-reveal data-i18n="log_title">My commit history</h2>
 
         <div class="commits">
+          <span class="commits-line"><i id="commitsFill"></i></span>
           <article class="commit" data-reveal>
             <span class="commit-hash">c3f8a21</span>
             <div class="commit-body">
@@ -353,14 +370,14 @@
 
     <!-- ===== CONTACT ===== -->
     <section class="contact" id="contact">
-      <div class="contact-inner">
-        <p class="section-label"><span class="sl-num">// 06</span> <span class="sl-cmd">contact</span></p>
+      <div class="wrap">
+        <p class="section-label"><span class="sl-num">// 06</span> <span class="sl-cmd">contact --now</span></p>
         <p class="contact-avail"><span class="avail-dot"></span><span data-i18n="contact_avail">Available for work</span></p>
-        <h2 class="contact-title" data-i18n="contact_title">Let's build something.</h2>
-        <p class="contact-sub" data-i18n="contact_sub">Available for full-stack, DevOps and AI engineering work. Reach out — I usually reply within a day.</p>
+        <h2 class="contact-title" data-reveal data-i18n="contact_title">Let's build something.</h2>
+        <p class="contact-sub" data-reveal data-i18n="contact_sub">Available for full-stack, DevOps and AI engineering work. Reach out — I usually reply within a day.</p>
 
         <div class="contact-actions">
-          <a href="mailto:juanandresbaronbaron2001@gmail.com" class="caction caction-primary" data-magnetic>
+          <a href="mailto:juanandresbaronbaron2001@gmail.com" class="caction caction-primary" data-reveal data-magnetic>
             <span class="caction-ic">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 7l8 6 8-6"/></svg>
             </span>
@@ -371,7 +388,7 @@
             <span class="caction-go" data-i18n="ca_email_go">Send a message →</span>
           </a>
 
-          <a href="tel:+573102377853" class="caction" data-magnetic>
+          <a href="tel:+573102377853" class="caction" data-reveal data-magnetic>
             <span class="caction-ic">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg>
             </span>
@@ -382,7 +399,7 @@
             <span class="caction-go" data-i18n="ca_phone_go">Call now →</span>
           </a>
 
-          <a href="https://www.linkedin.com/in/juan-andres-baron-baron/" target="_blank" rel="noopener" class="caction" data-magnetic>
+          <a href="https://www.linkedin.com/in/juan-andres-baron-baron/" target="_blank" rel="noopener" class="caction" data-reveal data-magnetic>
             <span class="caction-ic">
               <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5A2.5 2.5 0 1 0 5 8.5a2.5 2.5 0 0 0 0-5zM3 9h4v12H3zM10 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21H18.6v-5.4c0-1.29-.02-2.95-1.8-2.95-1.8 0-2.08 1.4-2.08 2.85V21H10z"/></svg>
             </span>
@@ -393,7 +410,7 @@
             <span class="caction-go" data-i18n="ca_li_go">Connect on LinkedIn →</span>
           </a>
 
-          <button class="caction caction-copy" id="copyEmail" data-magnetic type="button">
+          <button class="caction caction-copy" id="copyEmail" data-reveal data-magnetic type="button">
             <span class="caction-ic">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
             </span>
@@ -405,7 +422,7 @@
           </button>
         </div>
 
-        <div class="contact-cta">
+        <div class="contact-cta" data-reveal>
           <a href="cv.html" target="_blank" rel="noopener" class="btn btn-primary" data-magnetic>
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4v11M7 11l5 5 5-5M5 20h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <span data-i18n="cv_download">Download CV</span>
@@ -414,7 +431,7 @@
 
         <div class="contact-loc">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
-          <span data-i18n="ca_loc">Manizales, Caldas · Colombia · remote-friendly</span>
+          <span data-i18n="ca_loc">Pereira, Risaralda · Colombia · remote-friendly</span>
         </div>
       </div>
     </section>
@@ -423,6 +440,11 @@
 
   <!-- ===== FOOTER ===== -->
   <footer class="footer">
+    <div class="footer-marquee" aria-hidden="true">
+      <div class="footer-marquee-track">
+        <span>JUAN ANDRES BARON BARON —&nbsp;</span><span>JUAN ANDRES BARON BARON —&nbsp;</span>
+      </div>
+    </div>
     <div class="footer-inner">
       <div class="footer-brand">
         <span class="footer-name">Juan Andres <em>Baron Baron</em></span>
@@ -445,6 +467,7 @@
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

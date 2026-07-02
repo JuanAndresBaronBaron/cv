@@ -4,19 +4,23 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Juan Andres Baron Baron - CV</title>
+  <meta name="description" content="CV — Juan Andres Baron Baron, Full Stack & DevOps Engineer. 5+ years building scalable cloud-native systems, AI automation and SAP service software." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23121620'/%3E%3Cg fill='none' stroke='%235B8CF0' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M40 30 L24 50 L40 70'/%3E%3Cpath d='M60 30 L76 50 L60 70'/%3E%3C/g%3E%3C/svg%3E" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23121620'/%3E%3Cg fill='none' stroke='%235C8DFF' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M40 30 L24 50 L40 70'/%3E%3Cpath d='M60 30 L76 50 L60 70'/%3E%3C/g%3E%3C/svg%3E" />
   <style>
     :root {
-      --ink: #1A2233;
-      --ink-soft: #45506A;
-      --muted: #6B7689;
-      --line: #E2E7F0;
-      --accent: #2E5BD6;
-      --accent-deep: #1E3E9C;
-      --bg: #EEF1F7;
+      --ink: #12162A;
+      --ink-soft: #3E4761;
+      --muted: #6B7590;
+      --line: #E3E7F1;
+      --line-soft: #EEF1F8;
+      --acc: #2563EB;
+      --acc-2: #0891B2;
+      --acc-3: #0D9488;
+      --grad: linear-gradient(92deg, #2563EB 0%, #0891B2 55%, #0D9488 110%);
+      --bg: #F3F5FB;
       --paper: #FFFFFF;
       --mono: "JetBrains Mono", ui-monospace, monospace;
       --display: "Space Grotesk", "Segoe UI", sans-serif;
@@ -24,113 +28,166 @@
     }
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
-    body { background: var(--bg); color: var(--ink); font-family: var(--body); line-height: 1.5; -webkit-font-smoothing: antialiased; padding: 40px 16px 80px; }
+    body {
+      background:
+        radial-gradient(700px 320px at 12% -6%, rgba(37, 99, 235, 0.07), transparent 65%),
+        radial-gradient(640px 300px at 92% 4%, rgba(13, 148, 136, 0.06), transparent 65%),
+        var(--bg);
+      color: var(--ink); font-family: var(--body); line-height: 1.5;
+      -webkit-font-smoothing: antialiased; padding: 44px 16px 90px;
+    }
 
     /* ===== Toolbar (screen only) ===== */
     .toolbar { position: fixed; top: 20px; right: 20px; display: flex; gap: 10px; z-index: 50; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
-    .tb-btn { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 0.8rem; font-weight: 500; padding: 11px 18px; border-radius: 10px; cursor: pointer; text-decoration: none; border: 1px solid var(--line); transition: transform .25s ease, box-shadow .25s ease, background .25s; }
+    .tb-btn { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 0.8rem; font-weight: 500; padding: 11px 18px; border-radius: 12px; cursor: pointer; text-decoration: none; border: 1px solid var(--line); transition: transform .3s cubic-bezier(.22,1,.36,1), box-shadow .3s ease; }
     .tb-btn svg { width: 16px; height: 16px; }
-    .tb-primary { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 8px 24px rgba(46,91,214,0.32); }
-    .tb-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 32px rgba(46,91,214,0.4); }
+    .tb-primary { background: var(--grad); color: #fff; border: none; box-shadow: 0 10px 26px -8px rgba(37, 99, 235, 0.5); }
+    .tb-primary:hover { transform: translateY(-2px); box-shadow: 0 16px 34px -10px rgba(37, 99, 235, 0.55); }
     .tb-ghost { background: #fff; color: var(--ink); }
-    .tb-ghost:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(26,34,51,0.12); }
-    .tb-lang { display: flex; gap: 2px; padding: 3px; border: 1px solid var(--line); border-radius: 10px; background: #fff; position: relative; }
-    .tb-lang button { font-family: var(--mono); font-size: 0.76rem; font-weight: 500; padding: 8px 10px; border-radius: 7px; color: var(--muted); cursor: pointer; background: none; border: none; transition: background .25s, color .25s; }
+    .tb-ghost:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(18, 22, 42, 0.12); }
+    .tb-lang { display: flex; gap: 2px; padding: 3px; border: 1px solid var(--line); border-radius: 12px; background: #fff; position: relative; }
+    .tb-lang button { font-family: var(--mono); font-size: 0.76rem; font-weight: 500; padding: 8px 11px; border-radius: 9px; color: var(--muted); cursor: pointer; background: none; border: none; transition: background .25s, color .25s; }
     .tb-lang button:hover { color: var(--ink); }
-    .tb-lang button.is-active { background: var(--accent); color: #fff; }
-    .tb-lang::after { content: attr(data-tip); position: absolute; top: calc(100% + 9px); right: 0; background: var(--ink); color: #fff; font-family: var(--body); font-size: 0.72rem; font-weight: 400; line-height: 1.35; padding: 8px 12px; border-radius: 9px; max-width: 230px; opacity: 0; pointer-events: none; transform: translateY(-4px); transition: opacity .25s ease, transform .25s ease; box-shadow: 0 10px 26px rgba(26,34,51,0.22); z-index: 60; }
+    .tb-lang button.is-active { background: var(--grad); color: #fff; }
+    .tb-lang::after { content: attr(data-tip); position: absolute; top: calc(100% + 9px); right: 0; background: var(--ink); color: #fff; font-family: var(--body); font-size: 0.72rem; font-weight: 400; line-height: 1.35; padding: 8px 12px; border-radius: 9px; max-width: 230px; opacity: 0; pointer-events: none; transform: translateY(-4px); transition: opacity .25s ease, transform .25s ease; box-shadow: 0 10px 26px rgba(18, 22, 42, 0.22); z-index: 60; }
     .tb-lang::before { content: ""; position: absolute; top: calc(100% + 3px); right: 16px; border: 6px solid transparent; border-bottom-color: var(--ink); opacity: 0; transition: opacity .25s ease; z-index: 60; }
     .tb-lang:hover::after, .tb-lang:hover::before { opacity: 1; transform: translateY(0); }
 
     /* ===== Sheet ===== */
-    .sheet { max-width: 880px; margin: 0 auto; background: var(--paper); border-radius: 6px; overflow: hidden; box-shadow: 0 30px 80px rgba(26,34,51,0.18); }
+    .sheet {
+      max-width: 900px; margin: 0 auto; background: var(--paper); border-radius: 18px; overflow: hidden;
+      box-shadow: 0 34px 90px -22px rgba(18, 22, 42, 0.25);
+      animation: rise .7s cubic-bezier(.22,1,.36,1) both;
+    }
+    @keyframes rise { from { opacity: 0; transform: translateY(22px); } }
+    .sheet-band { height: 6px; background: var(--grad); }
 
     /* ===== Header ===== */
-    .head { padding: 46px 52px 34px; position: relative; background:
-        radial-gradient(600px 260px at 88% -40%, rgba(46,91,214,0.10), transparent 70%), var(--paper); border-bottom: 1px solid var(--line); }
+    .head { padding: 42px 52px 30px; position: relative; border-bottom: 1px solid var(--line); background: radial-gradient(620px 260px at 90% -50%, rgba(8, 145, 178, 0.08), transparent 70%), var(--paper); }
     .head-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; }
-    .name { font-family: var(--display); font-weight: 700; font-size: 2.5rem; letter-spacing: -0.02em; line-height: 1.04; color: var(--ink); }
-    .role { font-family: var(--mono); font-size: 0.95rem; color: var(--accent); margin-top: 8px; letter-spacing: 0.01em; }
-    .mono-mark { width: 50px; height: 50px; border: 1.5px solid var(--accent); border-radius: 12px; display: grid; place-items: center; flex-shrink: 0; }
+    .name { font-family: var(--display); font-weight: 700; font-size: 2.55rem; letter-spacing: -0.03em; line-height: 1.04; color: var(--ink); }
+    .role {
+      font-family: var(--mono); font-size: 0.95rem; margin-top: 10px; letter-spacing: 0.01em; font-weight: 500;
+      background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent;
+      display: inline-block;
+    }
+    .mono-mark { width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center; flex-shrink: 0; background: linear-gradient(135deg, rgba(37,99,235,0.1), rgba(13,148,136,0.1)); border: 1.5px solid rgba(37, 99, 235, 0.35); }
     .mono-mark svg { width: 28px; height: 28px; }
-    .contacts { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 22px; }
-    .contacts a, .contacts span { display: inline-flex; align-items: center; gap: 7px; font-family: var(--mono); font-size: 0.78rem; color: var(--ink-soft); text-decoration: none; }
-    .contacts svg { width: 14px; height: 14px; color: var(--accent); flex-shrink: 0; }
-    .contacts a:hover { color: var(--accent); }
+    .contacts { display: flex; flex-wrap: wrap; gap: 8px 10px; margin-top: 22px; }
+    .contacts a, .contacts span {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-family: var(--mono); font-size: 0.74rem; color: var(--ink-soft); text-decoration: none;
+      padding: 7px 12px; border: 1px solid var(--line); border-radius: 100px; background: #FBFCFE;
+      transition: border-color .25s, color .25s;
+    }
+    .contacts svg { width: 13px; height: 13px; color: var(--acc); flex-shrink: 0; }
+    .contacts a:hover { color: var(--acc); border-color: var(--acc); }
+
+    /* stats strip */
+    .strip { display: grid; grid-template-columns: repeat(4, 1fr); border-bottom: 1px solid var(--line); background: #FBFCFE; }
+    .strip div { padding: 16px 12px; text-align: center; border-right: 1px solid var(--line-soft); }
+    .strip div:last-child { border-right: none; }
+    .strip b { display: block; font-family: var(--display); font-weight: 700; font-size: 1.5rem; letter-spacing: -0.02em; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .strip small { font-family: var(--mono); font-size: 0.64rem; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
 
     /* ===== Body grid ===== */
     .body { display: grid; grid-template-columns: 1fr 1.9fr; }
-    .aside { padding: 34px 30px 40px 52px; border-right: 1px solid var(--line); }
-    .main { padding: 34px 52px 44px 38px; }
+    .aside { padding: 32px 30px 40px 52px; border-right: 1px solid var(--line); }
+    .main { padding: 32px 52px 44px 38px; }
 
-    .sec { margin-bottom: 30px; }
+    .sec { margin-bottom: 28px; }
     .sec:last-child { margin-bottom: 0; }
-    .sec-h { font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); margin-bottom: 16px; display: flex; align-items: center; gap: 9px; }
+    .sec-h {
+      font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase;
+      margin-bottom: 16px; display: flex; align-items: center; gap: 9px;
+      background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
     .sec-h::after { content: ""; flex: 1; height: 1px; background: var(--line); }
 
     /* skills */
     .skill-group { margin-bottom: 14px; }
     .skill-group b { display: block; font-family: var(--display); font-weight: 600; font-size: 0.82rem; color: var(--ink); margin-bottom: 7px; }
     .tags { display: flex; flex-wrap: wrap; gap: 6px; }
-    .tags span { font-family: var(--mono); font-size: 0.7rem; color: var(--ink-soft); background: #F3F6FC; border: 1px solid var(--line); border-radius: 5px; padding: 4px 8px; }
+    .tags span { font-family: var(--mono); font-size: 0.68rem; color: var(--ink-soft); background: #F5F7FC; border: 1px solid var(--line); border-radius: 7px; padding: 4px 9px; }
 
     /* languages */
     .lang { margin-bottom: 14px; }
     .lang-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
     .lang-row b { font-family: var(--display); font-weight: 600; font-size: 0.86rem; }
-    .lang-row small { font-family: var(--mono); font-size: 0.68rem; color: var(--muted); }
-    .bar { height: 5px; border-radius: 5px; background: var(--line); overflow: hidden; }
-    .bar i { display: block; height: 100%; border-radius: 5px; background: linear-gradient(90deg, var(--accent), var(--accent-deep)); }
+    .lang-row small { font-family: var(--mono); font-size: 0.66rem; color: var(--muted); }
+    .bar { height: 5px; border-radius: 5px; background: var(--line-soft); overflow: hidden; }
+    .bar i { display: block; height: 100%; border-radius: 5px; background: var(--grad); }
 
     /* aside education */
-    .edu-item { margin-bottom: 14px; }
+    .edu-item { margin-bottom: 14px; padding-left: 14px; border-left: 2px solid var(--line); }
     .edu-item b { display: block; font-family: var(--display); font-weight: 600; font-size: 0.88rem; color: var(--ink); }
-    .edu-item span { display: block; font-size: 0.8rem; color: var(--ink-soft); margin-top: 2px; }
-    .edu-item small { font-family: var(--mono); font-size: 0.7rem; color: var(--muted); }
+    .edu-item span { display: block; font-size: 0.78rem; color: var(--ink-soft); margin-top: 2px; }
+    .edu-item small { font-family: var(--mono); font-size: 0.68rem; color: var(--acc-2); }
 
     /* profile */
-    .profile { font-size: 0.92rem; color: var(--ink-soft); line-height: 1.65; }
+    .profile { font-size: 0.9rem; color: var(--ink-soft); line-height: 1.68; }
 
     /* experience */
-    .job { position: relative; padding-left: 22px; padding-bottom: 22px; border-left: 1.5px solid var(--line); }
+    .job { position: relative; padding-left: 24px; padding-bottom: 22px; border-left: 1.5px solid var(--line); }
     .job:last-child { padding-bottom: 0; }
-    .job::before { content: ""; position: absolute; left: -6px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 3px rgba(46,91,214,0.14); }
+    .job::before {
+      content: ""; position: absolute; left: -6.5px; top: 4px; width: 12px; height: 12px; border-radius: 50%;
+      background: var(--grad); box-shadow: 0 0 0 3.5px rgba(37, 99, 235, 0.14);
+    }
     .job-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
-    .job-title { font-family: var(--display); font-weight: 600; font-size: 1.02rem; color: var(--ink); }
-    .job-date { font-family: var(--mono); font-size: 0.72rem; color: var(--accent); white-space: nowrap; }
-    .job-org { font-size: 0.82rem; color: var(--muted); margin: 2px 0 9px; }
-    .job ul { list-style: none; display: flex; flex-direction: column; gap: 5px; }
-    .job li { position: relative; padding-left: 16px; font-size: 0.86rem; color: var(--ink-soft); }
-    .job li::before { content: "▹"; position: absolute; left: 0; color: var(--accent); font-size: 0.74rem; top: 1px; }
+    .job-title { font-family: var(--display); font-weight: 600; font-size: 1.04rem; color: var(--ink); }
+    .job-date { font-family: var(--mono); font-size: 0.7rem; color: var(--acc); white-space: nowrap; border: 1px solid rgba(37, 99, 235, 0.3); background: rgba(37, 99, 235, 0.06); padding: 3px 10px; border-radius: 100px; }
+    .job-org { font-size: 0.8rem; color: var(--muted); margin: 4px 0 10px; font-weight: 500; }
+    .job ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .job li { position: relative; padding-left: 16px; font-size: 0.85rem; color: var(--ink-soft); }
+    .job li::before { content: "▹"; position: absolute; left: 0; color: var(--acc-2); font-size: 0.74rem; top: 1px; }
 
     /* projects */
-    .proj { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 10px 0; border-bottom: 1px dashed var(--line); }
+    .proj { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 11px 0; border-bottom: 1px dashed var(--line); }
     .proj:last-child { border-bottom: none; }
-    .proj-l b { font-family: var(--display); font-weight: 600; font-size: 0.9rem; color: var(--ink); }
-    .proj-l p { font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
-    .proj-link { font-family: var(--mono); font-size: 0.72rem; color: var(--accent); text-decoration: none; white-space: nowrap; }
+    .proj-l b { font-family: var(--display); font-weight: 600; font-size: 0.92rem; color: var(--ink); }
+    .proj-l b::before { content: "●"; font-size: 0.5rem; vertical-align: 2px; margin-right: 8px; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .proj-l p { font-size: 0.78rem; color: var(--muted); margin-top: 2px; padding-left: 17px; }
+    .proj-link { font-family: var(--mono); font-size: 0.7rem; color: var(--acc); text-decoration: none; white-space: nowrap; }
+    .proj-link:hover { text-decoration: underline; }
 
-    @media (max-width: 720px) {
+    /* footer note */
+    .sheet-foot { border-top: 1px solid var(--line); padding: 14px 52px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-family: var(--mono); font-size: 0.66rem; color: var(--muted); background: #FBFCFE; }
+    .sheet-foot a { color: var(--acc); text-decoration: none; }
+    .sheet-foot a:hover { text-decoration: underline; }
+
+    @media (max-width: 760px) {
       .body { grid-template-columns: 1fr; }
-      .aside { border-right: none; border-bottom: 1px solid var(--line); padding: 30px 30px; }
-      .main { padding: 30px; }
-      .head { padding: 34px 30px 28px; }
+      .aside { border-right: none; border-bottom: 1px solid var(--line); padding: 28px 28px; }
+      .main { padding: 28px; }
+      .head { padding: 32px 28px 26px; }
       .name { font-size: 2rem; }
+      .strip { grid-template-columns: repeat(2, 1fr); }
+      .strip div:nth-child(-n+2) { border-bottom: 1px solid var(--line-soft); }
+      .sheet-foot { padding: 14px 28px; }
       .toolbar { position: static; justify-content: center; margin-bottom: 24px; }
     }
 
     /* ===== Print ===== */
-    @page { size: A4; margin: 12mm; }
+    @page { size: A4; margin: 11mm; }
     @media print {
       body { background: #fff; padding: 0; }
       .toolbar { display: none !important; }
-      .sheet { box-shadow: none; max-width: none; border-radius: 0; }
-      .head { padding: 0 0 20px; }
-      .aside { padding: 22px 26px 22px 0; }
-      .main { padding: 22px 0 22px 30px; }
-      .job, .proj, .sec, .edu-item, .skill-group, .lang { break-inside: avoid; }
+      .sheet { box-shadow: none; max-width: none; border-radius: 0; animation: none; }
+      .sheet-band { height: 4px; }
+      .head { padding: 6px 0 16px; }
+      .strip div { padding: 10px 8px; }
+      .strip b { font-size: 1.2rem; }
+      .aside { padding: 18px 22px 18px 0; }
+      .main { padding: 18px 0 18px 26px; }
+      .sec { margin-bottom: 20px; }
+      .job { padding-bottom: 16px; }
+      .sheet-foot { padding: 10px 0 0; background: #fff; }
+      .job, .proj, .sec, .edu-item, .skill-group, .lang, .strip { break-inside: avoid; }
       * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      .contacts a, .contacts span { background: #fff; }
       a { color: var(--ink-soft); }
+      .proj-link, .sheet-foot a { color: var(--acc); }
     }
   </style>
 </head>
@@ -153,6 +210,7 @@
   </div>
 
   <div class="sheet">
+    <div class="sheet-band"></div>
 
     <!-- Header -->
     <header class="head">
@@ -162,7 +220,7 @@
           <p class="role" data-i18n="role">Full Stack &amp; DevOps Engineer</p>
         </div>
         <span class="mono-mark">
-          <svg viewBox="0 0 40 40" fill="none" stroke="#2E5BD6" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+          <svg viewBox="0 0 40 40" fill="none" stroke="#2563EB" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
             <path d="M16 9 L6 20 L16 31"/><path d="M24 9 L34 20 L24 31"/>
           </svg>
         </span>
@@ -187,6 +245,14 @@
       </div>
     </header>
 
+    <!-- Quick stats -->
+    <div class="strip">
+      <div><b>5+</b><small data-i18n="st1">years of experience</small></div>
+      <div><b>100+</b><small data-i18n="st2">tech certifications</small></div>
+      <div><b>3</b><small data-i18n="st3">cloud platforms</small></div>
+      <div><b>C1</b><small data-i18n="st4">English level</small></div>
+    </div>
+
     <div class="body">
 
       <!-- Sidebar -->
@@ -194,9 +260,10 @@
         <section class="sec">
           <h2 class="sec-h" data-i18n="h_skills">Skills</h2>
           <div class="skill-group"><b data-i18n="sg_backend">Backend</b><div class="tags"><span>Java</span><span>Spring Boot</span><span>Node.js</span><span>Python</span><span>PHP</span><span>Laravel</span></div></div>
-          <div class="skill-group"><b data-i18n="sg_frontend">Frontend &amp; Mobile</b><div class="tags"><span>React.js</span><span>Vue</span><span>React Native</span><span>TypeScript</span><span>JavaScript</span><span>Bootstrap</span></div></div>
-          <div class="skill-group"><b data-i18n="sg_cloud">Cloud &amp; DevOps</b><div class="tags"><span>AWS</span><span>Azure</span><span>GCP</span><span>CI/CD</span><span>IaC</span><span>Git</span></div></div>
-          <div class="skill-group"><b data-i18n="sg_data">Data &amp; AI</b><div class="tags"><span>SQL</span><span>MySQL</span><span>AI Integration</span><span>Automation</span><span>SAP</span></div></div>
+          <div class="skill-group"><b data-i18n="sg_frontend">Frontend &amp; Mobile</b><div class="tags"><span>React.js</span><span>Vue</span><span>React Native</span><span>TypeScript</span><span>JavaScript</span></div></div>
+          <div class="skill-group"><b data-i18n="sg_cloud">Cloud &amp; DevOps</b><div class="tags"><span>AWS</span><span>Azure</span><span>GCP</span><span>CI/CD</span><span>IaC</span><span>Docker</span><span>Linux</span></div></div>
+          <div class="skill-group"><b data-i18n="sg_data">Data, AI &amp; Enterprise</b><div class="tags"><span>SQL</span><span>MySQL</span><span>LLMs</span><span>AI Automation</span><span>SAP</span></div></div>
+          <div class="skill-group"><b data-i18n="sg_tools">Tools &amp; Methods</b><div class="tags"><span>Git</span><span>GitHub</span><span>Scrum</span></div></div>
         </section>
 
         <section class="sec">
@@ -218,6 +285,11 @@
             <span>University of Michigan · USA</span>
             <small data-i18n="edu2_d">Dec 2023</small>
           </div>
+          <div class="edu-item">
+            <b data-i18n="edu3_t">100+ Technology Certifications</b>
+            <span data-i18n="edu3_s">Continuous learning — development, cloud, DevOps &amp; AI</span>
+            <small data-i18n="edu3_d">ongoing</small>
+          </div>
         </section>
       </aside>
 
@@ -233,15 +305,15 @@
 
           <div class="job">
             <div class="job-top">
-              <span class="job-title" data-i18n="job1_t">Software Engineering</span>
+              <span class="job-title" data-i18n="job1_t">Software Engineer</span>
               <span class="job-date" data-i18n="job1_date">Jul 2021 — Present</span>
             </div>
             <p class="job-org">Arago · Manizales, Caldas</p>
             <ul>
-              <li data-i18n="job1_li1">Manage the end-to-end software development lifecycle, from architecture design to production deployment, leveraging AI to optimize engineering workflows.</li>
+              <li data-i18n="job1_li1">Own the end-to-end software development lifecycle, from architecture design to production deployment, leveraging AI to optimize engineering workflows.</li>
               <li data-i18n="job1_li2">Design and develop scalable full-stack applications, ensuring high performance and a seamless user experience.</li>
-              <li data-i18n="job1_li3">Configure, optimize and maintain servers and cloud environments (DevOps &amp; infrastructure).</li>
-              <li data-i18n="job1_li4">Set up and automate CI/CD pipelines to streamline delivery workflows.</li>
+              <li data-i18n="job1_li3">Configure, optimize and maintain servers and cloud environments across AWS, Azure and GCP (DevOps &amp; infrastructure).</li>
+              <li data-i18n="job1_li4">Build and automate CI/CD pipelines that shorten delivery cycles and reduce release risk.</li>
               <li data-i18n="job1_li5">Implement and integrate AI solutions to automate complex workflows, and develop software for SAP service implementations.</li>
             </ul>
           </div>
@@ -253,9 +325,9 @@
             </div>
             <p class="job-org">Accedo Technologies · Pereira</p>
             <ul>
-              <li data-i18n="job2_li1">Updated system modules based on business requirements.</li>
-              <li data-i18n="job2_li2">Maintained the system, monitoring and resolving potential errors.</li>
-              <li data-i18n="job2_li3">Supported the creation of new modules to automate company processes.</li>
+              <li data-i18n="job2_li1">Updated system modules based on evolving business requirements.</li>
+              <li data-i18n="job2_li2">Maintained the platform, monitoring and resolving potential errors.</li>
+              <li data-i18n="job2_li3">Built new modules to automate internal company processes.</li>
             </ul>
           </div>
         </section>
@@ -263,7 +335,7 @@
         <section class="sec">
           <h2 class="sec-h" data-i18n="h_proj">Selected Projects</h2>
           <div class="proj">
-            <div class="proj-l"><b>AdjenteVoz</b><p data-i18n="proj1_d">Conversational AI voice-agent platform</p></div>
+            <div class="proj-l"><b>AdjenteVoz</b><p data-i18n="proj1_d">Conversational AI voice-agent platform — LLM + voice tech</p></div>
             <a class="proj-link" href="https://adjentevoz.online/" target="_blank" rel="noopener">adjentevoz.online ↗</a>
           </div>
           <div class="proj">
@@ -271,12 +343,17 @@
             <a class="proj-link" href="https://abogadosdeleje.com/" target="_blank" rel="noopener">abogadosdeleje.com ↗</a>
           </div>
           <div class="proj">
-            <div class="proj-l"><b>Barojas Remodeling</b><p data-i18n="proj3_d">Conversion-focused marketing website</p></div>
+            <div class="proj-l"><b>Barojas Remodeling</b><p data-i18n="proj3_d">Conversion-focused marketing website (US market)</p></div>
             <a class="proj-link" href="https://barojasremodeling.com" target="_blank" rel="noopener">barojasremodeling.com ↗</a>
           </div>
         </section>
       </main>
 
+    </div>
+
+    <div class="sheet-foot">
+      <span data-i18n="foot_l">Portfolio &amp; live projects — links available on request or online.</span>
+      <span><a href="https://www.linkedin.com/in/juan-andres-baron-baron/" target="_blank" rel="noopener">linkedin.com/in/juan-andres-baron-baron</a></span>
     </div>
   </div>
 
@@ -287,75 +364,84 @@
         tip: "The CV will be downloaded in the selected language.",
         tb_download: "Download PDF", tb_portfolio: "Portfolio",
         role: "Full Stack & DevOps Engineer",
+        st1: "years of experience", st2: "tech certifications", st3: "cloud platforms", st4: "English level",
         h_skills: "Skills", h_langs: "Languages", h_edu: "Education", h_profile: "Profile", h_exp: "Experience", h_proj: "Selected Projects",
-        sg_backend: "Backend", sg_frontend: "Frontend & Mobile", sg_cloud: "Cloud & DevOps", sg_data: "Data & AI",
+        sg_backend: "Backend", sg_frontend: "Frontend & Mobile", sg_cloud: "Cloud & DevOps", sg_data: "Data, AI & Enterprise", sg_tools: "Tools & Methods",
         lang_en: "English", lang_es: "Spanish", lang_fr: "French",
         tag_pro: "C1 · Professional", tag_native: "Native", tag_learning: "Learning",
         edu1_t: "B.Sc. Software Engineering", edu2_t: "Specialization in Python", edu2_d: "Dec 2023",
+        edu3_t: "100+ Technology Certifications", edu3_s: "Continuous learning — development, cloud, DevOps & AI", edu3_d: "ongoing",
         profile_p: "Full Stack & DevOps Engineer with over 5 years of experience designing, building and scaling high-performance applications for global markets. I bridge robust backend architectures, dynamic frontends, cloud infrastructure, SAP service software and AI implementation to deliver end-to-end solutions that drive digital transformation. Backed by a University of Michigan specialization, I bring a deeply analytical, cloud-native approach to full-stack development, intelligent automation and system resilience.",
-        job1_t: "Software Engineering", job1_date: "Jul 2021 — Present",
-        job1_li1: "Manage the end-to-end software development lifecycle, from architecture design to production deployment, leveraging AI to optimize engineering workflows.",
+        job1_t: "Software Engineer", job1_date: "Jul 2021 — Present",
+        job1_li1: "Own the end-to-end software development lifecycle, from architecture design to production deployment, leveraging AI to optimize engineering workflows.",
         job1_li2: "Design and develop scalable full-stack applications, ensuring high performance and a seamless user experience.",
-        job1_li3: "Configure, optimize and maintain servers and cloud environments (DevOps & infrastructure).",
-        job1_li4: "Set up and automate CI/CD pipelines to streamline delivery workflows.",
+        job1_li3: "Configure, optimize and maintain servers and cloud environments across AWS, Azure and GCP (DevOps & infrastructure).",
+        job1_li4: "Build and automate CI/CD pipelines that shorten delivery cycles and reduce release risk.",
         job1_li5: "Implement and integrate AI solutions to automate complex workflows, and develop software for SAP service implementations.",
         job2_t: "Full Stack Developer", job2_date: "Jan 2021 — Jun 2021",
-        job2_li1: "Updated system modules based on business requirements.",
-        job2_li2: "Maintained the system, monitoring and resolving potential errors.",
-        job2_li3: "Supported the creation of new modules to automate company processes.",
-        proj1_d: "Conversational AI voice-agent platform",
+        job2_li1: "Updated system modules based on evolving business requirements.",
+        job2_li2: "Maintained the platform, monitoring and resolving potential errors.",
+        job2_li3: "Built new modules to automate internal company processes.",
+        proj1_d: "Conversational AI voice-agent platform — LLM + voice tech",
         proj2_d: "Immersive scroll-driven law-firm website",
-        proj3_d: "Conversion-focused marketing website",
+        proj3_d: "Conversion-focused marketing website (US market)",
+        foot_l: "Portfolio & live projects — links available on request or online.",
       },
       es: {
         title: "Juan Andres Baron Baron - CV",
         tip: "El CV se descargará en el idioma seleccionado.",
         tb_download: "Descargar PDF", tb_portfolio: "Portafolio",
         role: "Ingeniero Full Stack & DevOps",
+        st1: "años de experiencia", st2: "certificaciones tech", st3: "plataformas cloud", st4: "nivel de inglés",
         h_skills: "Habilidades", h_langs: "Idiomas", h_edu: "Educación", h_profile: "Perfil", h_exp: "Experiencia", h_proj: "Proyectos destacados",
-        sg_backend: "Backend", sg_frontend: "Frontend y Móvil", sg_cloud: "Cloud y DevOps", sg_data: "Datos e IA",
+        sg_backend: "Backend", sg_frontend: "Frontend y Móvil", sg_cloud: "Cloud y DevOps", sg_data: "Datos, IA y Enterprise", sg_tools: "Herramientas y métodos",
         lang_en: "Inglés", lang_es: "Español", lang_fr: "Francés",
         tag_pro: "C1 · Profesional", tag_native: "Nativo", tag_learning: "Aprendiendo",
         edu1_t: "Ing. de Software (Pregrado)", edu2_t: "Especialización en Python", edu2_d: "Dic 2023",
+        edu3_t: "Más de 100 certificaciones en tecnología", edu3_s: "Aprendizaje continuo — desarrollo, cloud, DevOps e IA", edu3_d: "en curso",
         profile_p: "Ingeniero Full Stack & DevOps con más de 5 años de experiencia diseñando, construyendo y escalando aplicaciones de alto rendimiento para mercados globales. Uno arquitecturas backend robustas, frontends dinámicos, infraestructura cloud, software de servicios SAP e implementación de IA para entregar soluciones de extremo a extremo que impulsan la transformación digital. Respaldado por una especialización de la Universidad de Michigan, aporto un enfoque profundamente analítico y cloud-native al desarrollo full-stack, la automatización inteligente y la resiliencia de sistemas.",
-        job1_t: "Ingeniería de Software", job1_date: "Jul 2021 — Actualidad",
+        job1_t: "Ingeniero de Software", job1_date: "Jul 2021 — Actualidad",
         job1_li1: "Gestiono el ciclo de vida completo del software, desde el diseño de arquitectura hasta el despliegue en producción, usando IA para optimizar los flujos de ingeniería.",
         job1_li2: "Diseño y desarrollo aplicaciones full-stack escalables, garantizando alto rendimiento y una experiencia de usuario fluida.",
-        job1_li3: "Configuro, optimizo y mantengo servidores y entornos cloud (DevOps e infraestructura).",
-        job1_li4: "Configuro y automatizo pipelines CI/CD para agilizar los flujos de entrega.",
+        job1_li3: "Configuro, optimizo y mantengo servidores y entornos cloud en AWS, Azure y GCP (DevOps e infraestructura).",
+        job1_li4: "Construyo y automatizo pipelines CI/CD que acortan los ciclos de entrega y reducen el riesgo de cada release.",
         job1_li5: "Implemento e integro soluciones de IA para automatizar flujos complejos, y desarrollo software para implementaciones de servicios SAP.",
         job2_t: "Desarrollador Full Stack", job2_date: "Ene 2021 — Jun 2021",
-        job2_li1: "Actualicé módulos del sistema según los requisitos del negocio.",
-        job2_li2: "Mantuve el sistema, monitoreando y resolviendo posibles errores.",
-        job2_li3: "Apoyé la creación de nuevos módulos para automatizar procesos de la empresa.",
-        proj1_d: "Plataforma de agente de voz con IA conversacional",
+        job2_li1: "Actualicé módulos del sistema según la evolución de los requisitos del negocio.",
+        job2_li2: "Mantuve la plataforma, monitoreando y resolviendo posibles errores.",
+        job2_li3: "Construí nuevos módulos para automatizar procesos internos de la empresa.",
+        proj1_d: "Plataforma de agente de voz con IA conversacional — LLM + voz",
         proj2_d: "Sitio web inmersivo para firma de abogados",
-        proj3_d: "Sitio de marketing enfocado en conversión",
+        proj3_d: "Sitio de marketing enfocado en conversión (mercado de EE. UU.)",
+        foot_l: "Portafolio y proyectos en producción — enlaces disponibles en línea o a solicitud.",
       },
       fr: {
         title: "Juan Andres Baron Baron - CV",
         tip: "Le CV sera téléchargé dans la langue sélectionnée.",
         tb_download: "Télécharger le PDF", tb_portfolio: "Portfolio",
         role: "Ingénieur Full Stack & DevOps",
+        st1: "années d'expérience", st2: "certifications tech", st3: "plateformes cloud", st4: "niveau d'anglais",
         h_skills: "Compétences", h_langs: "Langues", h_edu: "Formation", h_profile: "Profil", h_exp: "Expérience", h_proj: "Projets sélectionnés",
-        sg_backend: "Backend", sg_frontend: "Frontend & Mobile", sg_cloud: "Cloud & DevOps", sg_data: "Données & IA",
+        sg_backend: "Backend", sg_frontend: "Frontend & Mobile", sg_cloud: "Cloud & DevOps", sg_data: "Données, IA & Enterprise", sg_tools: "Outils & méthodes",
         lang_en: "Anglais", lang_es: "Espagnol", lang_fr: "Français",
         tag_pro: "C1 · Professionnel", tag_native: "Natif", tag_learning: "En cours",
         edu1_t: "Licence en ingénierie logicielle", edu2_t: "Spécialisation en Python", edu2_d: "Déc. 2023",
+        edu3_t: "Plus de 100 certifications technologiques", edu3_s: "Apprentissage continu — développement, cloud, DevOps & IA", edu3_d: "en continu",
         profile_p: "Ingénieur Full Stack & DevOps avec plus de 5 ans d'expérience dans la conception, le développement et la mise à l'échelle d'applications haute performance pour des marchés mondiaux. Je relie des architectures backend robustes, des frontends dynamiques, une infrastructure cloud, des logiciels de service SAP et l'implémentation d'IA pour livrer des solutions de bout en bout qui génèrent la transformation digitale. Fort d'une spécialisation de l'Université du Michigan, j'apporte une approche profondément analytique et cloud-native au développement full-stack, à l'automatisation intelligente et à la résilience des systèmes.",
-        job1_t: "Ingénierie logicielle", job1_date: "Juil. 2021 — Présent",
+        job1_t: "Ingénieur logiciel", job1_date: "Juil. 2021 — Présent",
         job1_li1: "Je gère le cycle de vie complet du logiciel, de la conception de l'architecture au déploiement en production, en exploitant l'IA pour optimiser les workflows d'ingénierie.",
         job1_li2: "Je conçois et développe des applications full-stack évolutives, garantissant haute performance et expérience utilisateur fluide.",
-        job1_li3: "Je configure, optimise et maintiens des serveurs et des environnements cloud (DevOps & infrastructure).",
-        job1_li4: "Je mets en place et automatise des pipelines CI/CD pour fluidifier les livraisons.",
+        job1_li3: "Je configure, optimise et maintiens des serveurs et environnements cloud sur AWS, Azure et GCP (DevOps & infrastructure).",
+        job1_li4: "Je construis et automatise des pipelines CI/CD qui raccourcissent les cycles de livraison et réduisent les risques de release.",
         job1_li5: "J'implémente et intègre des solutions d'IA pour automatiser des workflows complexes, et je développe des logiciels pour des implémentations de services SAP.",
         job2_t: "Développeur Full Stack", job2_date: "Janv. 2021 — Juin 2021",
-        job2_li1: "Mise à jour des modules du système selon les besoins métier.",
-        job2_li2: "Maintenance du système, surveillance et résolution des erreurs potentielles.",
-        job2_li3: "Soutien à la création de nouveaux modules pour automatiser les processus de l'entreprise.",
-        proj1_d: "Plateforme d'agent vocal à IA conversationnelle",
+        job2_li1: "Mise à jour des modules du système selon l'évolution des besoins métier.",
+        job2_li2: "Maintenance de la plateforme, surveillance et résolution des erreurs potentielles.",
+        job2_li3: "Création de nouveaux modules pour automatiser les processus internes de l'entreprise.",
+        proj1_d: "Plateforme d'agent vocal à IA conversationnelle — LLM + voix",
         proj2_d: "Site web immersif pour cabinet d'avocats",
-        proj3_d: "Site marketing axé sur la conversion",
+        proj3_d: "Site marketing axé conversion (marché américain)",
+        foot_l: "Portfolio et projets en production — liens disponibles en ligne ou sur demande.",
       },
     };
 
