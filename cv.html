@@ -173,7 +173,7 @@
        lower it if content ever threatens to spill onto a second page. ===== */
     @page { size: A4; margin: 9mm 10mm; }
     @media print {
-      :root { --pk: 1.03; }
+      :root { --pk: 1.01; }
       html, body { background: #fff; }
       body { padding: 0; font-size: calc(8.7pt * var(--pk)); line-height: 1.5; }
       .toolbar { display: none !important; }
@@ -181,13 +181,13 @@
       .sheet-band { height: calc(3pt * var(--pk)); }
 
       /* header */
-      .head { padding: 0 0 calc(9pt * var(--pk)); background: none; border-bottom-width: 0.75pt; }
+      .head { padding: calc(8pt * var(--pk)) 0 calc(11pt * var(--pk)); background: none; border-bottom-width: 0.75pt; }
       .head-top { gap: calc(12pt * var(--pk)); }
       .name { font-size: calc(20pt * var(--pk)); line-height: 1.04; }
-      .role { font-size: calc(8.6pt * var(--pk)); margin-top: calc(3.4pt * var(--pk)); }
+      .role { font-size: calc(8.6pt * var(--pk)); margin-top: calc(6.5pt * var(--pk)); }
       .mono-mark { width: calc(31pt * var(--pk)); height: calc(31pt * var(--pk)); border-radius: calc(7pt * var(--pk)); border-width: 1pt; }
       .mono-mark svg { width: calc(17pt * var(--pk)); height: calc(17pt * var(--pk)); }
-      .contacts { gap: calc(3.4pt * var(--pk)) calc(4.4pt * var(--pk)); margin-top: calc(7.5pt * var(--pk)); }
+      .contacts { gap: calc(4.6pt * var(--pk)) calc(4.4pt * var(--pk)); margin-top: calc(11pt * var(--pk)); }
       .contacts a, .contacts span { font-size: calc(6.9pt * var(--pk)); padding: calc(2.9pt * var(--pk)) calc(6.4pt * var(--pk)); gap: calc(4pt * var(--pk)); background: #fff; border-width: 0.6pt; }
       .contacts svg { width: calc(7.6pt * var(--pk)); height: calc(7.6pt * var(--pk)); }
 
