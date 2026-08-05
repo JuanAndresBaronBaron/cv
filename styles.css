@@ -298,6 +298,7 @@ body {
 .menu-overlay.is-open .menu-link:nth-child(5) { transition-delay: 0.25s; }
 .menu-overlay.is-open .menu-link:nth-child(6) { transition-delay: 0.3s; }
 .menu-overlay.is-open .menu-link:nth-child(7) { transition-delay: 0.35s; }
+.menu-overlay.is-open .menu-link:nth-child(8) { transition-delay: 0.4s; }
 .menu-link span { font-family: var(--font-m); font-size: 0.9rem; color: var(--acc); vertical-align: super; margin-right: 10px; }
 .menu-link:hover { color: var(--txt); }
 .menu-footer { display: flex; flex-direction: column; gap: 6px; font-family: var(--font-m); font-size: 0.8rem; color: var(--txt-dim); }
@@ -408,7 +409,12 @@ section { position: relative; }
   font-size: clamp(2.2rem, 5.6vw, 4.6rem); line-height: 1.04;
   margin-bottom: clamp(36px, 6vh, 72px);
 }
-[data-reveal] { opacity: 0; transform: translateY(46px); }
+/* Apple-grade entrance: rise + settle + focus-in */
+[data-reveal] { opacity: 0; transform: translateY(44px) scale(0.986); filter: blur(9px); }
+
+/* word-mask reveal for the big section titles */
+[data-title-split] .tw { display: inline-block; overflow: hidden; vertical-align: bottom; padding: 0 0.14em 0.14em 0; margin: 0 -0.1em -0.14em 0; }
+[data-title-split] .tw > i { display: inline-block; font-style: normal; }
 
 /* ============================================================
    ABOUT
@@ -589,6 +595,55 @@ section { position: relative; }
 .work-stage-bottom { padding-bottom: clamp(70px, 10vh, 120px); }
 
 /* ============================================================
+   DIALOGUE — twin particle profiles facing each other
+   ============================================================ */
+.duality { background: var(--bg-2); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); overflow: hidden; }
+.duality-head {
+  max-width: 860px; margin: 0 auto;
+  padding: clamp(90px, 14vh, 160px) clamp(20px, 5vw, 72px) 0;
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+}
+.duality-head .sec-title { margin-bottom: clamp(14px, 2.2vh, 24px); }
+.duality-sub { color: var(--txt-dim); font-weight: 300; font-size: clamp(0.95rem, 1.3vw, 1.06rem); max-width: 620px; }
+
+.duality-stage {
+  position: relative;
+  height: clamp(300px, 48vh, 540px);
+  margin: clamp(18px, 3vh, 40px) 0 clamp(80px, 12vh, 140px);
+}
+#faceCanvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+/* the connection glow that blooms when the two profiles meet */
+.duality-stage::after {
+  content: ""; position: absolute; left: 50%; top: 50%;
+  width: 44vmin; height: 44vmin; transform: translate(-50%, -50%);
+  border-radius: 50%; pointer-events: none; z-index: 0;
+  background: radial-gradient(circle, var(--glow), transparent 66%);
+  opacity: 0; transition: opacity 1.2s var(--ease-out);
+}
+.duality-stage.is-met::after { opacity: 0.45; }
+.duality-tag {
+  position: absolute; bottom: 5%; z-index: 2;
+  font-family: var(--font-m); font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--txt-dim); padding: 7px 15px; border-radius: 100px; border: 1px solid var(--line);
+  background: rgba(12, 15, 24, 0.55);
+  background: color-mix(in srgb, var(--panel) 55%, transparent);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  opacity: 0; transform: translateY(14px);
+  transition: opacity .9s var(--ease-out), transform .9s var(--ease-out), color .5s ease, border-color .5s ease;
+}
+.duality-tag-l { left: 23%; }
+.duality-tag-r { right: 23%; }
+.duality-stage.is-met .duality-tag { opacity: 1; transform: translateY(0); }
+.duality-stage.is-met .duality-tag-l { color: var(--acc-3); border-color: rgba(45, 212, 191, 0.45); border-color: color-mix(in srgb, var(--acc-3) 45%, transparent); }
+.duality-stage.is-met .duality-tag-r { color: var(--acc); border-color: rgba(92, 141, 255, 0.45); border-color: color-mix(in srgb, var(--acc) 45%, transparent); }
+
+@media (max-width: 900px) {
+  .duality-stage { height: clamp(230px, 36vh, 340px); }
+  .duality-tag { font-size: 0.6rem; padding: 6px 11px; letter-spacing: 0.13em; }
+  .duality-tag-l { left: 12px; }
+  .duality-tag-r { right: 12px; }
+}
+/* ============================================================
    GIT LOG — experience
    ============================================================ */
 .gitlog { background: var(--bg); }
@@ -737,6 +792,8 @@ section { position: relative; }
 .no-anim .pipe-step { opacity: 1; transform: none; }
 .no-anim .about-photo .photo-veil { display: none; }
 .no-anim .scroll-progress { display: none; }
+.no-anim [data-title-split] .tw > i { transform: none !important; opacity: 1 !important; }
+.no-anim .duality-tag { opacity: 1; transform: none; }
 
 /* ============================================================
    REDUCED MOTION

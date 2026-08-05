@@ -156,7 +156,7 @@
     .sheet-foot a { color: var(--acc); text-decoration: none; }
     .sheet-foot a:hover { text-decoration: underline; }
 
-    @media (max-width: 760px) {
+    @media screen and (max-width: 760px) {
       .body { grid-template-columns: 1fr; }
       .aside { border-right: none; border-bottom: 1px solid var(--line); padding: 28px 28px; }
       .main { padding: 28px; }
@@ -168,24 +168,81 @@
       .toolbar { position: static; justify-content: center; margin-bottom: 24px; }
     }
 
-    /* ===== Print ===== */
-    @page { size: A4; margin: 11mm; }
+    /* ===== Print — one A4 page, sized from a single scale knob =====
+       --pk scales every length below; raise it to fill more of the sheet,
+       lower it if content ever threatens to spill onto a second page. ===== */
+    @page { size: A4; margin: 9mm 10mm; }
     @media print {
-      body { background: #fff; padding: 0; }
+      :root { --pk: 1.03; }
+      html, body { background: #fff; }
+      body { padding: 0; font-size: calc(8.7pt * var(--pk)); line-height: 1.5; }
       .toolbar { display: none !important; }
       .sheet { box-shadow: none; max-width: none; border-radius: 0; animation: none; }
-      .sheet-band { height: 4px; }
-      .head { padding: 6px 0 16px; }
-      .strip div { padding: 10px 8px; }
-      .strip b { font-size: 1.2rem; }
-      .aside { padding: 18px 22px 18px 0; }
-      .main { padding: 18px 0 18px 26px; }
-      .sec { margin-bottom: 20px; }
-      .job { padding-bottom: 16px; }
-      .sheet-foot { padding: 10px 0 0; background: #fff; }
-      .job, .proj, .sec, .edu-item, .skill-group, .lang, .strip { break-inside: avoid; }
+      .sheet-band { height: calc(3pt * var(--pk)); }
+
+      /* header */
+      .head { padding: 0 0 calc(9pt * var(--pk)); background: none; border-bottom-width: 0.75pt; }
+      .head-top { gap: calc(12pt * var(--pk)); }
+      .name { font-size: calc(20pt * var(--pk)); line-height: 1.04; }
+      .role { font-size: calc(8.6pt * var(--pk)); margin-top: calc(3.4pt * var(--pk)); }
+      .mono-mark { width: calc(31pt * var(--pk)); height: calc(31pt * var(--pk)); border-radius: calc(7pt * var(--pk)); border-width: 1pt; }
+      .mono-mark svg { width: calc(17pt * var(--pk)); height: calc(17pt * var(--pk)); }
+      .contacts { gap: calc(3.4pt * var(--pk)) calc(4.4pt * var(--pk)); margin-top: calc(7.5pt * var(--pk)); }
+      .contacts a, .contacts span { font-size: calc(6.9pt * var(--pk)); padding: calc(2.9pt * var(--pk)) calc(6.4pt * var(--pk)); gap: calc(4pt * var(--pk)); background: #fff; border-width: 0.6pt; }
+      .contacts svg { width: calc(7.6pt * var(--pk)); height: calc(7.6pt * var(--pk)); }
+
+      /* quick stats */
+      .strip { border-bottom-width: 0.75pt; }
+      .strip div { padding: calc(6.4pt * var(--pk)) calc(4pt * var(--pk)); border-right-width: 0.6pt; }
+      .strip b { font-size: calc(13pt * var(--pk)); }
+      .strip small { font-size: calc(5.8pt * var(--pk)); letter-spacing: 0.04em; }
+
+      /* two columns */
+      .aside { padding: calc(12pt * var(--pk)) calc(14pt * var(--pk)) calc(12pt * var(--pk)) 0; border-right-width: 0.75pt; }
+      .main { padding: calc(12pt * var(--pk)) 0 calc(12pt * var(--pk)) calc(16pt * var(--pk)); }
+      .sec { margin-bottom: calc(14pt * var(--pk)); }
+      .sec-h { font-size: calc(6.9pt * var(--pk)); letter-spacing: 0.14em; margin-bottom: calc(7.5pt * var(--pk)); gap: calc(6pt * var(--pk)); }
+
+      /* skills */
+      .skill-group { margin-bottom: calc(8.5pt * var(--pk)); }
+      .skill-group b { font-size: calc(7.6pt * var(--pk)); margin-bottom: calc(4.2pt * var(--pk)); }
+      .tags { gap: calc(3.4pt * var(--pk)); }
+      .tags span { font-size: calc(6.6pt * var(--pk)); padding: calc(2.2pt * var(--pk)) calc(5pt * var(--pk)); border-radius: 3pt; border-width: 0.5pt; }
+
+      /* languages */
+      .lang { margin-bottom: calc(7.5pt * var(--pk)); }
+      .lang-row { margin-bottom: calc(3.2pt * var(--pk)); }
+      .lang-row b { font-size: calc(7.8pt * var(--pk)); }
+      .lang-row small { font-size: calc(6.2pt * var(--pk)); }
+      .bar { height: calc(2.8pt * var(--pk)); }
+
+      /* education */
+      .edu-item { margin-bottom: calc(8.5pt * var(--pk)); padding-left: calc(7.5pt * var(--pk)); border-left-width: 1.2pt; }
+      .edu-item b { font-size: calc(8pt * var(--pk)); }
+      .edu-item span { font-size: calc(7pt * var(--pk)); margin-top: calc(1pt * var(--pk)); }
+      .edu-item small { font-size: calc(6.2pt * var(--pk)); }
+
+      /* profile · experience · projects */
+      .profile { font-size: calc(8.4pt * var(--pk)); line-height: 1.62; }
+      .job { padding-left: calc(13pt * var(--pk)); padding-bottom: calc(11pt * var(--pk)); border-left-width: 1pt; }
+      .job::before { left: calc(-4pt * var(--pk)); top: calc(2.6pt * var(--pk)); width: calc(7pt * var(--pk)); height: calc(7pt * var(--pk)); box-shadow: 0 0 0 calc(2pt * var(--pk)) rgba(37, 99, 235, 0.14); }
+      .job-title { font-size: calc(9.4pt * var(--pk)); }
+      .job-date { font-size: calc(6.5pt * var(--pk)); padding: calc(1.7pt * var(--pk)) calc(5.4pt * var(--pk)); border-width: 0.5pt; }
+      .job-org { font-size: calc(7.4pt * var(--pk)); margin: calc(2.2pt * var(--pk)) 0 calc(5.4pt * var(--pk)); }
+      .job ul { gap: calc(3.4pt * var(--pk)); }
+      .job li { font-size: calc(7.9pt * var(--pk)); padding-left: calc(9.5pt * var(--pk)); line-height: 1.5; }
+      .job li::before { font-size: calc(6.2pt * var(--pk)); }
+      .proj { padding: calc(5.6pt * var(--pk)) 0; }
+      .proj-l b { font-size: calc(8.2pt * var(--pk)); }
+      .proj-l p { font-size: calc(7.1pt * var(--pk)); margin-top: calc(1pt * var(--pk)); padding-left: calc(10pt * var(--pk)); }
+      .proj-link { font-size: calc(6.5pt * var(--pk)); }
+
+      /* footer note */
+      .sheet-foot { padding: calc(7.5pt * var(--pk)) 0 0; background: #fff; border-top-width: 0.75pt; font-size: calc(6.1pt * var(--pk)); }
+
+      /* never split a block across the fold */
+      .job, .proj, .sec, .edu-item, .skill-group, .lang, .strip, .head { break-inside: avoid; }
       * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-      .contacts a, .contacts span { background: #fff; }
       a { color: var(--ink-soft); }
       .proj-link, .sheet-foot a { color: var(--acc); }
     }

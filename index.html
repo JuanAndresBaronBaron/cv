@@ -42,8 +42,9 @@
       <a href="#about" class="nav-link" data-magnetic><span class="nav-idx">01</span> about</a>
       <a href="#stack" class="nav-link" data-magnetic><span class="nav-idx">02</span> stack</a>
       <a href="#pipeline" class="nav-link" data-magnetic><span class="nav-idx">03</span> pipeline</a>
-      <a href="#work" class="nav-link" data-magnetic><span class="nav-idx">04</span> work</a>
-      <a href="#log" class="nav-link" data-magnetic><span class="nav-idx">05</span> log</a>
+      <a href="#duality" class="nav-link" data-magnetic><span class="nav-idx">04</span> dialogue</a>
+      <a href="#work" class="nav-link" data-magnetic><span class="nav-idx">05</span> work</a>
+      <a href="#log" class="nav-link" data-magnetic><span class="nav-idx">06</span> log</a>
     </nav>
     <div class="nav-right">
       <div class="seg seg-theme" id="themeSeg" role="group" aria-label="Theme">
@@ -78,9 +79,10 @@
       <a href="#about" class="menu-link"><span>01</span> about</a>
       <a href="#stack" class="menu-link"><span>02</span> stack</a>
       <a href="#pipeline" class="menu-link"><span>03</span> pipeline</a>
-      <a href="#work" class="menu-link"><span>04</span> work</a>
-      <a href="#log" class="menu-link"><span>05</span> log</a>
-      <a href="#contact" class="menu-link"><span>06</span> contact</a>
+      <a href="#duality" class="menu-link"><span>04</span> dialogue</a>
+      <a href="#work" class="menu-link"><span>05</span> work</a>
+      <a href="#log" class="menu-link"><span>06</span> log</a>
+      <a href="#contact" class="menu-link"><span>07</span> contact</a>
     </nav>
     <div class="menu-footer">
       <div class="seg seg-lang" role="group" aria-label="Language (mobile)">
@@ -158,7 +160,7 @@
             <h2 class="about-text" id="aboutText" data-i18n="about_text">I design, build and scale high-performance systems — bridging robust backends, dynamic frontends and cloud-native infrastructure into intelligent, end-to-end solutions that drive real digital transformation.</h2>
           </div>
         </div>
-        <div class="stats">
+        <div class="stats" data-reveal>
           <div class="stat"><span class="stat-num"><span class="stat-val" data-to="5">0</span>+</span><p class="stat-label" data-i18n="st1_l">years of experience</p></div>
           <div class="stat"><span class="stat-num"><span class="stat-val" data-to="3">0</span></span><p class="stat-label" data-i18n="st2_l">products live in production</p></div>
           <div class="stat"><span class="stat-num"><span class="stat-val" data-to="100">0</span>+</span><p class="stat-label" data-i18n="st3_l">technology certifications</p></div>
@@ -171,7 +173,7 @@
     <section class="stack" id="stack">
       <div class="wrap">
         <p class="section-label"><span class="sl-num">// 02</span> <span class="sl-cmd">cat stack.json</span></p>
-        <h2 class="sec-title" data-reveal data-i18n="stack_title">Core capabilities</h2>
+        <h2 class="sec-title" data-title-split data-i18n="stack_title">Core capabilities</h2>
         <div class="bento">
           <article class="tile tile-lg" data-reveal>
             <div class="tile-top"><svg class="tile-icon" viewBox="0 0 48 48"><path d="M16 12l-8 12 8 12M32 12l8 12-8 12M27 8l-6 32"/></svg><span class="tile-tag">backend</span></div>
@@ -240,12 +242,25 @@
       </div>
     </section>
 
+    <!-- ===== DIALOGUE (two particle profiles facing each other) ===== -->
+    <section class="duality" id="duality">
+      <div class="duality-head">
+        <p class="section-label"><span class="sl-num">// 04</span> <span class="sl-cmd">open --dialogue</span></p>
+        <h2 class="sec-title" data-title-split data-i18n="duality_title">Built in dialogue</h2>
+        <p class="duality-sub" data-reveal data-i18n="duality_p">Great systems are never built alone. I work in close dialogue with teams and clients — turning perspectives into architecture, and architecture into products that ship.</p>
+      </div>
+      <div class="duality-stage">
+        <canvas id="faceCanvas" aria-hidden="true"></canvas>
+        <span class="duality-tag duality-tag-l" data-i18n="duality_l">listen</span>
+        <span class="duality-tag duality-tag-r" data-i18n="duality_r">build</span>
+      </div>
+    </section>
     <!-- ===== WORK (horizontal scrollmation) ===== -->
     <section class="work" id="work">
       <div class="work-head">
         <div>
-          <p class="section-label"><span class="sl-num">// 04</span> <span class="sl-cmd">ls ./projects</span></p>
-          <h2 class="sec-title" data-i18n="work_title">Shipped to production</h2>
+          <p class="section-label"><span class="sl-num">// 05</span> <span class="sl-cmd">ls ./projects</span></p>
+          <h2 class="sec-title" data-title-split data-i18n="work_title">Shipped to production</h2>
         </div>
         <span class="work-hint"><span data-i18n="work_hint">scroll to explore</span><svg viewBox="0 0 30 12"><path d="M0 6h26M21 1l6 5-6 5"/></svg></span>
       </div>
@@ -313,8 +328,8 @@
     <!-- ===== GIT LOG ===== -->
     <section class="gitlog" id="log">
       <div class="wrap">
-        <p class="section-label"><span class="sl-num">// 05</span> <span class="sl-cmd">git log --oneline</span></p>
-        <h2 class="sec-title" data-reveal data-i18n="log_title">My commit history</h2>
+        <p class="section-label"><span class="sl-num">// 06</span> <span class="sl-cmd">git log --oneline</span></p>
+        <h2 class="sec-title" data-title-split data-i18n="log_title">My commit history</h2>
 
         <div class="commits">
           <span class="commits-line"><i id="commitsFill"></i></span>
@@ -371,7 +386,7 @@
     <!-- ===== CONTACT ===== -->
     <section class="contact" id="contact">
       <div class="wrap">
-        <p class="section-label"><span class="sl-num">// 06</span> <span class="sl-cmd">contact --now</span></p>
+        <p class="section-label"><span class="sl-num">// 07</span> <span class="sl-cmd">contact --now</span></p>
         <p class="contact-avail"><span class="avail-dot"></span><span data-i18n="contact_avail">Available for work</span></p>
         <h2 class="contact-title" data-reveal data-i18n="contact_title">Let's build something.</h2>
         <p class="contact-sub" data-reveal data-i18n="contact_sub">Available for full-stack, DevOps and AI engineering work. Reach out — I usually reply within a day.</p>

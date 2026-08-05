@@ -45,6 +45,9 @@ const I18N = {
     p4: "Continuous delivery to resilient cloud environments.",
     p5: "Observe, optimize and automate with AI in the loop.",
     work_title: "Shipped to production", work_hint: "scroll to explore", open: "open",
+    duality_title: "Built in dialogue",
+    duality_p: "Great systems are never built alone. I work in close dialogue with teams and clients — turning perspectives into architecture, and architecture into products that ship.",
+    duality_l: "listen", duality_r: "build",
     r1_p: "A conversational AI voice-agent platform — intelligent, automated phone interactions powered by modern LLM and voice technology.",
     r2_p: "An immersive, scroll-driven website for a Colombian law firm — animated canvas, smooth scrolling and a premium motion design system.",
     r3_p: "A modern marketing site for a US remodeling company — clean, conversion-focused design that showcases services and drives leads.",
@@ -85,6 +88,9 @@ const I18N = {
     p4: "Entrega continua a entornos cloud resilientes.",
     p5: "Observa, optimiza y automatiza con IA en el ciclo.",
     work_title: "En producción", work_hint: "desliza para explorar", open: "abrir",
+    duality_title: "Construido en diálogo",
+    duality_p: "Los grandes sistemas nunca se construyen en soledad. Trabajo en diálogo cercano con equipos y clientes — convirtiendo perspectivas en arquitectura, y la arquitectura en productos que salen a producción.",
+    duality_l: "escuchar", duality_r: "construir",
     r1_p: "Una plataforma de agente de voz con IA conversacional — interacciones telefónicas inteligentes y automatizadas con LLM y tecnología de voz moderna.",
     r2_p: "Un sitio web inmersivo y guiado por scroll para una firma de abogados colombiana — canvas animado, scroll suave y un sistema de animación premium.",
     r3_p: "Un sitio de marketing moderno para una empresa de remodelación en EE. UU. — diseño limpio enfocado en conversión que muestra servicios y genera clientes.",
@@ -125,6 +131,9 @@ const I18N = {
     p4: "Livraison continue vers des environnements cloud résilients.",
     p5: "Observer, optimiser et automatiser avec l'IA dans la boucle.",
     work_title: "En production", work_hint: "défilez pour explorer", open: "ouvrir",
+    duality_title: "Construit en dialogue",
+    duality_p: "Les grands systèmes ne se construisent jamais seuls. Je travaille en dialogue étroit avec les équipes et les clients — en transformant les perspectives en architecture, et l'architecture en produits livrés.",
+    duality_l: "écouter", duality_r: "construire",
     r1_p: "Une plateforme d'agent vocal à IA conversationnelle — des interactions téléphoniques intelligentes et automatisées via LLM et technologie vocale moderne.",
     r2_p: "Un site web immersif piloté au scroll pour un cabinet d'avocats colombien — canvas animé, défilement fluide et un système d'animation premium.",
     r3_p: "Un site marketing moderne pour une entreprise de rénovation aux États-Unis — un design épuré axé conversion qui met en valeur les services et génère des leads.",
@@ -186,6 +195,28 @@ function buildAbout() {
 }
 
 /* ============================================================
+   TITLES — Apple-style word-mask reveal (rebuilt per language)
+   ============================================================ */
+const titleTweens = [];
+function buildTitles() {
+  titleTweens.forEach((t) => { if (t.scrollTrigger) t.scrollTrigger.kill(); t.kill(); });
+  titleTweens.length = 0;
+  document.querySelectorAll("[data-title-split]").forEach((el) => {
+    const text = el.textContent.trim();
+    el.setAttribute("aria-label", text);
+    el.innerHTML = text.split(/[ \t\r\n]+/).filter(Boolean)
+      .map((w) => '<span class="tw"><i>' + w + "</i></span>").join(" ");
+    const inners = el.querySelectorAll(".tw > i");
+    if (prefersReduced) { gsap.set(inners, { yPercent: 0, opacity: 1 }); return; }
+    gsap.set(inners, { yPercent: 110, opacity: 0 });
+    titleTweens.push(gsap.to(inners, {
+      yPercent: 0, opacity: 1, duration: 1.05, ease: "power4.out", stagger: 0.07,
+      scrollTrigger: { trigger: el, start: "top 86%", once: true },
+    }));
+  });
+}
+
+/* ============================================================
    I18N apply
    ============================================================ */
 function applyLang(lang) {
@@ -199,6 +230,7 @@ function applyLang(lang) {
   localStorage.setItem("jb-lang", lang);
   document.querySelectorAll("[data-lang-set]").forEach((b) => b.classList.toggle("is-active", b.dataset.langSet === lang));
   buildAbout();
+  buildTitles();
   if (window.ScrollTrigger) ScrollTrigger.refresh();
 }
 
@@ -322,8 +354,14 @@ function startLoader() {
     }, "+=0.15")
     .add(heroIntro, "-=0.55");
 }
-window.addEventListener("load", startLoader);
-if (document.readyState === "complete") startLoader();
+/* Boot exactly once, and never wait on a stalled font/CDN: whichever of
+   window.load / DOM-ready+1.2s / a 3s hard stop happens first wins. */
+let booted = false;
+function bootOnce() { if (booted) return; booted = true; startLoader(); }
+window.addEventListener("load", bootOnce);
+document.addEventListener("DOMContentLoaded", () => setTimeout(bootOnce, 1200));
+setTimeout(bootOnce, 3000);
+if (document.readyState === "complete") bootOnce();
 
 /* ============================================================
    NAV behavior + controls
@@ -476,6 +514,9 @@ safe(function heroGL() {
   scene.add(group);
 
   function readColors() {
+    const light = document.documentElement.getAttribute("data-theme") === "light";
+    mat.blending = mat2.blending = light ? THREE.NormalBlending : THREE.AdditiveBlending;
+    mat.needsUpdate = mat2.needsUpdate = true;
     mat.color.set(cssVar(canvas, "--gl") || "#5C8DFF");
     mat2.color.set(cssVar(canvas, "--gl-2") || "#36BFFA");
   }
@@ -542,9 +583,310 @@ safe(function heroGL() {
 
 /* hero parallax exit (Apple) */
 if (!prefersReduced) {
-  gsap.to("#heroInner", { yPercent: -18, opacity: 0.15, ease: "none", scrollTrigger: { trigger: "#hero", start: "top top", end: "bottom top", scrub: true } });
+  gsap.to("#heroInner", { yPercent: -18, scale: 0.94, opacity: 0.15, ease: "none", scrollTrigger: { trigger: "#hero", start: "top top", end: "bottom top", scrub: true } });
   gsap.to("#heroFoot", { opacity: 0, ease: "none", scrollTrigger: { trigger: "#hero", start: "top top", end: "18% top", scrub: true } });
 }
+
+/* ============================================================
+   DIALOGUE — two disintegrating particle profiles facing each
+   other: a woman (ported from the curriculum-vitae hero) and her
+   mirrored male counterpart. Both keep the signature look — a
+   razor-sharp front edge with the back of the skull scattering
+   into stardust — and a serpentine stream of particles is
+   exchanged between their lips. Scroll draws them together at
+   the centre of the viewport and lets them drift apart again.
+   ============================================================ */
+safe(function dialogueFaces() {
+  const canvas = document.getElementById("faceCanvas");
+  if (!canvas || prefersReduced || typeof THREE === "undefined") { if (canvas) canvas.style.display = "none"; return; }
+  let renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false, powerPreference: "high-performance" });
+  } catch (e) { canvas.style.display = "none"; return; }
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 40);
+  camera.position.z = 3.4;
+
+  /* ================= profile geometry (canvas space, facing right) =========
+     Explicit polylines on classical proportions, so every landmark (radix
+     dip, nose projection, subnasal notch, lips, chin, jaw) is anchored and
+     the silhouette can never go lumpy at particle scale.                  */
+  const SHE_FRONT = [
+    [252, 118], [284, 122], [312, 134], [332, 148], [344, 166], [351, 186], [355, 205], /* crown → forehead → soft brow */
+    [351, 220],                                                                        /* radix dip */
+    [354, 224], [361, 227], [353, 231],                                                /* eyelash flick */
+    [358, 238], [369, 252], [378, 264],                                                /* petite nose → upturned tip */
+    [371, 271], [358, 277],                                                            /* columella in */
+    [355, 281], [356, 286],                                                            /* subnasal notch + short philtrum */
+    [364, 293], [366, 297],                                                            /* upper lip */
+    [357, 302],                                                                        /* lip seam */
+    [364, 308], [365, 314],                                                            /* lower lip */
+    [354, 322], [351, 325],                                                            /* sublabial groove */
+    [357, 335], [358, 344],                                                            /* small chin ball */
+    [345, 350], [322, 353], [302, 354],                                                /* clean horizontal under-jaw */
+    [289, 358],                                                                        /* jaw–neck corner */
+    [282, 374], [279, 398], [277, 428], [276, 455],                                    /* slender neck */
+  ];
+  const SHE_BACK = [
+    [226, 455], [226, 442], [220, 432], [208, 424],                                    /* neck back → nape */
+    [166, 396], [138, 368], [120, 334], [112, 297], [110, 260],                        /* back of skull */
+    [116, 228], [128, 196], [146, 168], [170, 146], [199, 130], [226, 120],            /* crown volume (updo) */
+  ];
+  /* masculine counterpart: sloped forehead, heavy brow ridge, longer straighter
+     nose, thinner lips, square chin, angular low jaw, thicker neck, short hair */
+  const HE_FRONT = [
+    [246, 118], [278, 120], [306, 128], [328, 142], [342, 160], [351, 180],            /* crown → sloped forehead */
+    [357, 199],                                                                        /* heavy brow ridge */
+    [349, 213],                                                                        /* deep radix dip */
+    [355, 222], [367, 238], [379, 253], [387, 265],                                    /* long straight nose → tip */
+    [379, 272], [363, 277],                                                            /* columella */
+    [359, 282], [360, 288],                                                            /* subnasal notch + long philtrum */
+    [367, 295], [368, 298],                                                            /* thin upper lip */
+    [359, 303],                                                                        /* lip seam */
+    [366, 309], [366, 314],                                                            /* thin lower lip */
+    [355, 322], [352, 326],                                                            /* sublabial groove */
+    [359, 337], [360, 350], [357, 361],                                                /* square broad chin */
+    [345, 369], [326, 375], [305, 377],                                                /* angular under-jaw */
+    [290, 374],                                                                        /* gonial angle */
+    [286, 390], [289, 402], [285, 414],                                                /* throat + adam's apple */
+    [283, 440], [282, 470],                                                            /* thicker neck */
+  ];
+  const HE_BACK = [
+    [222, 470], [222, 448], [216, 434], [203, 424],                                    /* neck back → nape */
+    [166, 400], [138, 370], [118, 334], [108, 294], [107, 254],                        /* back of skull */
+    [111, 220], [123, 188], [141, 160], [165, 137], [194, 122], [220, 117],            /* short-hair crown */
+  ];
+
+  const OC_W = 512, OC_H = 640;
+  const oc = document.createElement("canvas"); oc.width = OC_W; oc.height = OC_H;
+  const octx = oc.getContext("2d", { willReadFrequently: true });
+  octx.fillStyle = "#fff"; octx.strokeStyle = "#fff"; octx.lineCap = "round"; octx.lineJoin = "round";
+  function polyPath(pts, close) {
+    const p = new Path2D();
+    p.moveTo(pts[0][0], pts[0][1]);
+    for (let i = 1; i < pts.length; i++) p.lineTo(pts[i][0], pts[i][1]);
+    if (close) p.closePath();
+    return p;
+  }
+  function rasterize(draw) { octx.clearRect(0, 0, OC_W, OC_H); draw(); return octx.getImageData(0, 0, OC_W, OC_H).data; }
+  const alphaAt = (pix, x, y) => pix[((y | 0) * OC_W + (x | 0)) * 4 + 3];
+
+  /* canvas → local world */
+  const K = 0.0040, CCX = 262, CCY = 292;
+  const OFF = 0.84;                 /* half the resting distance between heads */
+  const PAIR_W = 2 * OFF + 1.24, HEAD_H = 1.42;
+  const HUE_HE = 0, HUE_SHE = 1, HUE_LINK = 2;
+  const K_BODY = 0, K_STREAM = 1;
+
+  /* ================= particle store ================= */
+  const bx = [], by = [], bz = [], side = [], backW = [], phase = [], bright = [], hue = [], kind = [], sdir = [];
+  const rnd = (a) => (Math.random() - 0.5) * a;
+  function push(x, y, z, sd, b, br, h, k, dir) {
+    bx.push(x); by.push(y); bz.push(z); side.push(sd); backW.push(b);
+    phase.push(Math.random()); bright.push(br); hue.push(h); kind.push(k); sdir.push(dir || 0);
+  }
+
+  /* density scales with the canvas area so phones stay smooth */
+  const area = (canvas.clientWidth || innerWidth) * (canvas.clientHeight || 420);
+  const DENS = clamp(area / 620000, 0.42, 1);
+
+  function buildFigure(front, back, mirror, sideSign, hueSel) {
+    const headPix = rasterize(() => octx.fill(polyPath(front.concat(back), true)));
+    const edgePix = rasterize(() => { octx.lineWidth = 5; octx.stroke(polyPath(front, false)); });
+    const W = (cx, cy) => [(mirror ? CCX - cx : cx - CCX) * K, (CCY - cy) * K];
+    const frontness = (cx) => clamp((cx - 145) / 215, 0, 1);
+    const bodyN = Math.round(5200 * DENS), edgeN = Math.round(680 * DENS);
+    /* body: near-solid at the face, disintegrating toward the back */
+    let tries = 0;
+    for (let n = 0; n < bodyN && tries < bodyN * 70; tries++) {
+      const cx = Math.random() * OC_W, cy = Math.random() * OC_H;
+      if (alphaAt(headPix, cx, cy) < 40) continue;
+      const f = frontness(cx);
+      if (Math.random() > 0.05 + 0.95 * Math.pow(f, 1.15)) continue;
+      const b = 1 - f;
+      let [x, y] = W(cx, cy);
+      let br = (0.45 + 0.55 * f) * (0.75 + Math.random() * 0.25);
+      if (Math.random() < b * 0.75) {
+        /* torn-off fragment: flies outward, away from the gap, dimming */
+        const dist = Math.pow(Math.random(), 1.6) * 1.1 * b;
+        x += sideSign * dist;
+        y += rnd(0.55) * dist;
+        br *= Math.max(0.15, 1 - dist * 0.55);
+      }
+      push(x, y, rnd(0.05), sideSign, b, br, hueSel, K_BODY);
+      n++;
+    }
+    /* razor-sharp front edge */
+    tries = 0;
+    for (let n = 0; n < edgeN && tries < edgeN * 260; tries++) {
+      const cx = Math.random() * OC_W, cy = Math.random() * OC_H;
+      if (alphaAt(edgePix, cx, cy) < 40) continue;
+      const e = W(cx, cy);
+      push(e[0], e[1], rnd(0.02), sideSign, 0, 0.9 + Math.random() * 0.1, hueSel, K_BODY);
+      n++;
+    }
+  }
+  buildFigure(SHE_FRONT, SHE_BACK, false, -1, HUE_SHE);   /* left, facing right  */
+  buildFigure(HE_FRONT, HE_BACK, true, 1, HUE_HE);        /* right, facing left  */
+
+  /* the exchange — particles travelling between their lips, both ways */
+  const LIP_SHE = [(357 - CCX) * K, (CCY - 302) * K];
+  const LIP_HE = [(CCX - 359) * K, (CCY - 303) * K];
+  const STREAM_N = Math.round(1700 * DENS);
+  for (let i = 0; i < STREAM_N; i++) {
+    push(0, 0, 0, 0, 0, 1, HUE_LINK, K_STREAM, Math.random() < 0.5 ? 1 : -1);
+  }
+
+  const N = bx.length;
+  /* stream seeds, independent of the along-path phase so the ribbon has real
+     thickness instead of collapsing into a single-valued curve */
+  const sAmp = new Float32Array(N), sLat = new Float32Array(N), sRate = new Float32Array(N), sZ = new Float32Array(N);
+  for (let i = 0; i < N; i++) {
+    if (kind[i] !== K_STREAM) continue;
+    sAmp[i] = 0.45 + Math.random() * 1.1;
+    sLat[i] = Math.random() - 0.5;
+    sRate[i] = 0.7 + Math.random() * 0.6;
+    sZ[i] = Math.random() - 0.5;
+  }
+  /* stardust targets for the scroll dissolve — kept in each figure's own local
+     space so a head scatters around itself rather than toward the scene centre */
+  const scat = new Float32Array(N * 3);
+  for (let i = 0; i < N; i++) {
+    const r = 0.5 + Math.random() * 0.9, th = Math.random() * Math.PI * 2, ph = Math.acos(2 * Math.random() - 1);
+    scat[i * 3] = r * Math.sin(ph) * Math.cos(th);
+    scat[i * 3 + 1] = r * Math.sin(ph) * Math.sin(th);
+    scat[i * 3 + 2] = r * Math.cos(ph) * 0.4;
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute("position", new THREE.BufferAttribute(new Float32Array(N * 3), 3));
+  geo.setAttribute("color", new THREE.BufferAttribute(new Float32Array(N * 4), 4));
+  const mat = new THREE.PointsMaterial({ size: 0.013, vertexColors: true, transparent: true, opacity: 0.95, depthWrite: false, blending: THREE.AdditiveBlending });
+  const group = new THREE.Group();
+  group.add(new THREE.Points(geo, mat));
+  scene.add(group);
+
+  /* theme-aware palette, painted per particle */
+  const COLS = [new THREE.Color("#5C8DFF"), new THREE.Color("#2DD4BF"), new THREE.Color("#36BFFA")];
+  const col = geo.attributes.color.array;
+  /* the light theme needs denser ink to read against white paper */
+  let bScale = 1;
+  function paint(i, b) {
+    const c = COLS[hue[i]];
+    col[i * 4] = c.r; col[i * 4 + 1] = c.g; col[i * 4 + 2] = c.b;
+    col[i * 4 + 3] = Math.min(1, b * bScale);
+  }
+  function readColors() {
+    const light = document.documentElement.getAttribute("data-theme") === "light";
+    bScale = light ? 1.5 : 1;
+    mat.blending = light ? THREE.NormalBlending : THREE.AdditiveBlending;
+    mat.needsUpdate = true;
+    COLS[HUE_HE].set(cssVar(canvas, "--gl") || "#5C8DFF");
+    COLS[HUE_SHE].set(cssVar(canvas, "--acc-3") || "#2DD4BF");
+    COLS[HUE_LINK].set(cssVar(canvas, "--gl-2") || "#36BFFA");
+    for (let i = 0; i < N; i++) paint(i, bright[i]);
+    geo.attributes.color.needsUpdate = true;
+  }
+  readColors();
+  themeRefreshers.push(readColors);
+
+  /* ================= scroll response, measured from the canvas itself =======
+     Deliberately not ScrollTrigger: this section lives behind two pinned
+     sections whose inserted scroll distance made cached trigger positions go
+     stale, which pinned the dissolve at full scatter on screen. Reading the
+     rect each frame is always truthful.
+     Returns 0 when the stage is centred in the viewport and 1 when it has just
+     left it; -1 means off screen entirely (skip the frame).               */
+  const stage = document.querySelector(".duality-stage");
+  function stageOffset() {
+    const r = canvas.getBoundingClientRect();
+    const vh = innerHeight || 1;
+    if (r.bottom < -40 || r.top > vh + 40) return -1;
+    const centre = r.top + r.height / 2;
+    return clamp(Math.abs(centre - vh / 2) / (vh / 2 + r.height / 2), 0, 1);
+  }
+  let metState = false;
+
+  function layout(w, h) {
+    const viewH = 2 * camera.position.z * Math.tan((camera.fov * Math.PI) / 360);
+    const viewW = viewH * (w / Math.max(1, h));
+    group.scale.setScalar(Math.min((viewW * 0.88) / PAIR_W, (viewH * 0.84) / HEAD_H));
+  }
+  function resize() {
+    const w = canvas.clientWidth || innerWidth, h = canvas.clientHeight || 420;
+    renderer.setSize(w, h, false);
+    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    layout(w, h);
+  }
+  resize();
+  window.addEventListener("resize", resize);
+  window.addEventListener("load", () => setTimeout(resize, 400));
+
+  let awake = true;
+  document.addEventListener("visibilitychange", () => { awake = !document.hidden; });
+
+  const mouse2 = { x: 0 };
+  window.addEventListener("mousemove", (e) => { mouse2.x = (e.clientX / innerWidth - 0.5) * 2; });
+
+  /* ================= render ================= */
+  const pos = geo.attributes.position;
+  renderer.setAnimationLoop((time) => {
+    if (!awake) return;
+    const off = stageOffset();
+    if (off < 0) return;                     /* off screen — nothing to draw */
+    const t = time * 0.001;
+    const spread = Math.pow(off, 1.4);       /* 0 = met, 1 = apart */
+    const met = off < 0.42;
+    if (met !== metState) { metState = met; if (stage) stage.classList.toggle("is-met", met); }
+    const O = OFF + spread * 0.42;
+    const glow = 1 - spread;
+    const dk = clamp((spread - 0.55) / 0.45, 0, 1);
+    const ke = dk * dk * (3 - 2 * dk);          /* smoothstep, as in the hero */
+    const arr = pos.array;
+    let colorsDirty = false;
+
+    for (let i = 0; i < N; i++) {
+      let x, y, z = bz[i];
+      if (kind[i] === K_STREAM) {
+        /* serpentine exchange: fades in at one mouth, out at the other */
+        const u = (t * 0.055 * sRate[i] + phase[i]) % 1;
+        const p = sdir[i] > 0 ? u : 1 - u;
+        const ax = -O + LIP_SHE[0], bxx = O + LIP_HE[0];
+        x = ax + (bxx - ax) * p;
+        /* two gentle shared undulations, spread into a soft luminous ribbon by
+           per-particle amplitude and lateral scatter, tight at both mouths */
+        const env = Math.sin(u * Math.PI);
+        const wave = Math.sin(u * 1.8 + t * 0.5) * 0.07 + Math.sin(u * 1.1 - t * 0.35) * 0.04;
+        y = LIP_SHE[1] + (LIP_HE[1] - LIP_SHE[1]) * p
+          + (wave * sAmp[i] + sLat[i] * 0.1) * env * glow;
+        z = (Math.sin(u * 1.5 + t * 0.45) * 0.04 + sZ[i] * 0.09) * env;
+        paint(i, glow * Math.pow(Math.sin(u * Math.PI), 0.75));
+        colorsDirty = true;
+      } else {
+        const drift = 0.012 + backW[i] * backW[i] * 0.09;
+        let lx = bx[i] + Math.sin(t * 0.3 + phase[i] * 6.28) * drift;
+        let ly = by[i] + Math.cos(t * 0.24 + phase[i] * 4.1) * drift * 0.8;
+        if (ke > 0.001) {
+          lx += (scat[i * 3] - lx) * ke;
+          ly += (scat[i * 3 + 1] - ly) * ke;
+          z += (scat[i * 3 + 2] - z) * ke;
+        }
+        x = lx + side[i] * O;
+        y = ly;
+      }
+      arr[i * 3] = x; arr[i * 3 + 1] = y; arr[i * 3 + 2] = z;
+    }
+    pos.needsUpdate = true;
+    if (colorsDirty) geo.attributes.color.needsUpdate = true;
+
+    /* flat presence: a slow float and a whisper of cursor parallax */
+    group.position.y = Math.sin(t * 0.55) * 0.02;
+    group.position.x = mouse2.x * 0.03;
+    renderer.render(scene, camera);
+  });
+});
 
 /* ============================================================
    TICKER — velocity-reactive marquee
@@ -674,6 +1016,13 @@ safe(() => mm.add("(min-width: 901px) and (prefers-reduced-motion: no-preference
       onUpdate: (self) => gsap.set("#workProgress", { scaleX: self.progress }),
     },
   });
+  /* depth-of-field: panels sharpen as they reach centre stage */
+  gsap.utils.toArray(".panel").forEach((p) => {
+    gsap.fromTo(p, { filter: "blur(6px)", opacity: 0.5 }, {
+      filter: "blur(0px)", opacity: 1, ease: "none",
+      scrollTrigger: { trigger: p, containerAnimation: tween, start: "left right", end: "left center", scrub: true },
+    });
+  });
   /* inner parallax on each art layer while the track moves */
   gsap.utils.toArray(".panel-art .art").forEach((art) => {
     gsap.fromTo(art, { xPercent: -6 }, {
@@ -690,9 +1039,16 @@ safe(() => mm.add("(min-width: 901px) and (prefers-reduced-motion: no-preference
 if (!prefersReduced) {
   gsap.utils.toArray("[data-reveal]").forEach((el, i) => {
     gsap.to(el, {
-      opacity: 1, y: 0, duration: 1.1, ease: "power3.out", delay: (i % 3) * 0.08,
+      opacity: 1, y: 0, scale: 1, filter: "blur(0px)",
+      duration: 1.25, ease: "power3.out", delay: (i % 3) * 0.07,
       scrollTrigger: { trigger: el, start: "top 88%" },
+      onComplete: () => { el.style.filter = "none"; },
     });
+  });
+  /* layered parallax on the portrait (Apple depth) */
+  gsap.to(".about-photo", {
+    yPercent: -9, ease: "none",
+    scrollTrigger: { trigger: "#about", start: "top bottom", end: "bottom top", scrub: true },
   });
   gsap.to("#commitsFill", {
     scaleY: 1, ease: "none",
@@ -703,7 +1059,7 @@ if (!prefersReduced) {
     gsap.from(el, { yPercent: 22, ease: "none", scrollTrigger: { trigger: el, start: "top bottom", end: "top 35%", scrub: true } });
   });
 } else {
-  document.querySelectorAll("[data-reveal]").forEach((el) => { el.style.opacity = 1; el.style.transform = "none"; });
+  document.querySelectorAll("[data-reveal]").forEach((el) => { el.style.opacity = 1; el.style.transform = "none"; el.style.filter = "none"; });
   gsap.set("#commitsFill", { scaleY: 1 });
 }
 document.querySelectorAll(".lang").forEach((el) => {
