@@ -171,11 +171,11 @@
     /* ===== Print — one A4 page, sized from a single scale knob =====
        --pk scales every length below; raise it to fill more of the sheet,
        lower it if content ever threatens to spill onto a second page. ===== */
-    @page { size: A4; margin: 9mm 10mm; }
+    @page { size: A4; margin: 0; }   /* no margin band => no browser header/footer */
     @media print {
       :root { --pk: 1.01; }
       html, body { background: #fff; }
-      body { padding: 0; font-size: calc(8.7pt * var(--pk)); line-height: 1.5; }
+      body { padding: 9mm 10mm; font-size: calc(8.7pt * var(--pk)); line-height: 1.5; }
       .toolbar { display: none !important; }
       .sheet { box-shadow: none; max-width: none; border-radius: 0; animation: none; }
       .sheet-band { height: calc(3pt * var(--pk)); }
