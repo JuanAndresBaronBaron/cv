@@ -239,9 +239,6 @@
         <div class="seg" id="langSeg" role="group">
           <button data-lang="es">ES</button><button data-lang="en">EN</button><button data-lang="fr">FR</button>
         </div>
-        <div class="seg" id="curSeg" role="group">
-          <button data-cur="COP">COP</button><button data-cur="USD">USD</button><button data-cur="EUR">EUR</button>
-        </div>
         <button class="btn btn-primary" onclick="window.print()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg>
           <span id="btnPdf">Descargar PDF</span>
@@ -257,7 +254,6 @@
       <span class="badge"><b></b><span id="badgeTxt">Precios de lanzamiento 2026</span></span>
       <h2 id="leadH"></h2>
       <p id="leadP"></p>
-      <p class="rate-note" id="rateNote"></p>
     </div>
 
     <h3 class="sec"><i>01</i><span id="s1"></span></h3>
@@ -296,7 +292,7 @@
      nadie llegue por accidente, NO un control de acceso. Quien abra el
      código fuente puede leerlo. Para cambiarlo, edita PIN.
      ===================================================================== */
-  var PIN = "2580";
+  /* Los PIN viven en la tabla MARKETS, más abajo. */
 
   /* =====================================================================
      Precios y textos. Cada ítem guarda su valor en COP UNA sola vez y sus
@@ -305,10 +301,22 @@
      ===================================================================== */
   var LOC = { es: "es-CO", en: "en-US", fr: "fr-FR" };
 
-  /* Tasas de referencia: cuántos COP vale 1 unidad de cada moneda.
-     ACTUALÍZALAS de vez en cuando — son indicativas, no en vivo. */
-  var RATES = { COP: 1, USD: 4100, EUR: 4500 };
-  var SYM   = { COP: "$", USD: "US$", EUR: "€" };
+  /* Un PIN por mercado. Cada uno abre su propia lista de precios, su moneda
+     y su idioma inicial. Para cambiar un PIN, edítalo aquí.
+       CO -> Colombia      (COP, español)
+       US -> Estados Unidos (USD, inglés)
+       EU -> Europa         (EUR, francés)                                 */
+  var MARKETS = {
+    "2580": { id: "CO", cur: "COP", lang: "es" },
+    "1776": { id: "US", cur: "USD", lang: "en" },
+    "1957": { id: "EU", cur: "EUR", lang: "fr" }
+  };
+  var SYM = { COP: "$", USD: "US$", EUR: "€" };
+  var CURNAME = {
+    COP: { es: "pesos colombianos (COP)", en: "Colombian pesos (COP)", fr: "pesos colombiens (COP)" },
+    USD: { es: "dólares estadounidenses (USD)", en: "US dollars (USD)", fr: "dollars américains (USD)" },
+    EUR: { es: "euros (EUR)", en: "euros (EUR)", fr: "euros (EUR)" }
+  };
   var UI = {
     title:  { es: "Lista de precios — Desarrollo de software a la medida", en: "Price list — Custom software development", fr: "Liste de prix — Développement de logiciels sur mesure" },
     gateH:  { es: "Contenido privado", en: "Private content", fr: "Contenu privé" },
@@ -333,9 +341,7 @@
     quote: { es: "a cotizar", en: "on request", fr: "sur devis" },
     scope: { es: "según alcance", en: "based on scope", fr: "selon le périmètre" },
     perMonth: { es: " / mes", en: " / month", fr: " / mois" },
-    rateNote: { es: "Precios base en COP. Conversión de referencia: 1 {S} ≈ {R} COP.",
-                en: "Base prices in COP. Reference conversion: 1 {S} ≈ COP {R}.",
-                fr: "Prix de base en COP. Conversion indicative : 1 {S} ≈ {R} COP." },
+
     ctaH: { es: "¿Armamos tu proyecto?", en: "Shall we build your project?", fr: "On construit votre projet ?" },
     ctaP: { es: "Cuéntame qué necesitas y te devuelvo una propuesta con los módulos y el tiempo estimado.",
             en: "Tell me what you need and I'll send back a proposal with the modules and an estimated timeline.",
@@ -350,7 +356,7 @@
   };
 
   var PACKS = [
-    { cop: 650000, from: true,
+    { cop: 650000, intl: 750, from: true,
       t: { es: "Landing Page", en: "Landing Page", fr: "Landing Page" },
       time: { es: "1 a 2 semanas", en: "1 to 2 weeks", fr: "1 à 2 semaines" },
       li: [
@@ -360,7 +366,7 @@
         { es: "SEO básico y analítica", en: "Basic SEO and analytics", fr: "SEO de base et analytique" },
         { es: "Despliegue y dominio configurado", en: "Deployment and domain setup", fr: "Déploiement et domaine configuré" },
         { es: "1 ronda de ajustes", en: "1 round of revisions", fr: "1 série de révisions" } ] },
-    { cop: 1500000, from: true, feat: true,
+    { cop: 1500000, intl: 1900, from: true, feat: true,
       tag: { es: "Más pedido", en: "Most requested", fr: "Le plus demandé" },
       t: { es: "Sitio Web Corporativo", en: "Corporate Website", fr: "Site Web d'Entreprise" },
       time: { es: "3 a 4 semanas", en: "3 to 4 weeks", fr: "3 à 4 semaines" },
@@ -372,7 +378,7 @@
         { es: "SEO, analítica y velocidad", en: "SEO, analytics and speed", fr: "SEO, analytique et vitesse" },
         { es: "Despliegue, dominio y SSL", en: "Deployment, domain and SSL", fr: "Déploiement, domaine et SSL" },
         { es: "2 rondas de ajustes", en: "2 rounds of revisions", fr: "2 séries de révisions" } ] },
-    { cop: 3200000, from: true,
+    { cop: 3200000, intl: 4500, from: true,
       t: { es: "Aplicación a la Medida", en: "Custom Application", fr: "Application sur Mesure" },
       time: { es: "6 a 10 semanas", en: "6 to 10 weeks", fr: "6 à 10 semaines" },
       li: [
@@ -506,28 +512,26 @@
     { b: { es: "Código fuente:", en: "Source code:", fr: "Code source :" },
       t: { es: "se entrega al cliente al finalizar el pago.", en: "handed over to the client once payment is complete.", fr: "remis au client à la fin du paiement." } },
     { b: { es: "Moneda:", en: "Currency:", fr: "Devise :" },
-      t: { es: "los precios base están en pesos colombianos (COP); USD y EUR son conversiones de referencia y se confirman al cotizar.",
-            en: "base prices are in Colombian pesos (COP); USD and EUR are reference conversions, confirmed when quoting.",
-            fr: "les prix de base sont en pesos colombiens (COP) ; USD et EUR sont des conversions indicatives, confirmées au devis." } },
+      cname: true,
+      t: { es: "todos los precios de esta lista están en {C}.", en: "all prices in this list are in {C}.", fr: "tous les prix de cette liste sont en {C}." } },
     { b: { es: "Vigencia:", en: "Validity:", fr: "Validité :" },
       t: { es: "esta lista es válida por 30 días desde su envío.", en: "this list is valid for 30 days from the date it was sent.", fr: "cette liste est valable 30 jours à compter de son envoi." } }
   ];
 
   /* ---------------- render ---------------- */
-  var lang = "es", cur = "COP";
-  /* round so converted amounts look like prices, not like exchange output */
-  function nice(v) {
-    if (v < 100) return Math.round(v);
-    if (v < 1000) return Math.round(v / 5) * 5;
-    return Math.round(v / 10) * 10;
+  var lang = "es", cur = "COP", market = "CO";
+  /* International list: same figure whether billed in USD or EUR. It defaults
+     to the COP amount / 1000, which lands on clean round numbers, and any item
+     can override it with its own "intl" value. */
+  function amount(x) {
+    var it = (typeof x === "number") ? { cop: x } : x;
+    if (market === "CO") return it.cop;
+    return it.intl != null ? it.intl : Math.round(it.cop / 1000);
   }
-  function money(n) {
-    if (cur === "COP") {
-      var s = n.toLocaleString(LOC[lang]);
-      return lang === "es" ? "$" + s : (lang === "en" ? "COP " + s : s + " COP");
-    }
-    var v = nice(n / RATES[cur]).toLocaleString(LOC[lang]);
-    return lang === "fr" ? v + " " + SYM[cur] : SYM[cur] + v;
+  function money(x) {
+    var s = amount(x).toLocaleString(LOC[lang]);
+    if (cur === "COP") return lang === "es" ? "$" + s : (lang === "en" ? "COP " + s : s + " COP");
+    return lang === "fr" ? s + " " + SYM[cur] : SYM[cur] + s;
   }
   function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
   function T(o) { return o ? (o[lang] || o.es) : ""; }
@@ -552,7 +556,7 @@
       return '<div class="pack' + (p.feat ? " feat" : "") + '">'
         + (p.tag ? '<span class="pack-tag">' + esc(T(p.tag)) + "</span>" : "")
         + "<h4>" + esc(T(p.t)) + "</h4>"
-        + '<div class="price">' + (p.from ? "<small>" + esc(T(UI.from)) + "</small>" : "") + esc(money(p.cop)) + "</div>"
+        + '<div class="price">' + (p.from ? "<small>" + esc(T(UI.from)) + "</small>" : "") + esc(money(p)) + "</div>"
         + '<div class="time">⏱ ' + esc(T(p.time)) + "</div><ul>"
         + p.li.map(function (l) { return "<li>" + esc(T(l)) + "</li>"; }).join("")
         + "</ul></div>";
@@ -564,7 +568,7 @@
         + c.rows.map(function (r) {
             var price = r.quote
               ? esc(T(UI.quote)) + "<em>" + esc(T(UI.scope)) + "</em>"
-              : (r.from ? esc(T(UI.from)) + " " : "") + esc(money(r.cop));
+              : (r.from ? esc(T(UI.from)) + " " : "") + esc(money(r));
             return '<tr><td class="m-name">' + esc(T(r.t))
               + (r.d ? "<span>" + esc(T(r.d)) + "</span>" : "")
               + '</td><td class="m-price">' + price + "</td></tr>";
@@ -575,29 +579,16 @@
     /* maintenance plans */
     document.getElementById("plans").innerHTML = PLANS.map(function (p) {
       return '<div class="plan"><b>' + esc(T(p.t)) + "</b>"
-        + '<div class="p">' + esc(money(p.cop)) + "<small>" + esc(T(UI.perMonth)) + "</small></div><ul>"
+        + '<div class="p">' + esc(money(p)) + "<small>" + esc(T(UI.perMonth)) + "</small></div><ul>"
         + p.li.map(function (l) { return "<li>" + esc(T(l)) + "</li>"; }).join("")
         + "</ul></div>";
     }).join("");
 
     /* terms */
     document.getElementById("terms").innerHTML = TERMS.map(function (x) {
-      return "<li><b>" + esc(T(x.b)) + "</b> " + (x.hour ? esc(money(HOUR)) : "") + esc(T(x.t)) + "</li>";
+      var body = x.cname ? T(x.t).replace("{C}", T(CURNAME[cur])) : T(x.t);
+      return "<li><b>" + esc(T(x.b)) + "</b> " + (x.hour ? esc(money(HOUR)) : "") + esc(body) + "</li>";
     }).join("");
-
-    /* reference-rate note, only when not quoting in COP */
-    var note = document.getElementById("rateNote");
-    if (cur === "COP") { note.classList.remove("show"); note.textContent = ""; }
-    else {
-      note.classList.add("show");
-      note.textContent = T(UI.rateNote)
-        .replace("{S}", SYM[cur])
-        .replace("{R}", RATES[cur].toLocaleString(LOC[lang]));
-    }
-    var cseg = document.getElementById("curSeg");
-    if (cseg) Array.prototype.forEach.call(cseg.querySelectorAll("button"), function (b) {
-      b.classList.toggle("is-active", b.dataset.cur === cur);
-    });
 
     /* active buttons in both language selectors */
     ["langSeg", "gateLang"].forEach(function (id) {
@@ -615,13 +606,6 @@
     render();
   }
 
-  function setCur(c) {
-    cur = RATES[c] ? c : "COP";
-    try { localStorage.setItem("jb-cur", cur); } catch (e) {}
-    render();
-  }
-  try { var sc = localStorage.getItem("jb-cur"); if (sc && RATES[sc]) cur = sc; } catch (e) {}
-
   /* pick up the language chosen elsewhere on the site, default Spanish */
   var saved = "es";
   try { saved = localStorage.getItem("jb-lang") || "es"; } catch (e) {}
@@ -636,10 +620,6 @@
       if (b && b.dataset.lang) setLang(b.dataset.lang);
     });
   });
-  document.getElementById("curSeg").addEventListener("click", function (e) {
-    var b = e.target.closest("button");
-    if (b && b.dataset.cur) setCur(b.dataset.cur);
-  });
 
   /* ---------------- PIN gate ---------------- */
   var gate = document.getElementById("gate");
@@ -647,21 +627,36 @@
   var err = document.getElementById("gateErr");
   var boxes = Array.prototype.slice.call(row.querySelectorAll("input"));
 
-  function unlock(remember) {
+  function applyMarket(m, remember) {
+    market = m.id; cur = m.cur;
+    lang = UI.title[m.lang] ? m.lang : lang;
+    if (remember) { try { sessionStorage.setItem("pl-mkt", m.id + "|" + m.cur + "|" + m.lang); } catch (e) {} }
+    render();
+  }
+  function unlock() {
     gate.classList.add("is-open");
     document.body.style.overflow = "";
-    if (remember) { try { sessionStorage.setItem("pl-ok", "1"); } catch (e) {} }
   }
+  /* restore the market unlocked earlier in this tab */
   var already = false;
-  try { already = sessionStorage.getItem("pl-ok") === "1"; } catch (e) {}
-  if (already) { unlock(false); } else { document.body.style.overflow = "hidden"; }
+  try {
+    var saved = sessionStorage.getItem("pl-mkt");
+    if (saved) {
+      var p = saved.split("|");
+      applyMarket({ id: p[0], cur: p[1], lang: p[2] }, false);
+      already = true;
+    }
+  } catch (e) {}
+  if (already) { unlock(); } else { document.body.style.overflow = "hidden"; }
 
   function check() {
     var code = boxes.map(function (b) { return b.value; }).join("");
     if (code.length < 4) return;
-    if (code === PIN) {
+    var m = MARKETS[code];
+    if (m) {
       err.classList.remove("show");
-      unlock(true);
+      applyMarket(m, true);
+      unlock();
     } else {
       err.classList.add("show");
       gate.classList.add("shake");
