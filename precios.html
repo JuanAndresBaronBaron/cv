@@ -14,7 +14,6 @@
   <style>
     :root {
       --bg: #05060B;
-      --bg-2: #090B13;
       --panel: #0C0F18;
       --panel-2: #121624;
       --txt: #EDF0FA;
@@ -45,16 +44,12 @@
     a { color: inherit; text-decoration: none; }
 
     /* ===================== PIN gate ===================== */
-    .gate {
-      position: fixed; inset: 0; z-index: 100; background: var(--bg);
-      display: grid; place-items: center; padding: 24px;
-    }
+    .gate { position: fixed; inset: 0; z-index: 100; background: var(--bg); display: grid; place-items: center; padding: 24px; }
     .gate.is-open { display: none; }
     .gate-card {
       width: min(420px, 100%); text-align: center;
       background: var(--panel); border: 1px solid var(--line); border-radius: 20px;
-      padding: clamp(28px, 5vw, 44px);
-      box-shadow: 0 40px 90px -30px rgba(0, 0, 0, 0.8);
+      padding: clamp(28px, 5vw, 44px); box-shadow: 0 40px 90px -30px rgba(0, 0, 0, 0.8);
     }
     .gate-mark { width: 52px; height: 52px; margin: 0 auto 18px; border-radius: 14px; display: grid; place-items: center;
       background: linear-gradient(135deg, rgba(92,141,255,0.16), rgba(45,212,191,0.16)); border: 1px solid rgba(92,141,255,0.35); }
@@ -66,8 +61,7 @@
       width: 54px; height: 64px; text-align: center;
       font-family: var(--mono); font-size: 1.5rem; font-weight: 500; color: var(--txt);
       background: var(--panel-2); border: 1px solid var(--line-2); border-radius: 14px;
-      outline: none; transition: border-color .25s, box-shadow .25s, transform .15s;
-      -moz-appearance: textfield;
+      outline: none; transition: border-color .25s, box-shadow .25s; -moz-appearance: textfield;
     }
     .pin-row input::-webkit-outer-spin-button, .pin-row input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
     .pin-row input:focus { border-color: var(--acc); box-shadow: 0 0 0 4px rgba(92, 141, 255, 0.14); }
@@ -77,19 +71,24 @@
     .gate.shake .gate-card { animation: shake .4s; }
     @keyframes shake { 25% { transform: translateX(-9px); } 50% { transform: translateX(8px); } 75% { transform: translateX(-4px); } }
     .gate-hint { margin-top: 14px; font-size: 0.76rem; color: var(--txt-dim); }
+    .gate-lang { display: inline-flex; gap: 2px; padding: 3px; border-radius: 11px; background: var(--panel-2); border: 1px solid var(--line); margin-bottom: 22px; }
 
     /* ===================== layout ===================== */
     .wrap { max-width: 1080px; margin: 0 auto; padding: clamp(28px, 5vw, 60px) clamp(18px, 4vw, 40px) 80px; }
-
     .top { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; flex-wrap: wrap; margin-bottom: clamp(28px, 5vh, 48px); }
     .brand { font-family: var(--display); font-weight: 700; font-size: clamp(1.5rem, 3.4vw, 2.1rem); letter-spacing: -0.03em; }
     .brand em { font-style: normal; color: var(--txt-dim); font-weight: 500; }
     .brand-sub { font-family: var(--mono); font-size: 0.82rem; margin-top: 6px;
       background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; display: inline-block; }
-    .top-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .top-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .seg { display: flex; gap: 2px; padding: 3px; border-radius: 12px; background: var(--panel); border: 1px solid var(--line); }
+    .seg button { font-family: var(--mono); font-size: 0.72rem; font-weight: 500; padding: 8px 11px; border-radius: 9px;
+      color: var(--txt-dim); cursor: pointer; background: none; border: none; transition: background .25s, color .25s; }
+    .seg button:hover { color: var(--txt); }
+    .seg button.is-active { background: var(--grad-btn); color: #fff; }
     .btn { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 0.78rem; font-weight: 500;
       padding: 11px 18px; border-radius: 12px; cursor: pointer; border: 1px solid var(--line-2); background: var(--panel); color: var(--txt);
-      transition: transform .3s var(--ease), border-color .3s, box-shadow .3s; }
+      transition: transform .3s var(--ease), border-color .3s; }
     .btn:hover { transform: translateY(-2px); border-color: var(--acc); }
     .btn svg { width: 15px; height: 15px; }
     .btn-primary { background: var(--grad-btn); border: none; color: #fff; box-shadow: 0 10px 26px -10px var(--glow); }
@@ -117,9 +116,9 @@
     .pack-tag { position: absolute; top: -11px; left: 24px; font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.12em;
       text-transform: uppercase; padding: 4px 11px; border-radius: 100px; background: var(--grad-btn); color: #fff; }
     .pack h4 { font-family: var(--display); font-weight: 600; font-size: 1.15rem; }
-    .pack .price { font-family: var(--display); font-weight: 700; font-size: 1.9rem; letter-spacing: -0.03em; margin: 12px 0 4px;
+    .pack .price { font-family: var(--display); font-weight: 700; font-size: 1.8rem; letter-spacing: -0.03em; margin: 12px 0 4px;
       background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
-    .pack .price small { font-size: 0.8rem; font-weight: 500; color: var(--txt-dim); -webkit-text-fill-color: var(--txt-dim); display: block; margin-bottom: 2px; }
+    .pack .price small { font-size: 0.78rem; font-weight: 500; color: var(--txt-dim); -webkit-text-fill-color: var(--txt-dim); display: block; margin-bottom: 2px; }
     .pack .time { font-family: var(--mono); font-size: 0.7rem; color: var(--txt-dim); margin-bottom: 16px; }
     .pack ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
     .pack li { position: relative; padding-left: 20px; font-size: 0.86rem; color: var(--txt-dim); }
@@ -128,7 +127,7 @@
     /* ===================== module tables ===================== */
     .group { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; margin-bottom: 14px; }
     .group-h { display: flex; align-items: center; gap: 10px; padding: 14px 20px; border-bottom: 1px solid var(--line); background: var(--panel-2); }
-    .group-h svg { width: 17px; height: 17px; stroke: var(--acc); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .group-h svg { width: 17px; height: 17px; stroke: var(--acc); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
     .group-h b { font-family: var(--display); font-weight: 600; font-size: 0.95rem; }
     table { width: 100%; border-collapse: collapse; }
     tbody tr { border-bottom: 1px dashed var(--line); transition: background .2s; }
@@ -137,21 +136,21 @@
     td { padding: 12px 20px; vertical-align: top; }
     td.m-name { font-size: 0.9rem; }
     td.m-name span { display: block; font-size: 0.78rem; color: var(--txt-dim); margin-top: 2px; }
-    td.m-price { text-align: right; white-space: nowrap; font-family: var(--mono); font-size: 0.88rem; font-weight: 500; color: var(--acc-2); }
-    td.m-price em { font-style: normal; font-size: 0.72rem; color: var(--txt-dim); display: block; }
+    td.m-price { text-align: right; white-space: nowrap; font-family: var(--mono); font-size: 0.86rem; font-weight: 500; color: var(--acc-2); }
+    td.m-price em { font-style: normal; font-size: 0.7rem; color: var(--txt-dim); display: block; }
 
     /* ===================== maintenance ===================== */
     .plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
     .plan { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 22px; }
     .plan b { font-family: var(--display); font-size: 1rem; }
-    .plan .p { font-family: var(--display); font-weight: 700; font-size: 1.4rem; margin: 8px 0 12px;
+    .plan .p { font-family: var(--display); font-weight: 700; font-size: 1.35rem; margin: 8px 0 12px;
       background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
-    .plan .p small { font-size: 0.72rem; color: var(--txt-dim); -webkit-text-fill-color: var(--txt-dim); font-weight: 500; }
+    .plan .p small { font-size: 0.7rem; color: var(--txt-dim); -webkit-text-fill-color: var(--txt-dim); font-weight: 500; }
     .plan ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
     .plan li { font-size: 0.83rem; color: var(--txt-dim); padding-left: 16px; position: relative; }
     .plan li::before { content: "·"; position: absolute; left: 4px; color: var(--acc); font-weight: 700; }
 
-    /* ===================== terms + footer ===================== */
+    /* ===================== terms + cta ===================== */
     .terms { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 24px; }
     .terms ul { list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px 26px; }
     .terms li { position: relative; padding-left: 18px; font-size: 0.86rem; color: var(--txt-dim); }
@@ -161,9 +160,8 @@
     .cta { margin-top: clamp(36px, 6vh, 60px); text-align: center; background: var(--panel);
       border: 1px solid rgba(92, 141, 255, 0.3); border-radius: 20px; padding: clamp(28px, 5vw, 44px); }
     .cta h4 { font-family: var(--display); font-weight: 700; font-size: clamp(1.3rem, 3vw, 1.9rem); letter-spacing: -0.02em; }
-    .cta p { color: var(--txt-dim); margin: 10px auto 22px; max-width: 440px; font-size: 0.92rem; }
+    .cta p { color: var(--txt-dim); margin: 10px auto 22px; max-width: 460px; font-size: 0.92rem; }
     .cta-links { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-
     footer { text-align: center; margin-top: 40px; font-family: var(--mono); font-size: 0.72rem; color: var(--txt-dim); }
 
     @media (max-width: 560px) {
@@ -179,10 +177,10 @@
       .wrap { max-width: none; padding: 0; }
       .brand, .lead h2 { color: #12162A; }
       .lead h2 span, .brand-sub, .pack .price, .plan .p, h3.sec i { -webkit-text-fill-color: #1D4ED8; color: #1D4ED8; background: none; }
-      .lead p, .pack li, .plan li, .terms li, td.m-name span, .pack .time { color: #4A5570; }
+      .lead p, .pack li, .plan li, .terms li, td.m-name span, .pack .time, .pack .price small, .plan .p small { color: #4A5570; -webkit-text-fill-color: #4A5570; }
       .pack, .group, .plan, .terms { background: #fff; border: 0.6pt solid #D9DFEC; break-inside: avoid; }
       .group-h { background: #F4F7FC; border-bottom: 0.6pt solid #D9DFEC; }
-      .group-h b, .plan b, .pack h4, .cta h4 { color: #12162A; }
+      .group-h b, .plan b, .pack h4 { color: #12162A; }
       td.m-price { color: #1D4ED8; }
       tbody tr { border-bottom: 0.5pt dashed #E3E7F1; }
       h3.sec { color: #6B7590; margin: 14pt 0 8pt; }
@@ -190,6 +188,7 @@
       .badge { border-color: #0D9488; color: #0D9488; background: #fff; }
       .packs, .plans { gap: 8pt; }
       .pack, .plan { padding: 12pt; }
+      footer { color: #6B7590; }
       * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
     }
   </style>
@@ -203,21 +202,24 @@
        que no puedas permitirte que se filtre. -->
   <div class="gate" id="gate">
     <div class="gate-card">
+      <div class="gate-lang seg" id="gateLang" role="group">
+        <button data-lang="es">ES</button><button data-lang="en">EN</button><button data-lang="fr">FR</button>
+      </div>
       <span class="gate-mark">
         <svg viewBox="0 0 24 24" fill="none" stroke="#5C8DFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <rect x="4" y="10" width="16" height="11" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>
         </svg>
       </span>
-      <h1>Contenido privado</h1>
-      <p>Ingresa el código de 4 dígitos para ver la lista de precios.</p>
+      <h1 id="gateH">Contenido privado</h1>
+      <p id="gateP">Ingresa el código de 4 dígitos para ver la lista de precios.</p>
       <div class="pin-row" id="pinRow">
-        <input type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Dígito 1" />
-        <input type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Dígito 2" />
-        <input type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Dígito 3" />
-        <input type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Dígito 4" />
+        <input type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="1" />
+        <input type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="2" />
+        <input type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="3" />
+        <input type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="4" />
       </div>
       <p class="gate-err" id="gateErr">Código incorrecto</p>
-      <p class="gate-hint">¿No tienes el código? Escríbeme a
+      <p class="gate-hint"><span id="gateHint">¿No tienes el código? Escríbeme a</span>
         <a href="mailto:juanandresbaronbaron2001@gmail.com" style="color:var(--acc-2)">juanandresbaronbaron2001@gmail.com</a>
       </p>
     </div>
@@ -225,332 +227,417 @@
 
   <!-- ============ content ============ -->
   <div class="wrap">
-
     <div class="top">
       <div>
         <div class="brand">Juan Andres <em>Baron Baron</em></div>
-        <div class="brand-sub">Desarrollo de software a la medida</div>
+        <div class="brand-sub" id="brandSub">Desarrollo de software a la medida</div>
       </div>
       <div class="top-actions">
+        <div class="seg" id="langSeg" role="group">
+          <button data-lang="es">ES</button><button data-lang="en">EN</button><button data-lang="fr">FR</button>
+        </div>
         <button class="btn btn-primary" onclick="window.print()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg>
-          Descargar PDF
+          <span id="btnPdf">Descargar PDF</span>
         </button>
         <a class="btn" href="index.html">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-          Portafolio
+          <span id="btnPortfolio">Portafolio</span>
         </a>
       </div>
     </div>
 
     <div class="lead">
-      <span class="badge"><b></b> Precios de lanzamiento 2026</span>
-      <h2>Precios por <span>módulo</span>, sin sorpresas.</h2>
-      <p>
-        Cada proyecto se arma con los módulos que realmente necesitas: pagas por lo que se
-        construye, no por un paquete cerrado. Estos son precios de introducción mientras
-        consolido mi portafolio de clientes, así que están por debajo del mercado.
-      </p>
+      <span class="badge"><b></b><span id="badgeTxt">Precios de lanzamiento 2026</span></span>
+      <h2 id="leadH"></h2>
+      <p id="leadP"></p>
     </div>
 
-    <!-- ============ packages ============ -->
-    <h3 class="sec"><i>01</i> Paquetes completos</h3>
-    <div class="packs">
-      <div class="pack">
-        <h4>Landing Page</h4>
-        <div class="price"><small>desde</small>$650.000</div>
-        <div class="time">⏱ 1 a 2 semanas</div>
-        <ul>
-          <li>Diseño a medida, responsive</li>
-          <li>Una página con secciones</li>
-          <li>Formulario de contacto</li>
-          <li>SEO básico y analítica</li>
-          <li>Despliegue y dominio configurado</li>
-          <li>1 ronda de ajustes</li>
-        </ul>
-      </div>
+    <h3 class="sec"><i>01</i><span id="s1"></span></h3>
+    <div class="packs" id="packs"></div>
 
-      <div class="pack feat">
-        <span class="pack-tag">Más pedido</span>
-        <h4>Sitio Web Corporativo</h4>
-        <div class="price"><small>desde</small>$1.500.000</div>
-        <div class="time">⏱ 3 a 4 semanas</div>
-        <ul>
-          <li>Hasta 5 páginas</li>
-          <li>Panel para editar el contenido</li>
-          <li>Blog o sección de noticias</li>
-          <li>Formularios y notificaciones</li>
-          <li>SEO, analítica y velocidad</li>
-          <li>Despliegue, dominio y SSL</li>
-          <li>2 rondas de ajustes</li>
-        </ul>
-      </div>
+    <h3 class="sec"><i>02</i><span id="s2"></span></h3>
+    <div id="groups"></div>
 
-      <div class="pack">
-        <h4>Aplicación a la Medida</h4>
-        <div class="price"><small>desde</small>$3.200.000</div>
-        <div class="time">⏱ 6 a 10 semanas</div>
-        <ul>
-          <li>Login, roles y permisos</li>
-          <li>Panel administrativo</li>
-          <li>Base de datos y API REST</li>
-          <li>Reportes y exportaciones</li>
-          <li>Despliegue en la nube</li>
-          <li>Capacitación de uso</li>
-          <li>1 mes de soporte incluido</li>
-        </ul>
-      </div>
-    </div>
+    <h3 class="sec"><i>03</i><span id="s3"></span></h3>
+    <div class="plans" id="plans"></div>
 
-    <!-- ============ modules ============ -->
-    <h3 class="sec"><i>02</i> Módulos individuales</h3>
+    <h3 class="sec"><i>04</i><span id="s4"></span></h3>
+    <div class="terms"><ul id="terms"></ul></div>
 
-    <div class="group">
-      <div class="group-h">
-        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="12" height="9" rx="1.5"/><path d="M3 11h12"/><rect x="15" y="10" width="6" height="10" rx="1.5"/></svg>
-        <b>Frontend e interfaz</b>
-      </div>
-      <table>
-        <tbody>
-          <tr><td class="m-name">Página adicional<span>Diseño, contenido y responsive</span></td><td class="m-price">$120.000</td></tr>
-          <tr><td class="m-name">Animaciones y scroll interactivo<span>Transiciones tipo Apple, canvas, parallax</span></td><td class="m-price">$250.000</td></tr>
-          <tr><td class="m-name">Multi-idioma<span>Precio por cada idioma adicional</span></td><td class="m-price">$180.000</td></tr>
-          <tr><td class="m-name">Modo claro / oscuro</td><td class="m-price">$120.000</td></tr>
-          <tr><td class="m-name">Formulario avanzado<span>Validaciones, archivos y notificación por correo</span></td><td class="m-price">$150.000</td></tr>
-          <tr><td class="m-name">Adaptación responsive<span>Por vista, si el diseño ya existe</span></td><td class="m-price">$90.000</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="group">
-      <div class="group-h">
-        <svg viewBox="0 0 24 24"><ellipse cx="12" cy="5.5" rx="7" ry="2.6"/><path d="M5 5.5v13c0 1.5 3.1 2.6 7 2.6s7-1.1 7-2.6v-13M5 12c0 1.5 3.1 2.6 7 2.6s7-1.1 7-2.6"/></svg>
-        <b>Backend, datos y usuarios</b>
-      </div>
-      <table>
-        <tbody>
-          <tr><td class="m-name">Modelo de datos y migraciones<span>Diseño de la base de datos del proyecto</span></td><td class="m-price">$350.000</td></tr>
-          <tr><td class="m-name">API REST<span>Por entidad, con sus operaciones CRUD</span></td><td class="m-price">$280.000</td></tr>
-          <tr><td class="m-name">Autenticación de usuarios<span>Registro e inicio de sesión</span></td><td class="m-price">$320.000</td></tr>
-          <tr><td class="m-name">Inicio de sesión con Google</td><td class="m-price">$220.000</td></tr>
-          <tr><td class="m-name">Roles y permisos<span>Perfiles con accesos diferenciados</span></td><td class="m-price">$400.000</td></tr>
-          <tr><td class="m-name">Recuperación de contraseña</td><td class="m-price">$150.000</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="group">
-      <div class="group-h">
-        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 9v11"/></svg>
-        <b>Panel administrativo</b>
-      </div>
-      <table>
-        <tbody>
-          <tr><td class="m-name">Módulo administrable<span>Por entidad: crear, editar, listar y eliminar</span></td><td class="m-price">$220.000</td></tr>
-          <tr><td class="m-name">Dashboard con métricas<span>Indicadores y gráficas del negocio</span></td><td class="m-price">$550.000</td></tr>
-          <tr><td class="m-name">Reportes con exportación<span>Excel y PDF con filtros</span></td><td class="m-price">$380.000</td></tr>
-          <tr><td class="m-name">Carga de archivos e imágenes</td><td class="m-price">$200.000</td></tr>
-          <tr><td class="m-name">Historial de auditoría<span>Quién hizo qué y cuándo</span></td><td class="m-price">$300.000</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="group">
-      <div class="group-h">
-        <svg viewBox="0 0 24 24"><rect x="2.5" y="5.5" width="19" height="13" rx="2"/><path d="M2.5 10h19"/></svg>
-        <b>Pagos y comercio</b>
-      </div>
-      <table>
-        <tbody>
-          <tr><td class="m-name">Catálogo de productos<span>Categorías, búsqueda y filtros</span></td><td class="m-price">$450.000</td></tr>
-          <tr><td class="m-name">Carrito de compras</td><td class="m-price">$700.000</td></tr>
-          <tr><td class="m-name">Pasarela de pagos<span>Wompi, PayU, Mercado Pago o Stripe</span></td><td class="m-price">$600.000</td></tr>
-          <tr><td class="m-name">Facturación y recibos PDF</td><td class="m-price">$400.000</td></tr>
-          <tr><td class="m-name">Cupones y descuentos</td><td class="m-price">$250.000</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="group">
-      <div class="group-h">
-        <svg viewBox="0 0 24 24"><path d="M9 12a3 3 0 0 1 3-3h1a4 4 0 0 0 0-8H9a4 4 0 0 0 0 8"/><path d="M15 12a3 3 0 0 1-3 3h-1a4 4 0 0 0 0 8h4a4 4 0 0 0 0-8"/></svg>
-        <b>Integraciones</b>
-      </div>
-      <table>
-        <tbody>
-          <tr><td class="m-name">Correos transaccionales<span>Confirmaciones, alertas y avisos automáticos</span></td><td class="m-price">$200.000</td></tr>
-          <tr><td class="m-name">WhatsApp y notificaciones</td><td class="m-price">$350.000</td></tr>
-          <tr><td class="m-name">Mapas y geolocalización</td><td class="m-price">$250.000</td></tr>
-          <tr><td class="m-name">Integración con API externa<span>Depende de la complejidad del proveedor</span></td><td class="m-price">desde $300.000</td></tr>
-          <tr><td class="m-name">Integración con SAP<span>Servicios e interfaces empresariales</span></td><td class="m-price">a cotizar<em>según alcance</em></td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="group">
-      <div class="group-h">
-        <svg viewBox="0 0 24 24"><rect x="8" y="8" width="8" height="8" rx="2"/><circle cx="12" cy="12" r="1.6"/><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M18 6l-2.5 2.5M6 18l2.5-2.5"/></svg>
-        <b>Inteligencia artificial y automatización</b>
-      </div>
-      <table>
-        <tbody>
-          <tr><td class="m-name">Chatbot con IA<span>Entrenado con la información de tu negocio</span></td><td class="m-price">$900.000</td></tr>
-          <tr><td class="m-name">Automatización de procesos<span>Por flujo: tareas repetitivas sin intervención</span></td><td class="m-price">$450.000</td></tr>
-          <tr><td class="m-name">Reportes generados con IA<span>Resúmenes y análisis automáticos</span></td><td class="m-price">$600.000</td></tr>
-          <tr><td class="m-name">Agente de voz con IA<span>Atención telefónica automatizada</span></td><td class="m-price">desde $1.500.000</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="group">
-      <div class="group-h">
-        <svg viewBox="0 0 24 24"><path d="M7 16a4 4 0 0 1-.5-7.97A5.5 5.5 0 0 1 17 9.2 3.5 3.5 0 0 1 17 16z"/><path d="M12 11v8M12 19l-2-2M12 19l2-2"/></svg>
-        <b>Infraestructura y DevOps</b>
-      </div>
-      <table>
-        <tbody>
-          <tr><td class="m-name">Dominio, SSL y configuración</td><td class="m-price">$120.000</td></tr>
-          <tr><td class="m-name">Despliegue en la nube<span>AWS, Azure o Google Cloud</span></td><td class="m-price">$300.000</td></tr>
-          <tr><td class="m-name">Pipeline CI/CD<span>Despliegues automáticos al hacer cambios</span></td><td class="m-price">$400.000</td></tr>
-          <tr><td class="m-name">Migración de servidor<span>Traslado sin perder información</span></td><td class="m-price">$350.000</td></tr>
-          <tr><td class="m-name">Optimización de rendimiento<span>Velocidad de carga y consultas</span></td><td class="m-price">$280.000</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- ============ maintenance ============ -->
-    <h3 class="sec"><i>03</i> Mantenimiento mensual</h3>
-    <div class="plans">
-      <div class="plan">
-        <b>Esencial</b>
-        <div class="p">$180.000<small> / mes</small></div>
-        <ul>
-          <li>Actualizaciones de seguridad</li>
-          <li>Copias de respaldo</li>
-          <li>Monitoreo del sitio</li>
-          <li>Corrección de fallas menores</li>
-        </ul>
-      </div>
-      <div class="plan">
-        <b>Activo</b>
-        <div class="p">$450.000<small> / mes</small></div>
-        <ul>
-          <li>Todo lo del plan Esencial</li>
-          <li>5 horas de cambios al mes</li>
-          <li>Soporte por WhatsApp</li>
-          <li>Reporte mensual</li>
-        </ul>
-      </div>
-      <div class="plan">
-        <b>Prioritario</b>
-        <div class="p">$900.000<small> / mes</small></div>
-        <ul>
-          <li>Todo lo del plan Activo</li>
-          <li>12 horas de cambios al mes</li>
-          <li>Atención prioritaria</li>
-          <li>Mejoras continuas planificadas</li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- ============ terms ============ -->
-    <h3 class="sec"><i>04</i> Cómo trabajamos</h3>
-    <div class="terms">
-      <ul>
-        <li><b>Forma de pago:</b> 50% para iniciar y 50% contra entrega.</li>
-        <li><b>Hora adicional:</b> $45.000 por hora fuera del alcance acordado.</li>
-        <li><b>Tiempos:</b> se acuerdan por escrito antes de empezar.</li>
-        <li><b>Ajustes:</b> incluidos según el paquete; los cambios de alcance se cotizan aparte.</li>
-        <li><b>No incluye:</b> hosting, dominios ni licencias de terceros (se cotizan al costo).</li>
-        <li><b>Código fuente:</b> se entrega al cliente al finalizar el pago.</li>
-        <li><b>Moneda:</b> pesos colombianos (COP). Para clientes del exterior, cotizo en USD.</li>
-        <li><b>Vigencia:</b> esta lista es válida por 30 días desde su envío.</li>
-      </ul>
-    </div>
-
-    <!-- ============ CTA ============ -->
     <div class="cta">
-      <h4>¿Armamos tu proyecto?</h4>
-      <p>Cuéntame qué necesitas y te devuelvo una propuesta con los módulos y el tiempo estimado.</p>
+      <h4 id="ctaH"></h4>
+      <p id="ctaP"></p>
       <div class="cta-links">
-        <a class="btn btn-primary" href="mailto:juanandresbaronbaron2001@gmail.com?subject=Cotizaci%C3%B3n%20de%20desarrollo">
+        <a class="btn btn-primary" id="ctaMail" href="mailto:juanandresbaronbaron2001@gmail.com?subject=Cotizaci%C3%B3n%20de%20desarrollo">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 7l8 6 8-6"/></svg>
-          Escribir un correo
+          <span id="ctaMailTxt">Escribir un correo</span>
         </a>
-        <a class="btn" href="https://wa.me/573102377853?text=Hola%20Juan,%20vi%20tu%20lista%20de%20precios%20y%20quiero%20cotizar%20un%20proyecto" target="_blank" rel="noopener">
+        <a class="btn" id="ctaWa" href="#" target="_blank" rel="noopener">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg>
           WhatsApp
         </a>
       </div>
     </div>
 
-    <footer>
-      Juan Andres Baron Baron · Pereira, Risaralda · Colombia — Precios de lanzamiento, sujetos a cambio sin previo aviso.
-    </footer>
+    <footer id="foot"></footer>
   </div>
 
   <script>
-    /* =====================================================================
-       PIN gate.
-       El código vive aquí, en el cliente: es una cortina para que nadie
-       llegue por accidente, NO un control de acceso. Quien abra el código
-       fuente de la página puede leerlo. Para cambiarlo, edita PIN.
-       ===================================================================== */
-    var PIN = "2580";
+  /* =====================================================================
+     PIN gate. El código vive aquí, en el cliente: es una cortina para que
+     nadie llegue por accidente, NO un control de acceso. Quien abra el
+     código fuente puede leerlo. Para cambiarlo, edita PIN.
+     ===================================================================== */
+  var PIN = "2580";
 
-    var gate = document.getElementById("gate");
-    var row = document.getElementById("pinRow");
-    var err = document.getElementById("gateErr");
-    var boxes = Array.prototype.slice.call(row.querySelectorAll("input"));
+  /* =====================================================================
+     Precios y textos. Cada ítem guarda su valor en COP UNA sola vez y sus
+     tres traducciones juntas, así los idiomas no se pueden desincronizar.
+     Para cambiar un precio, edita su número aquí y listo.
+     ===================================================================== */
+  var LOC = { es: "es-CO", en: "en-US", fr: "fr-FR" };
+  var UI = {
+    title:  { es: "Lista de precios — Desarrollo de software a la medida", en: "Price list — Custom software development", fr: "Liste de prix — Développement de logiciels sur mesure" },
+    gateH:  { es: "Contenido privado", en: "Private content", fr: "Contenu privé" },
+    gateP:  { es: "Ingresa el código de 4 dígitos para ver la lista de precios.", en: "Enter the 4-digit code to see the price list.", fr: "Saisissez le code à 4 chiffres pour voir la liste de prix." },
+    gateErr:{ es: "Código incorrecto", en: "Incorrect code", fr: "Code incorrect" },
+    gateHint:{ es: "¿No tienes el código? Escríbeme a", en: "Don't have the code? Email me at", fr: "Vous n'avez pas le code ? Écrivez-moi à" },
+    brandSub:{ es: "Desarrollo de software a la medida", en: "Custom software development", fr: "Développement de logiciels sur mesure" },
+    btnPdf: { es: "Descargar PDF", en: "Download PDF", fr: "Télécharger le PDF" },
+    btnPortfolio: { es: "Portafolio", en: "Portfolio", fr: "Portfolio" },
+    badge:  { es: "Precios de lanzamiento 2026", en: "2026 launch pricing", fr: "Tarifs de lancement 2026" },
+    leadA:  { es: "Precios por ", en: "Priced by ", fr: "Un prix par " },
+    leadB:  { es: "módulo", en: "module", fr: "module" },
+    leadC:  { es: ", sin sorpresas.", en: ", no surprises.", fr: ", sans surprises." },
+    leadP:  { es: "Cada proyecto se arma con los módulos que realmente necesitas: pagas por lo que se construye, no por un paquete cerrado. Estos son precios de introducción mientras consolido mi portafolio de clientes, así que están por debajo del mercado.",
+              en: "Every project is assembled from the modules you actually need: you pay for what gets built, not for a closed package. These are introductory prices while I build up my client portfolio, so they sit below market rates.",
+              fr: "Chaque projet se compose des modules dont vous avez réellement besoin : vous payez ce qui est construit, pas un forfait fermé. Ce sont des prix d'introduction pendant que je constitue mon portefeuille de clients, donc en dessous du marché." },
+    s1: { es: "Paquetes completos", en: "Complete packages", fr: "Forfaits complets" },
+    s2: { es: "Módulos individuales", en: "Individual modules", fr: "Modules individuels" },
+    s3: { es: "Mantenimiento mensual", en: "Monthly maintenance", fr: "Maintenance mensuelle" },
+    s4: { es: "Cómo trabajamos", en: "How we work", fr: "Comment nous travaillons" },
+    from:  { es: "desde", en: "from", fr: "à partir de" },
+    quote: { es: "a cotizar", en: "on request", fr: "sur devis" },
+    scope: { es: "según alcance", en: "based on scope", fr: "selon le périmètre" },
+    perMonth: { es: " / mes", en: " / month", fr: " / mois" },
+    ctaH: { es: "¿Armamos tu proyecto?", en: "Shall we build your project?", fr: "On construit votre projet ?" },
+    ctaP: { es: "Cuéntame qué necesitas y te devuelvo una propuesta con los módulos y el tiempo estimado.",
+            en: "Tell me what you need and I'll send back a proposal with the modules and an estimated timeline.",
+            fr: "Dites-moi ce dont vous avez besoin et je vous renvoie une proposition avec les modules et le délai estimé." },
+    ctaMail: { es: "Escribir un correo", en: "Send an email", fr: "Envoyer un e-mail" },
+    waMsg: { es: "Hola Juan, vi tu lista de precios y quiero cotizar un proyecto",
+             en: "Hi Juan, I saw your price list and I'd like a quote for a project",
+             fr: "Bonjour Juan, j'ai vu votre liste de prix et je souhaite un devis" },
+    foot: { es: "Juan Andres Baron Baron · Pereira, Risaralda · Colombia — Precios de lanzamiento, sujetos a cambio sin previo aviso.",
+            en: "Juan Andres Baron Baron · Pereira, Risaralda · Colombia — Launch pricing, subject to change without notice.",
+            fr: "Juan Andres Baron Baron · Pereira, Risaralda · Colombia — Tarifs de lancement, susceptibles d'évoluer sans préavis." }
+  };
 
-    function unlock(remember) {
-      gate.classList.add("is-open");
-      document.body.style.overflow = "";
-      if (remember) { try { sessionStorage.setItem("pl-ok", "1"); } catch (e) {} }
-    }
+  var PACKS = [
+    { cop: 650000, from: true,
+      t: { es: "Landing Page", en: "Landing Page", fr: "Landing Page" },
+      time: { es: "1 a 2 semanas", en: "1 to 2 weeks", fr: "1 à 2 semaines" },
+      li: [
+        { es: "Diseño a medida, responsive", en: "Custom responsive design", fr: "Design sur mesure, responsive" },
+        { es: "Una página con secciones", en: "One page with sections", fr: "Une page avec sections" },
+        { es: "Formulario de contacto", en: "Contact form", fr: "Formulaire de contact" },
+        { es: "SEO básico y analítica", en: "Basic SEO and analytics", fr: "SEO de base et analytique" },
+        { es: "Despliegue y dominio configurado", en: "Deployment and domain setup", fr: "Déploiement et domaine configuré" },
+        { es: "1 ronda de ajustes", en: "1 round of revisions", fr: "1 série de révisions" } ] },
+    { cop: 1500000, from: true, feat: true,
+      tag: { es: "Más pedido", en: "Most requested", fr: "Le plus demandé" },
+      t: { es: "Sitio Web Corporativo", en: "Corporate Website", fr: "Site Web d'Entreprise" },
+      time: { es: "3 a 4 semanas", en: "3 to 4 weeks", fr: "3 à 4 semaines" },
+      li: [
+        { es: "Hasta 5 páginas", en: "Up to 5 pages", fr: "Jusqu'à 5 pages" },
+        { es: "Panel para editar el contenido", en: "Panel to edit your content", fr: "Panneau pour modifier le contenu" },
+        { es: "Blog o sección de noticias", en: "Blog or news section", fr: "Blog ou section actualités" },
+        { es: "Formularios y notificaciones", en: "Forms and notifications", fr: "Formulaires et notifications" },
+        { es: "SEO, analítica y velocidad", en: "SEO, analytics and speed", fr: "SEO, analytique et vitesse" },
+        { es: "Despliegue, dominio y SSL", en: "Deployment, domain and SSL", fr: "Déploiement, domaine et SSL" },
+        { es: "2 rondas de ajustes", en: "2 rounds of revisions", fr: "2 séries de révisions" } ] },
+    { cop: 3200000, from: true,
+      t: { es: "Aplicación a la Medida", en: "Custom Application", fr: "Application sur Mesure" },
+      time: { es: "6 a 10 semanas", en: "6 to 10 weeks", fr: "6 à 10 semaines" },
+      li: [
+        { es: "Login, roles y permisos", en: "Login, roles and permissions", fr: "Connexion, rôles et permissions" },
+        { es: "Panel administrativo", en: "Admin panel", fr: "Panneau d'administration" },
+        { es: "Base de datos y API REST", en: "Database and REST API", fr: "Base de données et API REST" },
+        { es: "Reportes y exportaciones", en: "Reports and exports", fr: "Rapports et exports" },
+        { es: "Despliegue en la nube", en: "Cloud deployment", fr: "Déploiement dans le cloud" },
+        { es: "Capacitación de uso", en: "Usage training", fr: "Formation à l'utilisation" },
+        { es: "1 mes de soporte incluido", en: "1 month of support included", fr: "1 mois de support inclus" } ] }
+  ];
 
-    /* ya desbloqueado en esta pestaña */
-    var already = false;
-    try { already = sessionStorage.getItem("pl-ok") === "1"; } catch (e) {}
-    if (already) { unlock(false); } else { document.body.style.overflow = "hidden"; }
+  var ICONS = {
+    front: '<rect x="3" y="4" width="12" height="9" rx="1.5"/><path d="M3 11h12"/><rect x="15" y="10" width="6" height="10" rx="1.5"/>',
+    data:  '<ellipse cx="12" cy="5.5" rx="7" ry="2.6"/><path d="M5 5.5v13c0 1.5 3.1 2.6 7 2.6s7-1.1 7-2.6v-13M5 12c0 1.5 3.1 2.6 7 2.6s7-1.1 7-2.6"/>',
+    admin: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 9v11"/>',
+    pay:   '<rect x="2.5" y="5.5" width="19" height="13" rx="2"/><path d="M2.5 10h19"/>',
+    plug:  '<path d="M9 12a3 3 0 0 1 3-3h1a4 4 0 0 0 0-8H9a4 4 0 0 0 0 8"/><path d="M15 12a3 3 0 0 1-3 3h-1a4 4 0 0 0 0 8h4a4 4 0 0 0 0-8"/>',
+    ai:    '<rect x="8" y="8" width="8" height="8" rx="2"/><circle cx="12" cy="12" r="1.6"/><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M18 6l-2.5 2.5M6 18l2.5-2.5"/>',
+    cloud: '<path d="M7 16a4 4 0 0 1-.5-7.97A5.5 5.5 0 0 1 17 9.2 3.5 3.5 0 0 1 17 16z"/><path d="M12 11v8M12 19l-2-2M12 19l2-2"/>'
+  };
 
-    function check() {
-      var code = boxes.map(function (b) { return b.value; }).join("");
-      if (code.length < 4) return;
-      if (code === PIN) {
-        err.classList.remove("show");
-        unlock(true);
-      } else {
-        err.classList.add("show");
-        gate.classList.add("shake");
-        setTimeout(function () { gate.classList.remove("shake"); }, 420);
-        boxes.forEach(function (b) { b.value = ""; b.classList.remove("filled"); });
-        boxes[0].focus();
-      }
-    }
+  var CATS = [
+    { icon: ICONS.front, t: { es: "Frontend e interfaz", en: "Frontend & interface", fr: "Frontend et interface" }, rows: [
+      { cop: 120000, t: { es: "Página adicional", en: "Additional page", fr: "Page supplémentaire" },
+        d: { es: "Diseño, contenido y responsive", en: "Design, content and responsive", fr: "Design, contenu et responsive" } },
+      { cop: 250000, t: { es: "Animaciones y scroll interactivo", en: "Animations and interactive scroll", fr: "Animations et scroll interactif" },
+        d: { es: "Transiciones tipo Apple, canvas, parallax", en: "Apple-style transitions, canvas, parallax", fr: "Transitions à la Apple, canvas, parallax" } },
+      { cop: 180000, t: { es: "Multi-idioma", en: "Multi-language", fr: "Multilingue" },
+        d: { es: "Precio por cada idioma adicional", en: "Price per additional language", fr: "Prix par langue supplémentaire" } },
+      { cop: 120000, t: { es: "Modo claro / oscuro", en: "Light / dark mode", fr: "Mode clair / sombre" } },
+      { cop: 150000, t: { es: "Formulario avanzado", en: "Advanced form", fr: "Formulaire avancé" },
+        d: { es: "Validaciones, archivos y notificación por correo", en: "Validation, file uploads and email notification", fr: "Validations, fichiers et notification par e-mail" } },
+      { cop: 90000, t: { es: "Adaptación responsive", en: "Responsive adaptation", fr: "Adaptation responsive" },
+        d: { es: "Por vista, si el diseño ya existe", en: "Per view, if the design already exists", fr: "Par vue, si le design existe déjà" } } ] },
 
-    boxes.forEach(function (box, i) {
-      box.addEventListener("input", function () {
-        box.value = box.value.replace(/[^0-9]/g, "").slice(0, 1);
-        box.classList.toggle("filled", !!box.value);
-        if (box.value && i < boxes.length - 1) boxes[i + 1].focus();
-        check();
-      });
-      box.addEventListener("keydown", function (e) {
-        if (e.key === "Backspace" && !box.value && i > 0) boxes[i - 1].focus();
-        if (e.key === "Enter") check();
-      });
-      /* pegar el código completo de una vez */
-      box.addEventListener("paste", function (e) {
-        var txt = (e.clipboardData || window.clipboardData).getData("text").replace(/[^0-9]/g, "").slice(0, 4);
-        if (!txt) return;
-        e.preventDefault();
-        txt.split("").forEach(function (c, k) { if (boxes[k]) { boxes[k].value = c; boxes[k].classList.add("filled"); } });
-        check();
+    { icon: ICONS.data, t: { es: "Backend, datos y usuarios", en: "Backend, data & users", fr: "Backend, données et utilisateurs" }, rows: [
+      { cop: 350000, t: { es: "Modelo de datos y migraciones", en: "Data model and migrations", fr: "Modèle de données et migrations" },
+        d: { es: "Diseño de la base de datos del proyecto", en: "The project's database design", fr: "Conception de la base de données du projet" } },
+      { cop: 280000, t: { es: "API REST", en: "REST API", fr: "API REST" },
+        d: { es: "Por entidad, con sus operaciones CRUD", en: "Per entity, with its CRUD operations", fr: "Par entité, avec ses opérations CRUD" } },
+      { cop: 320000, t: { es: "Autenticación de usuarios", en: "User authentication", fr: "Authentification des utilisateurs" },
+        d: { es: "Registro e inicio de sesión", en: "Sign-up and sign-in", fr: "Inscription et connexion" } },
+      { cop: 220000, t: { es: "Inicio de sesión con Google", en: "Sign in with Google", fr: "Connexion avec Google" } },
+      { cop: 400000, t: { es: "Roles y permisos", en: "Roles and permissions", fr: "Rôles et permissions" },
+        d: { es: "Perfiles con accesos diferenciados", en: "Profiles with differentiated access", fr: "Profils avec accès différenciés" } },
+      { cop: 150000, t: { es: "Recuperación de contraseña", en: "Password recovery", fr: "Récupération de mot de passe" } } ] },
+
+    { icon: ICONS.admin, t: { es: "Panel administrativo", en: "Admin panel", fr: "Panneau d'administration" }, rows: [
+      { cop: 220000, t: { es: "Módulo administrable", en: "Manageable module", fr: "Module administrable" },
+        d: { es: "Por entidad: crear, editar, listar y eliminar", en: "Per entity: create, edit, list and delete", fr: "Par entité : créer, modifier, lister et supprimer" } },
+      { cop: 550000, t: { es: "Dashboard con métricas", en: "Dashboard with metrics", fr: "Tableau de bord avec métriques" },
+        d: { es: "Indicadores y gráficas del negocio", en: "Business indicators and charts", fr: "Indicateurs et graphiques d'activité" } },
+      { cop: 380000, t: { es: "Reportes con exportación", en: "Reports with export", fr: "Rapports avec export" },
+        d: { es: "Excel y PDF con filtros", en: "Excel and PDF with filters", fr: "Excel et PDF avec filtres" } },
+      { cop: 200000, t: { es: "Carga de archivos e imágenes", en: "File and image uploads", fr: "Téléversement de fichiers et images" } },
+      { cop: 300000, t: { es: "Historial de auditoría", en: "Audit trail", fr: "Journal d'audit" },
+        d: { es: "Quién hizo qué y cuándo", en: "Who did what and when", fr: "Qui a fait quoi et quand" } } ] },
+
+    { icon: ICONS.pay, t: { es: "Pagos y comercio", en: "Payments & commerce", fr: "Paiements et commerce" }, rows: [
+      { cop: 450000, t: { es: "Catálogo de productos", en: "Product catalogue", fr: "Catalogue de produits" },
+        d: { es: "Categorías, búsqueda y filtros", en: "Categories, search and filters", fr: "Catégories, recherche et filtres" } },
+      { cop: 700000, t: { es: "Carrito de compras", en: "Shopping cart", fr: "Panier d'achat" } },
+      { cop: 600000, t: { es: "Pasarela de pagos", en: "Payment gateway", fr: "Passerelle de paiement" },
+        d: { es: "Wompi, PayU, Mercado Pago o Stripe", en: "Wompi, PayU, Mercado Pago or Stripe", fr: "Wompi, PayU, Mercado Pago ou Stripe" } },
+      { cop: 400000, t: { es: "Facturación y recibos PDF", en: "Invoicing and PDF receipts", fr: "Facturation et reçus PDF" } },
+      { cop: 250000, t: { es: "Cupones y descuentos", en: "Coupons and discounts", fr: "Coupons et réductions" } } ] },
+
+    { icon: ICONS.plug, t: { es: "Integraciones", en: "Integrations", fr: "Intégrations" }, rows: [
+      { cop: 200000, t: { es: "Correos transaccionales", en: "Transactional emails", fr: "E-mails transactionnels" },
+        d: { es: "Confirmaciones, alertas y avisos automáticos", en: "Confirmations, alerts and automatic notices", fr: "Confirmations, alertes et avis automatiques" } },
+      { cop: 350000, t: { es: "WhatsApp y notificaciones", en: "WhatsApp and notifications", fr: "WhatsApp et notifications" } },
+      { cop: 250000, t: { es: "Mapas y geolocalización", en: "Maps and geolocation", fr: "Cartes et géolocalisation" } },
+      { cop: 300000, from: true, t: { es: "Integración con API externa", en: "External API integration", fr: "Intégration d'API externe" },
+        d: { es: "Depende de la complejidad del proveedor", en: "Depends on the provider's complexity", fr: "Selon la complexité du fournisseur" } },
+      { quote: true, t: { es: "Integración con SAP", en: "SAP integration", fr: "Intégration SAP" },
+        d: { es: "Servicios e interfaces empresariales", en: "Enterprise services and interfaces", fr: "Services et interfaces d'entreprise" } } ] },
+
+    { icon: ICONS.ai, t: { es: "Inteligencia artificial y automatización", en: "AI & automation", fr: "IA et automatisation" }, rows: [
+      { cop: 900000, t: { es: "Chatbot con IA", en: "AI chatbot", fr: "Chatbot IA" },
+        d: { es: "Entrenado con la información de tu negocio", en: "Trained on your business information", fr: "Entraîné sur les informations de votre entreprise" } },
+      { cop: 450000, t: { es: "Automatización de procesos", en: "Process automation", fr: "Automatisation des processus" },
+        d: { es: "Por flujo: tareas repetitivas sin intervención", en: "Per flow: repetitive tasks with no intervention", fr: "Par flux : tâches répétitives sans intervention" } },
+      { cop: 600000, t: { es: "Reportes generados con IA", en: "AI-generated reports", fr: "Rapports générés par IA" },
+        d: { es: "Resúmenes y análisis automáticos", en: "Automatic summaries and analysis", fr: "Résumés et analyses automatiques" } },
+      { cop: 1500000, from: true, t: { es: "Agente de voz con IA", en: "AI voice agent", fr: "Agent vocal IA" },
+        d: { es: "Atención telefónica automatizada", en: "Automated phone support", fr: "Accueil téléphonique automatisé" } } ] },
+
+    { icon: ICONS.cloud, t: { es: "Infraestructura y DevOps", en: "Infrastructure & DevOps", fr: "Infrastructure et DevOps" }, rows: [
+      { cop: 120000, t: { es: "Dominio, SSL y configuración", en: "Domain, SSL and setup", fr: "Domaine, SSL et configuration" } },
+      { cop: 300000, t: { es: "Despliegue en la nube", en: "Cloud deployment", fr: "Déploiement dans le cloud" },
+        d: { es: "AWS, Azure o Google Cloud", en: "AWS, Azure or Google Cloud", fr: "AWS, Azure ou Google Cloud" } },
+      { cop: 400000, t: { es: "Pipeline CI/CD", en: "CI/CD pipeline", fr: "Pipeline CI/CD" },
+        d: { es: "Despliegues automáticos al hacer cambios", en: "Automatic deploys on every change", fr: "Déploiements automatiques à chaque changement" } },
+      { cop: 350000, t: { es: "Migración de servidor", en: "Server migration", fr: "Migration de serveur" },
+        d: { es: "Traslado sin perder información", en: "Move without losing data", fr: "Transfert sans perte de données" } },
+      { cop: 280000, t: { es: "Optimización de rendimiento", en: "Performance optimisation", fr: "Optimisation des performances" },
+        d: { es: "Velocidad de carga y consultas", en: "Load speed and queries", fr: "Vitesse de chargement et requêtes" } } ] }
+  ];
+
+  var PLANS = [
+    { cop: 180000, t: { es: "Esencial", en: "Essential", fr: "Essentiel" }, li: [
+      { es: "Actualizaciones de seguridad", en: "Security updates", fr: "Mises à jour de sécurité" },
+      { es: "Copias de respaldo", en: "Backups", fr: "Sauvegardes" },
+      { es: "Monitoreo del sitio", en: "Site monitoring", fr: "Surveillance du site" },
+      { es: "Corrección de fallas menores", en: "Minor bug fixes", fr: "Correction de bugs mineurs" } ] },
+    { cop: 450000, t: { es: "Activo", en: "Active", fr: "Actif" }, li: [
+      { es: "Todo lo del plan Esencial", en: "Everything in Essential", fr: "Tout le forfait Essentiel" },
+      { es: "5 horas de cambios al mes", en: "5 hours of changes per month", fr: "5 heures de modifications par mois" },
+      { es: "Soporte por WhatsApp", en: "WhatsApp support", fr: "Support par WhatsApp" },
+      { es: "Reporte mensual", en: "Monthly report", fr: "Rapport mensuel" } ] },
+    { cop: 900000, t: { es: "Prioritario", en: "Priority", fr: "Prioritaire" }, li: [
+      { es: "Todo lo del plan Activo", en: "Everything in Active", fr: "Tout le forfait Actif" },
+      { es: "12 horas de cambios al mes", en: "12 hours of changes per month", fr: "12 heures de modifications par mois" },
+      { es: "Atención prioritaria", en: "Priority attention", fr: "Traitement prioritaire" },
+      { es: "Mejoras continuas planificadas", en: "Planned continuous improvements", fr: "Améliorations continues planifiées" } ] }
+  ];
+
+  var HOUR = 45000;
+  var TERMS = [
+    { b: { es: "Forma de pago:", en: "Payment terms:", fr: "Modalités de paiement :" },
+      t: { es: "50% para iniciar y 50% contra entrega.", en: "50% to start and 50% on delivery.", fr: "50 % pour démarrer et 50 % à la livraison." } },
+    { b: { es: "Hora adicional:", en: "Additional hour:", fr: "Heure supplémentaire :" }, hour: true,
+      t: { es: " por hora fuera del alcance acordado.", en: " per hour outside the agreed scope.", fr: " par heure hors du périmètre convenu." } },
+    { b: { es: "Tiempos:", en: "Timelines:", fr: "Délais :" },
+      t: { es: "se acuerdan por escrito antes de empezar.", en: "agreed in writing before we start.", fr: "convenus par écrit avant de commencer." } },
+    { b: { es: "Ajustes:", en: "Revisions:", fr: "Révisions :" },
+      t: { es: "incluidos según el paquete; los cambios de alcance se cotizan aparte.", en: "included per package; scope changes are quoted separately.", fr: "incluses selon le forfait ; les changements de périmètre sont devisés à part." } },
+    { b: { es: "No incluye:", en: "Not included:", fr: "Non inclus :" },
+      t: { es: "hosting, dominios ni licencias de terceros (se cotizan al costo).", en: "hosting, domains or third-party licences (quoted at cost).", fr: "hébergement, domaines ni licences tierces (facturés au coût)." } },
+    { b: { es: "Código fuente:", en: "Source code:", fr: "Code source :" },
+      t: { es: "se entrega al cliente al finalizar el pago.", en: "handed over to the client once payment is complete.", fr: "remis au client à la fin du paiement." } },
+    { b: { es: "Moneda:", en: "Currency:", fr: "Devise :" },
+      t: { es: "pesos colombianos (COP). Para clientes del exterior, cotizo en USD.", en: "Colombian pesos (COP). For clients abroad, I quote in USD.", fr: "pesos colombiens (COP). Pour les clients à l'étranger, je facture en USD." } },
+    { b: { es: "Vigencia:", en: "Validity:", fr: "Validité :" },
+      t: { es: "esta lista es válida por 30 días desde su envío.", en: "this list is valid for 30 days from the date it was sent.", fr: "cette liste est valable 30 jours à compter de son envoi." } }
+  ];
+
+  /* ---------------- render ---------------- */
+  var lang = "es";
+  function money(n) {
+    var s = n.toLocaleString(LOC[lang]);
+    return lang === "es" ? "$" + s : (lang === "en" ? "COP " + s : s + " COP");
+  }
+  function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+  function T(o) { return o ? (o[lang] || o.es) : ""; }
+  function set(id, txt) { var e = document.getElementById(id); if (e) e.textContent = txt; }
+
+  function render() {
+    document.documentElement.lang = lang;
+    document.title = T(UI.title);
+
+    set("gateH", T(UI.gateH)); set("gateP", T(UI.gateP));
+    set("gateErr", T(UI.gateErr)); set("gateHint", T(UI.gateHint));
+    set("brandSub", T(UI.brandSub)); set("btnPdf", T(UI.btnPdf)); set("btnPortfolio", T(UI.btnPortfolio));
+    set("badgeTxt", T(UI.badge)); set("leadP", T(UI.leadP));
+    document.getElementById("leadH").innerHTML = esc(T(UI.leadA)) + "<span>" + esc(T(UI.leadB)) + "</span>" + esc(T(UI.leadC));
+    set("s1", T(UI.s1)); set("s2", T(UI.s2)); set("s3", T(UI.s3)); set("s4", T(UI.s4));
+    set("ctaH", T(UI.ctaH)); set("ctaP", T(UI.ctaP)); set("ctaMailTxt", T(UI.ctaMail));
+    set("foot", T(UI.foot));
+    document.getElementById("ctaWa").href = "https://wa.me/573102377853?text=" + encodeURIComponent(T(UI.waMsg));
+
+    /* packages */
+    document.getElementById("packs").innerHTML = PACKS.map(function (p) {
+      return '<div class="pack' + (p.feat ? " feat" : "") + '">'
+        + (p.tag ? '<span class="pack-tag">' + esc(T(p.tag)) + "</span>" : "")
+        + "<h4>" + esc(T(p.t)) + "</h4>"
+        + '<div class="price">' + (p.from ? "<small>" + esc(T(UI.from)) + "</small>" : "") + esc(money(p.cop)) + "</div>"
+        + '<div class="time">⏱ ' + esc(T(p.time)) + "</div><ul>"
+        + p.li.map(function (l) { return "<li>" + esc(T(l)) + "</li>"; }).join("")
+        + "</ul></div>";
+    }).join("");
+
+    /* module groups */
+    document.getElementById("groups").innerHTML = CATS.map(function (c) {
+      return '<div class="group"><div class="group-h"><svg viewBox="0 0 24 24">' + c.icon + "</svg><b>" + esc(T(c.t)) + "</b></div><table><tbody>"
+        + c.rows.map(function (r) {
+            var price = r.quote
+              ? esc(T(UI.quote)) + "<em>" + esc(T(UI.scope)) + "</em>"
+              : (r.from ? esc(T(UI.from)) + " " : "") + esc(money(r.cop));
+            return '<tr><td class="m-name">' + esc(T(r.t))
+              + (r.d ? "<span>" + esc(T(r.d)) + "</span>" : "")
+              + '</td><td class="m-price">' + price + "</td></tr>";
+          }).join("")
+        + "</tbody></table></div>";
+    }).join("");
+
+    /* maintenance plans */
+    document.getElementById("plans").innerHTML = PLANS.map(function (p) {
+      return '<div class="plan"><b>' + esc(T(p.t)) + "</b>"
+        + '<div class="p">' + esc(money(p.cop)) + "<small>" + esc(T(UI.perMonth)) + "</small></div><ul>"
+        + p.li.map(function (l) { return "<li>" + esc(T(l)) + "</li>"; }).join("")
+        + "</ul></div>";
+    }).join("");
+
+    /* terms */
+    document.getElementById("terms").innerHTML = TERMS.map(function (x) {
+      return "<li><b>" + esc(T(x.b)) + "</b> " + (x.hour ? esc(money(HOUR)) : "") + esc(T(x.t)) + "</li>";
+    }).join("");
+
+    /* active buttons in both language selectors */
+    ["langSeg", "gateLang"].forEach(function (id) {
+      var seg = document.getElementById(id);
+      if (!seg) return;
+      Array.prototype.forEach.call(seg.querySelectorAll("button"), function (b) {
+        b.classList.toggle("is-active", b.dataset.lang === lang);
       });
     });
+  }
 
-    if (!already) setTimeout(function () { boxes[0].focus(); }, 120);
+  function setLang(l) {
+    lang = UI.title[l] ? l : "es";
+    try { localStorage.setItem("jb-lang", lang); } catch (e) {}
+    render();
+  }
+
+  /* pick up the language chosen elsewhere on the site, default Spanish */
+  var saved = "es";
+  try { saved = localStorage.getItem("jb-lang") || "es"; } catch (e) {}
+  lang = UI.title[saved] ? saved : "es";
+  render();
+
+  ["langSeg", "gateLang"].forEach(function (id) {
+    var seg = document.getElementById(id);
+    if (!seg) return;
+    seg.addEventListener("click", function (e) {
+      var b = e.target.closest("button");
+      if (b && b.dataset.lang) setLang(b.dataset.lang);
+    });
+  });
+
+  /* ---------------- PIN gate ---------------- */
+  var gate = document.getElementById("gate");
+  var row = document.getElementById("pinRow");
+  var err = document.getElementById("gateErr");
+  var boxes = Array.prototype.slice.call(row.querySelectorAll("input"));
+
+  function unlock(remember) {
+    gate.classList.add("is-open");
+    document.body.style.overflow = "";
+    if (remember) { try { sessionStorage.setItem("pl-ok", "1"); } catch (e) {} }
+  }
+  var already = false;
+  try { already = sessionStorage.getItem("pl-ok") === "1"; } catch (e) {}
+  if (already) { unlock(false); } else { document.body.style.overflow = "hidden"; }
+
+  function check() {
+    var code = boxes.map(function (b) { return b.value; }).join("");
+    if (code.length < 4) return;
+    if (code === PIN) {
+      err.classList.remove("show");
+      unlock(true);
+    } else {
+      err.classList.add("show");
+      gate.classList.add("shake");
+      setTimeout(function () { gate.classList.remove("shake"); }, 420);
+      boxes.forEach(function (b) { b.value = ""; b.classList.remove("filled"); });
+      boxes[0].focus();
+    }
+  }
+  boxes.forEach(function (box, i) {
+    box.addEventListener("input", function () {
+      box.value = box.value.replace(/[^0-9]/g, "").slice(0, 1);
+      box.classList.toggle("filled", !!box.value);
+      if (box.value && i < boxes.length - 1) boxes[i + 1].focus();
+      check();
+    });
+    box.addEventListener("keydown", function (e) {
+      if (e.key === "Backspace" && !box.value && i > 0) boxes[i - 1].focus();
+      if (e.key === "Enter") check();
+    });
+    box.addEventListener("paste", function (e) {
+      var txt = (e.clipboardData || window.clipboardData).getData("text").replace(/[^0-9]/g, "").slice(0, 4);
+      if (!txt) return;
+      e.preventDefault();
+      txt.split("").forEach(function (c, k) { if (boxes[k]) { boxes[k].value = c; boxes[k].classList.add("filled"); } });
+      check();
+    });
+  });
+  if (!already) setTimeout(function () { boxes[0].focus(); }, 120);
   </script>
 
 </body>
