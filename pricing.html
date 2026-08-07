@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="es" data-theme="dark">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lista de precios — Desarrollo de software a la medida</title>
-  <!-- página no listada: fuera de buscadores y sin enlaces desde el sitio -->
+  <title>Price list — Custom software development</title>
+  <!-- unlisted page: kept out of search engines, linked from nowhere on the site -->
   <meta name="robots" content="noindex, nofollow, noarchive" />
   <meta name="referrer" content="no-referrer" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -284,10 +284,10 @@
 <body>
 
   <!-- ============ PIN gate ============
-       Nota honesta: los PIN viven en el JavaScript de esta página, así que son
-       una barrera contra visitas accidentales, no seguridad real. Cualquiera
-       que abra el código fuente puede leerlos. No publiques aquí información
-       que no puedas permitirte que se filtre. -->
+       Honest note: the PINs live in this page's JavaScript, so they are a
+       barrier against accidental visits, not real security. Anyone who opens
+       the source can read them. Never put anything here that would be a
+       problem if it leaked. -->
   <div class="gate" id="gate">
     <div class="gate-card">
       <div class="gate-tools">
@@ -299,16 +299,16 @@
       <span class="gate-mark">
         <svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
       </span>
-      <h1 id="gateH">Contenido privado</h1>
-      <p id="gateP">Ingresa el código de 4 dígitos para ver la lista de precios.</p>
+      <h1 id="gateH">Private content</h1>
+      <p id="gateP">Enter the 4-digit code to see the price list.</p>
       <div class="pin-row" id="pinRow">
         <input type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="1" />
         <input type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="2" />
         <input type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="3" />
         <input type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="4" />
       </div>
-      <p class="gate-err" id="gateErr">Código incorrecto</p>
-      <p class="gate-hint"><span id="gateHint">¿No tienes el código? Escríbeme a</span>
+      <p class="gate-err" id="gateErr">Incorrect code</p>
+      <p class="gate-hint"><span id="gateHint">Don't have the code? Email us at</span>
         <a href="mailto:juanandresbaronbaron2001@gmail.com" style="color:var(--acc-2)">juanandresbaronbaron2001@gmail.com</a>
       </p>
     </div>
@@ -319,7 +319,7 @@
     <div class="top">
       <div>
         <div class="brand">Juan Andres <em>Baron Baron</em></div>
-        <div class="brand-sub" id="brandSub">Desarrollo de software a la medida</div>
+        <div class="brand-sub" id="brandSub">Custom software development</div>
       </div>
       <div class="top-actions">
         <div class="seg" id="langSeg" role="group">
@@ -328,17 +328,17 @@
         <div class="seg" id="themeSeg" role="group"></div>
         <button class="btn btn-primary" id="btnPrint">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg>
-          <span id="btnPdf">Descargar PDF</span>
+          <span id="btnPdf">Download PDF</span>
         </button>
         <a class="btn" href="index.html">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-          <span id="btnPortfolio">Portafolio</span>
+          <span id="btnPortfolio">Portfolio</span>
         </a>
       </div>
     </div>
 
     <div class="lead">
-      <span class="badge"><b></b><span id="badgeTxt">Precios de lanzamiento 2026</span></span>
+      <span class="badge"><b></b><span id="badgeTxt">2026 launch pricing</span></span>
       <h2 id="leadH"></h2>
       <p id="leadP"></p>
     </div>
@@ -373,7 +373,7 @@
       <div class="cta-links">
         <a class="btn btn-primary" id="ctaMail" href="#">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 7l8 6 8-6"/></svg>
-          <span id="ctaMailTxt">Escribir un correo</span>
+          <span id="ctaMailTxt">Send an email</span>
         </a>
         <a class="btn" id="ctaWa" href="#" target="_blank" rel="noopener">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg>
@@ -400,16 +400,16 @@
 
   <script>
   /* =====================================================================
-     Los PIN viven aquí, en el cliente: son una cortina para que nadie
-     llegue por accidente, NO un control de acceso. Quien abra el código
-     fuente puede leerlos.
+     The PINs live here, on the client: they are a curtain that keeps casual
+     visitors out, NOT access control. Anyone who opens the source can read
+     them.
      ===================================================================== */
   var LOC = { es: "es-CO", en: "en-US", fr: "fr-FR" };
 
-  /* Un PIN por mercado: cada uno abre su propia lista, moneda e idioma.
-       CO -> Colombia        (COP, español)
-       US -> Estados Unidos  (USD, inglés)
-       EU -> Europa          (EUR, francés)                                */
+  /* One PIN per market: each opens its own list, currency and language.
+       CO -> Colombia       (COP, Spanish)
+       US -> United States  (USD, English)
+       EU -> Europe         (EUR, French)                                  */
   var MARKETS = {
     "2580": { id: "CO", cur: "COP", lang: "es" },
     "1776": { id: "US", cur: "USD", lang: "en" },
