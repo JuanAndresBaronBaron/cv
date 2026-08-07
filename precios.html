@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lista de precios — Desarrollo de software a la medida</title>
+  <!-- página no listada: fuera de buscadores y sin enlaces desde el sitio -->
+  <meta name="robots" content="noindex, nofollow, noarchive" />
+  <meta name="referrer" content="no-referrer" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23121620'/%3E%3Cg fill='none' stroke='%235C8DFF' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M40 30 L24 50 L40 70'/%3E%3Cpath d='M60 30 L76 50 L60 70'/%3E%3C/g%3E%3C/svg%3E" />
+  <style>
+    :root {
+      --bg: #05060B;
+      --bg-2: #090B13;
+      --panel: #0C0F18;
+      --panel-2: #121624;
+      --txt: #EDF0FA;
+      --txt-dim: #97A0B6;
+      --line: rgba(226, 232, 255, 0.08);
+      --line-2: rgba(226, 232, 255, 0.16);
+      --acc: #5C8DFF;
+      --acc-2: #36BFFA;
+      --acc-3: #2DD4BF;
+      --glow: rgba(92, 141, 255, 0.35);
+      --grad: linear-gradient(92deg, #9DBBFF 0%, #36BFFA 46%, #2DD4BF 100%);
+      --grad-btn: linear-gradient(135deg, #4F7DF9 0%, #2EA8E8 55%, #14B8A6 115%);
+      --mono: "JetBrains Mono", ui-monospace, monospace;
+      --display: "Space Grotesk", "Segoe UI", sans-serif;
+      --body: "Inter", -apple-system, sans-serif;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      background:
+        radial-gradient(900px 420px at 12% -8%, rgba(92, 141, 255, 0.10), transparent 65%),
+        radial-gradient(780px 380px at 92% 2%, rgba(45, 212, 191, 0.08), transparent 65%),
+        var(--bg);
+      color: var(--txt); font-family: var(--body); line-height: 1.6;
+      -webkit-font-smoothing: antialiased; min-height: 100vh;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    /* ===================== PIN gate ===================== */
+    .gate {
+      position: fixed; inset: 0; z-index: 100; background: var(--bg);
+      display: grid; place-items: center; padding: 24px;
+    }
+    .gate.is-open { display: none; }
+    .gate-card {
+      width: min(420px, 100%); text-align: center;
+      background: var(--panel); border: 1px solid var(--line); border-radius: 20px;
+      padding: clamp(28px, 5vw, 44px);
+      box-shadow: 0 40px 90px -30px rgba(0, 0, 0, 0.8);
+    }
+    .gate-mark { width: 52px; height: 52px; margin: 0 auto 18px; border-radius: 14px; display: grid; place-items: center;
+      background: linear-gradient(135deg, rgba(92,141,255,0.16), rgba(45,212,191,0.16)); border: 1px solid rgba(92,141,255,0.35); }
+    .gate-mark svg { width: 26px; height: 26px; }
+    .gate-card h1 { font-family: var(--display); font-weight: 600; font-size: 1.3rem; letter-spacing: -0.02em; }
+    .gate-card p { color: var(--txt-dim); font-size: 0.88rem; margin-top: 8px; }
+    .pin-row { display: flex; gap: 10px; justify-content: center; margin: 26px 0 6px; }
+    .pin-row input {
+      width: 54px; height: 64px; text-align: center;
+      font-family: var(--mono); font-size: 1.5rem; font-weight: 500; color: var(--txt);
+      background: var(--panel-2); border: 1px solid var(--line-2); border-radius: 14px;
+      outline: none; transition: border-color .25s, box-shadow .25s, transform .15s;
+      -moz-appearance: textfield;
+    }
+    .pin-row input::-webkit-outer-spin-button, .pin-row input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .pin-row input:focus { border-color: var(--acc); box-shadow: 0 0 0 4px rgba(92, 141, 255, 0.14); }
+    .pin-row input.filled { border-color: rgba(92, 141, 255, 0.55); }
+    .gate-err { min-height: 22px; font-family: var(--mono); font-size: 0.76rem; color: #FB7185; opacity: 0; transition: opacity .2s; }
+    .gate-err.show { opacity: 1; }
+    .gate.shake .gate-card { animation: shake .4s; }
+    @keyframes shake { 25% { transform: translateX(-9px); } 50% { transform: translateX(8px); } 75% { transform: translateX(-4px); } }
+    .gate-hint { margin-top: 14px; font-size: 0.76rem; color: var(--txt-dim); }
+
+    /* ===================== layout ===================== */
+    .wrap { max-width: 1080px; margin: 0 auto; padding: clamp(28px, 5vw, 60px) clamp(18px, 4vw, 40px) 80px; }
+
+    .top { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; flex-wrap: wrap; margin-bottom: clamp(28px, 5vh, 48px); }
+    .brand { font-family: var(--display); font-weight: 700; font-size: clamp(1.5rem, 3.4vw, 2.1rem); letter-spacing: -0.03em; }
+    .brand em { font-style: normal; color: var(--txt-dim); font-weight: 500; }
+    .brand-sub { font-family: var(--mono); font-size: 0.82rem; margin-top: 6px;
+      background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; display: inline-block; }
+    .top-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 0.78rem; font-weight: 500;
+      padding: 11px 18px; border-radius: 12px; cursor: pointer; border: 1px solid var(--line-2); background: var(--panel); color: var(--txt);
+      transition: transform .3s var(--ease), border-color .3s, box-shadow .3s; }
+    .btn:hover { transform: translateY(-2px); border-color: var(--acc); }
+    .btn svg { width: 15px; height: 15px; }
+    .btn-primary { background: var(--grad-btn); border: none; color: #fff; box-shadow: 0 10px 26px -10px var(--glow); }
+
+    .lead { max-width: 720px; margin-bottom: clamp(30px, 5vh, 52px); }
+    .lead h2 { font-family: var(--display); font-weight: 700; letter-spacing: -0.035em; font-size: clamp(1.9rem, 4.6vw, 3rem); line-height: 1.08; }
+    .lead h2 span { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .lead p { color: var(--txt-dim); margin-top: 14px; font-size: clamp(0.95rem, 1.4vw, 1.05rem); font-weight: 300; }
+    .badge { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 0.72rem;
+      padding: 7px 14px; border-radius: 100px; border: 1px solid rgba(45, 212, 191, 0.4); background: rgba(45, 212, 191, 0.08);
+      color: var(--acc-3); margin-bottom: 16px; }
+    .badge b { width: 6px; height: 6px; border-radius: 50%; background: var(--acc-3); }
+
+    h3.sec { font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--txt-dim); margin: clamp(40px, 7vh, 64px) 0 18px; display: flex; align-items: center; gap: 12px; }
+    h3.sec::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+    h3.sec i { font-style: normal; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+    /* ===================== packages ===================== */
+    .packs { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+    .pack { position: relative; background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 26px 24px;
+      display: flex; flex-direction: column; transition: transform .35s var(--ease), border-color .35s; }
+    .pack:hover { transform: translateY(-4px); border-color: var(--line-2); }
+    .pack.feat { border-color: rgba(92, 141, 255, 0.45); background: linear-gradient(160deg, rgba(92,141,255,0.10), var(--panel) 55%); }
+    .pack-tag { position: absolute; top: -11px; left: 24px; font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.12em;
+      text-transform: uppercase; padding: 4px 11px; border-radius: 100px; background: var(--grad-btn); color: #fff; }
+    .pack h4 { font-family: var(--display); font-weight: 600; font-size: 1.15rem; }
+    .pack .price { font-family: var(--display); font-weight: 700; font-size: 1.9rem; letter-spacing: -0.03em; margin: 12px 0 4px;
+      background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .pack .price small { font-size: 0.8rem; font-weight: 500; color: var(--txt-dim); -webkit-text-fill-color: var(--txt-dim); display: block; margin-bottom: 2px; }
+    .pack .time { font-family: var(--mono); font-size: 0.7rem; color: var(--txt-dim); margin-bottom: 16px; }
+    .pack ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .pack li { position: relative; padding-left: 20px; font-size: 0.86rem; color: var(--txt-dim); }
+    .pack li::before { content: "✓"; position: absolute; left: 0; color: var(--acc-3); font-size: 0.8rem; }
+
+    /* ===================== module tables ===================== */
+    .group { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; margin-bottom: 14px; }
+    .group-h { display: flex; align-items: center; gap: 10px; padding: 14px 20px; border-bottom: 1px solid var(--line); background: var(--panel-2); }
+    .group-h svg { width: 17px; height: 17px; stroke: var(--acc); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .group-h b { font-family: var(--display); font-weight: 600; font-size: 0.95rem; }
+    table { width: 100%; border-collapse: collapse; }
+    tbody tr { border-bottom: 1px dashed var(--line); transition: background .2s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: rgba(92, 141, 255, 0.04); }
+    td { padding: 12px 20px; vertical-align: top; }
+    td.m-name { font-size: 0.9rem; }
+    td.m-name span { display: block; font-size: 0.78rem; color: var(--txt-dim); margin-top: 2px; }
+    td.m-price { text-align: right; white-space: nowrap; font-family: var(--mono); font-size: 0.88rem; font-weight: 500; color: var(--acc-2); }
+    td.m-price em { font-style: normal; font-size: 0.72rem; color: var(--txt-dim); display: block; }
+
+    /* ===================== maintenance ===================== */
+    .plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+    .plan { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 22px; }
+    .plan b { font-family: var(--display); font-size: 1rem; }
+    .plan .p { font-family: var(--display); font-weight: 700; font-size: 1.4rem; margin: 8px 0 12px;
+      background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .plan .p small { font-size: 0.72rem; color: var(--txt-dim); -webkit-text-fill-color: var(--txt-dim); font-weight: 500; }
+    .plan ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .plan li { font-size: 0.83rem; color: var(--txt-dim); padding-left: 16px; position: relative; }
+    .plan li::before { content: "·"; position: absolute; left: 4px; color: var(--acc); font-weight: 700; }
+
+    /* ===================== terms + footer ===================== */
+    .terms { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 24px; }
+    .terms ul { list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px 26px; }
+    .terms li { position: relative; padding-left: 18px; font-size: 0.86rem; color: var(--txt-dim); }
+    .terms li::before { content: "▹"; position: absolute; left: 0; color: var(--acc); font-size: 0.74rem; }
+    .terms li b { color: var(--txt); font-weight: 500; }
+
+    .cta { margin-top: clamp(36px, 6vh, 60px); text-align: center; background: var(--panel);
+      border: 1px solid rgba(92, 141, 255, 0.3); border-radius: 20px; padding: clamp(28px, 5vw, 44px); }
+    .cta h4 { font-family: var(--display); font-weight: 700; font-size: clamp(1.3rem, 3vw, 1.9rem); letter-spacing: -0.02em; }
+    .cta p { color: var(--txt-dim); margin: 10px auto 22px; max-width: 440px; font-size: 0.92rem; }
+    .cta-links { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+
+    footer { text-align: center; margin-top: 40px; font-family: var(--mono); font-size: 0.72rem; color: var(--txt-dim); }
+
+    @media (max-width: 560px) {
+      td { padding: 11px 14px; }
+      .pin-row input { width: 46px; height: 56px; font-size: 1.25rem; }
+    }
+
+    /* ===================== print: clean white quote ===================== */
+    @page { size: A4; margin: 0; }
+    @media print {
+      .gate, .top-actions, .cta { display: none !important; }
+      body { background: #fff !important; color: #12162A; padding: 10mm 9mm; font-size: 9pt; }
+      .wrap { max-width: none; padding: 0; }
+      .brand, .lead h2 { color: #12162A; }
+      .lead h2 span, .brand-sub, .pack .price, .plan .p, h3.sec i { -webkit-text-fill-color: #1D4ED8; color: #1D4ED8; background: none; }
+      .lead p, .pack li, .plan li, .terms li, td.m-name span, .pack .time { color: #4A5570; }
+      .pack, .group, .plan, .terms { background: #fff; border: 0.6pt solid #D9DFEC; break-inside: avoid; }
+      .group-h { background: #F4F7FC; border-bottom: 0.6pt solid #D9DFEC; }
+      .group-h b, .plan b, .pack h4, .cta h4 { color: #12162A; }
+      td.m-price { color: #1D4ED8; }
+      tbody tr { border-bottom: 0.5pt dashed #E3E7F1; }
+      h3.sec { color: #6B7590; margin: 14pt 0 8pt; }
+      h3.sec::after { background: #D9DFEC; }
+      .badge { border-color: #0D9488; color: #0D9488; background: #fff; }
+      .packs, .plans { gap: 8pt; }
+      .pack, .plan { padding: 12pt; }
+      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============ PIN gate ============
+       Nota honesta: el PIN vive en el JavaScript de esta página, así que es
+       una barrera contra visitas accidentales, no seguridad real. Cualquiera
+       que abra el código fuente puede leerlo. No publiques aquí información
+       que no puedas permitirte que se filtre. -->
+  <div class="gate" id="gate">
+    <div class="gate-card">
+      <span class="gate-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#5C8DFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="4" y="10" width="16" height="11" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>
+        </svg>
+      </span>
+      <h1>Contenido privado</h1>
+      <p>Ingresa el código de 4 dígitos para ver la lista de precios.</p>
+      <div class="pin-row" id="pinRow">
+        <input type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Dígito 1" />
+        <input type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Dígito 2" />
+        <input type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Dígito 3" />
+        <input type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Dígito 4" />
+      </div>
+      <p class="gate-err" id="gateErr">Código incorrecto</p>
+      <p class="gate-hint">¿No tienes el código? Escríbeme a
+        <a href="mailto:juanandresbaronbaron2001@gmail.com" style="color:var(--acc-2)">juanandresbaronbaron2001@gmail.com</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- ============ content ============ -->
+  <div class="wrap">
+
+    <div class="top">
+      <div>
+        <div class="brand">Juan Andres <em>Baron Baron</em></div>
+        <div class="brand-sub">Desarrollo de software a la medida</div>
+      </div>
+      <div class="top-actions">
+        <button class="btn btn-primary" onclick="window.print()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg>
+          Descargar PDF
+        </button>
+        <a class="btn" href="index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+          Portafolio
+        </a>
+      </div>
+    </div>
+
+    <div class="lead">
+      <span class="badge"><b></b> Precios de lanzamiento 2026</span>
+      <h2>Precios por <span>módulo</span>, sin sorpresas.</h2>
+      <p>
+        Cada proyecto se arma con los módulos que realmente necesitas: pagas por lo que se
+        construye, no por un paquete cerrado. Estos son precios de introducción mientras
+        consolido mi portafolio de clientes, así que están por debajo del mercado.
+      </p>
+    </div>
+
+    <!-- ============ packages ============ -->
+    <h3 class="sec"><i>01</i> Paquetes completos</h3>
+    <div class="packs">
+      <div class="pack">
+        <h4>Landing Page</h4>
+        <div class="price"><small>desde</small>$650.000</div>
+        <div class="time">⏱ 1 a 2 semanas</div>
+        <ul>
+          <li>Diseño a medida, responsive</li>
+          <li>Una página con secciones</li>
+          <li>Formulario de contacto</li>
+          <li>SEO básico y analítica</li>
+          <li>Despliegue y dominio configurado</li>
+          <li>1 ronda de ajustes</li>
+        </ul>
+      </div>
+
+      <div class="pack feat">
+        <span class="pack-tag">Más pedido</span>
+        <h4>Sitio Web Corporativo</h4>
+        <div class="price"><small>desde</small>$1.500.000</div>
+        <div class="time">⏱ 3 a 4 semanas</div>
+        <ul>
+          <li>Hasta 5 páginas</li>
+          <li>Panel para editar el contenido</li>
+          <li>Blog o sección de noticias</li>
+          <li>Formularios y notificaciones</li>
+          <li>SEO, analítica y velocidad</li>
+          <li>Despliegue, dominio y SSL</li>
+          <li>2 rondas de ajustes</li>
+        </ul>
+      </div>
+
+      <div class="pack">
+        <h4>Aplicación a la Medida</h4>
+        <div class="price"><small>desde</small>$3.200.000</div>
+        <div class="time">⏱ 6 a 10 semanas</div>
+        <ul>
+          <li>Login, roles y permisos</li>
+          <li>Panel administrativo</li>
+          <li>Base de datos y API REST</li>
+          <li>Reportes y exportaciones</li>
+          <li>Despliegue en la nube</li>
+          <li>Capacitación de uso</li>
+          <li>1 mes de soporte incluido</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ============ modules ============ -->
+    <h3 class="sec"><i>02</i> Módulos individuales</h3>
+
+    <div class="group">
+      <div class="group-h">
+        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="12" height="9" rx="1.5"/><path d="M3 11h12"/><rect x="15" y="10" width="6" height="10" rx="1.5"/></svg>
+        <b>Frontend e interfaz</b>
+      </div>
+      <table>
+        <tbody>
+          <tr><td class="m-name">Página adicional<span>Diseño, contenido y responsive</span></td><td class="m-price">$120.000</td></tr>
+          <tr><td class="m-name">Animaciones y scroll interactivo<span>Transiciones tipo Apple, canvas, parallax</span></td><td class="m-price">$250.000</td></tr>
+          <tr><td class="m-name">Multi-idioma<span>Precio por cada idioma adicional</span></td><td class="m-price">$180.000</td></tr>
+          <tr><td class="m-name">Modo claro / oscuro</td><td class="m-price">$120.000</td></tr>
+          <tr><td class="m-name">Formulario avanzado<span>Validaciones, archivos y notificación por correo</span></td><td class="m-price">$150.000</td></tr>
+          <tr><td class="m-name">Adaptación responsive<span>Por vista, si el diseño ya existe</span></td><td class="m-price">$90.000</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="group">
+      <div class="group-h">
+        <svg viewBox="0 0 24 24"><ellipse cx="12" cy="5.5" rx="7" ry="2.6"/><path d="M5 5.5v13c0 1.5 3.1 2.6 7 2.6s7-1.1 7-2.6v-13M5 12c0 1.5 3.1 2.6 7 2.6s7-1.1 7-2.6"/></svg>
+        <b>Backend, datos y usuarios</b>
+      </div>
+      <table>
+        <tbody>
+          <tr><td class="m-name">Modelo de datos y migraciones<span>Diseño de la base de datos del proyecto</span></td><td class="m-price">$350.000</td></tr>
+          <tr><td class="m-name">API REST<span>Por entidad, con sus operaciones CRUD</span></td><td class="m-price">$280.000</td></tr>
+          <tr><td class="m-name">Autenticación de usuarios<span>Registro e inicio de sesión</span></td><td class="m-price">$320.000</td></tr>
+          <tr><td class="m-name">Inicio de sesión con Google</td><td class="m-price">$220.000</td></tr>
+          <tr><td class="m-name">Roles y permisos<span>Perfiles con accesos diferenciados</span></td><td class="m-price">$400.000</td></tr>
+          <tr><td class="m-name">Recuperación de contraseña</td><td class="m-price">$150.000</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="group">
+      <div class="group-h">
+        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 9v11"/></svg>
+        <b>Panel administrativo</b>
+      </div>
+      <table>
+        <tbody>
+          <tr><td class="m-name">Módulo administrable<span>Por entidad: crear, editar, listar y eliminar</span></td><td class="m-price">$220.000</td></tr>
+          <tr><td class="m-name">Dashboard con métricas<span>Indicadores y gráficas del negocio</span></td><td class="m-price">$550.000</td></tr>
+          <tr><td class="m-name">Reportes con exportación<span>Excel y PDF con filtros</span></td><td class="m-price">$380.000</td></tr>
+          <tr><td class="m-name">Carga de archivos e imágenes</td><td class="m-price">$200.000</td></tr>
+          <tr><td class="m-name">Historial de auditoría<span>Quién hizo qué y cuándo</span></td><td class="m-price">$300.000</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="group">
+      <div class="group-h">
+        <svg viewBox="0 0 24 24"><rect x="2.5" y="5.5" width="19" height="13" rx="2"/><path d="M2.5 10h19"/></svg>
+        <b>Pagos y comercio</b>
+      </div>
+      <table>
+        <tbody>
+          <tr><td class="m-name">Catálogo de productos<span>Categorías, búsqueda y filtros</span></td><td class="m-price">$450.000</td></tr>
+          <tr><td class="m-name">Carrito de compras</td><td class="m-price">$700.000</td></tr>
+          <tr><td class="m-name">Pasarela de pagos<span>Wompi, PayU, Mercado Pago o Stripe</span></td><td class="m-price">$600.000</td></tr>
+          <tr><td class="m-name">Facturación y recibos PDF</td><td class="m-price">$400.000</td></tr>
+          <tr><td class="m-name">Cupones y descuentos</td><td class="m-price">$250.000</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="group">
+      <div class="group-h">
+        <svg viewBox="0 0 24 24"><path d="M9 12a3 3 0 0 1 3-3h1a4 4 0 0 0 0-8H9a4 4 0 0 0 0 8"/><path d="M15 12a3 3 0 0 1-3 3h-1a4 4 0 0 0 0 8h4a4 4 0 0 0 0-8"/></svg>
+        <b>Integraciones</b>
+      </div>
+      <table>
+        <tbody>
+          <tr><td class="m-name">Correos transaccionales<span>Confirmaciones, alertas y avisos automáticos</span></td><td class="m-price">$200.000</td></tr>
+          <tr><td class="m-name">WhatsApp y notificaciones</td><td class="m-price">$350.000</td></tr>
+          <tr><td class="m-name">Mapas y geolocalización</td><td class="m-price">$250.000</td></tr>
+          <tr><td class="m-name">Integración con API externa<span>Depende de la complejidad del proveedor</span></td><td class="m-price">desde $300.000</td></tr>
+          <tr><td class="m-name">Integración con SAP<span>Servicios e interfaces empresariales</span></td><td class="m-price">a cotizar<em>según alcance</em></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="group">
+      <div class="group-h">
+        <svg viewBox="0 0 24 24"><rect x="8" y="8" width="8" height="8" rx="2"/><circle cx="12" cy="12" r="1.6"/><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M18 6l-2.5 2.5M6 18l2.5-2.5"/></svg>
+        <b>Inteligencia artificial y automatización</b>
+      </div>
+      <table>
+        <tbody>
+          <tr><td class="m-name">Chatbot con IA<span>Entrenado con la información de tu negocio</span></td><td class="m-price">$900.000</td></tr>
+          <tr><td class="m-name">Automatización de procesos<span>Por flujo: tareas repetitivas sin intervención</span></td><td class="m-price">$450.000</td></tr>
+          <tr><td class="m-name">Reportes generados con IA<span>Resúmenes y análisis automáticos</span></td><td class="m-price">$600.000</td></tr>
+          <tr><td class="m-name">Agente de voz con IA<span>Atención telefónica automatizada</span></td><td class="m-price">desde $1.500.000</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="group">
+      <div class="group-h">
+        <svg viewBox="0 0 24 24"><path d="M7 16a4 4 0 0 1-.5-7.97A5.5 5.5 0 0 1 17 9.2 3.5 3.5 0 0 1 17 16z"/><path d="M12 11v8M12 19l-2-2M12 19l2-2"/></svg>
+        <b>Infraestructura y DevOps</b>
+      </div>
+      <table>
+        <tbody>
+          <tr><td class="m-name">Dominio, SSL y configuración</td><td class="m-price">$120.000</td></tr>
+          <tr><td class="m-name">Despliegue en la nube<span>AWS, Azure o Google Cloud</span></td><td class="m-price">$300.000</td></tr>
+          <tr><td class="m-name">Pipeline CI/CD<span>Despliegues automáticos al hacer cambios</span></td><td class="m-price">$400.000</td></tr>
+          <tr><td class="m-name">Migración de servidor<span>Traslado sin perder información</span></td><td class="m-price">$350.000</td></tr>
+          <tr><td class="m-name">Optimización de rendimiento<span>Velocidad de carga y consultas</span></td><td class="m-price">$280.000</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ============ maintenance ============ -->
+    <h3 class="sec"><i>03</i> Mantenimiento mensual</h3>
+    <div class="plans">
+      <div class="plan">
+        <b>Esencial</b>
+        <div class="p">$180.000<small> / mes</small></div>
+        <ul>
+          <li>Actualizaciones de seguridad</li>
+          <li>Copias de respaldo</li>
+          <li>Monitoreo del sitio</li>
+          <li>Corrección de fallas menores</li>
+        </ul>
+      </div>
+      <div class="plan">
+        <b>Activo</b>
+        <div class="p">$450.000<small> / mes</small></div>
+        <ul>
+          <li>Todo lo del plan Esencial</li>
+          <li>5 horas de cambios al mes</li>
+          <li>Soporte por WhatsApp</li>
+          <li>Reporte mensual</li>
+        </ul>
+      </div>
+      <div class="plan">
+        <b>Prioritario</b>
+        <div class="p">$900.000<small> / mes</small></div>
+        <ul>
+          <li>Todo lo del plan Activo</li>
+          <li>12 horas de cambios al mes</li>
+          <li>Atención prioritaria</li>
+          <li>Mejoras continuas planificadas</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ============ terms ============ -->
+    <h3 class="sec"><i>04</i> Cómo trabajamos</h3>
+    <div class="terms">
+      <ul>
+        <li><b>Forma de pago:</b> 50% para iniciar y 50% contra entrega.</li>
+        <li><b>Hora adicional:</b> $45.000 por hora fuera del alcance acordado.</li>
+        <li><b>Tiempos:</b> se acuerdan por escrito antes de empezar.</li>
+        <li><b>Ajustes:</b> incluidos según el paquete; los cambios de alcance se cotizan aparte.</li>
+        <li><b>No incluye:</b> hosting, dominios ni licencias de terceros (se cotizan al costo).</li>
+        <li><b>Código fuente:</b> se entrega al cliente al finalizar el pago.</li>
+        <li><b>Moneda:</b> pesos colombianos (COP). Para clientes del exterior, cotizo en USD.</li>
+        <li><b>Vigencia:</b> esta lista es válida por 30 días desde su envío.</li>
+      </ul>
+    </div>
+
+    <!-- ============ CTA ============ -->
+    <div class="cta">
+      <h4>¿Armamos tu proyecto?</h4>
+      <p>Cuéntame qué necesitas y te devuelvo una propuesta con los módulos y el tiempo estimado.</p>
+      <div class="cta-links">
+        <a class="btn btn-primary" href="mailto:juanandresbaronbaron2001@gmail.com?subject=Cotizaci%C3%B3n%20de%20desarrollo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 7l8 6 8-6"/></svg>
+          Escribir un correo
+        </a>
+        <a class="btn" href="https://wa.me/573102377853?text=Hola%20Juan,%20vi%20tu%20lista%20de%20precios%20y%20quiero%20cotizar%20un%20proyecto" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg>
+          WhatsApp
+        </a>
+      </div>
+    </div>
+
+    <footer>
+      Juan Andres Baron Baron · Pereira, Risaralda · Colombia — Precios de lanzamiento, sujetos a cambio sin previo aviso.
+    </footer>
+  </div>
+
+  <script>
+    /* =====================================================================
+       PIN gate.
+       El código vive aquí, en el cliente: es una cortina para que nadie
+       llegue por accidente, NO un control de acceso. Quien abra el código
+       fuente de la página puede leerlo. Para cambiarlo, edita PIN.
+       ===================================================================== */
+    var PIN = "2580";
+
+    var gate = document.getElementById("gate");
+    var row = document.getElementById("pinRow");
+    var err = document.getElementById("gateErr");
+    var boxes = Array.prototype.slice.call(row.querySelectorAll("input"));
+
+    function unlock(remember) {
+      gate.classList.add("is-open");
+      document.body.style.overflow = "";
+      if (remember) { try { sessionStorage.setItem("pl-ok", "1"); } catch (e) {} }
+    }
+
+    /* ya desbloqueado en esta pestaña */
+    var already = false;
+    try { already = sessionStorage.getItem("pl-ok") === "1"; } catch (e) {}
+    if (already) { unlock(false); } else { document.body.style.overflow = "hidden"; }
+
+    function check() {
+      var code = boxes.map(function (b) { return b.value; }).join("");
+      if (code.length < 4) return;
+      if (code === PIN) {
+        err.classList.remove("show");
+        unlock(true);
+      } else {
+        err.classList.add("show");
+        gate.classList.add("shake");
+        setTimeout(function () { gate.classList.remove("shake"); }, 420);
+        boxes.forEach(function (b) { b.value = ""; b.classList.remove("filled"); });
+        boxes[0].focus();
+      }
+    }
+
+    boxes.forEach(function (box, i) {
+      box.addEventListener("input", function () {
+        box.value = box.value.replace(/[^0-9]/g, "").slice(0, 1);
+        box.classList.toggle("filled", !!box.value);
+        if (box.value && i < boxes.length - 1) boxes[i + 1].focus();
+        check();
+      });
+      box.addEventListener("keydown", function (e) {
+        if (e.key === "Backspace" && !box.value && i > 0) boxes[i - 1].focus();
+        if (e.key === "Enter") check();
+      });
+      /* pegar el código completo de una vez */
+      box.addEventListener("paste", function (e) {
+        var txt = (e.clipboardData || window.clipboardData).getData("text").replace(/[^0-9]/g, "").slice(0, 4);
+        if (!txt) return;
+        e.preventDefault();
+        txt.split("").forEach(function (c, k) { if (boxes[k]) { boxes[k].value = c; boxes[k].classList.add("filled"); } });
+        check();
+      });
+    });
+
+    if (!already) setTimeout(function () { boxes[0].focus(); }, 120);
+  </script>
+
+</body>
+</html>
