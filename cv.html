@@ -173,7 +173,7 @@
        lower it if content ever threatens to spill onto a second page. ===== */
     @page { size: A4; margin: 0; }   /* no margin band => no browser header/footer */
     @media print {
-      :root { --pk: 1.01; }
+      :root { --pk: 1; }
       html, body { background: #fff; }
       body { padding: 9mm 10mm; font-size: calc(8.7pt * var(--pk)); line-height: 1.5; }
       .toolbar { display: none !important; }
@@ -223,16 +223,16 @@
       .edu-item small { font-size: calc(6.2pt * var(--pk)); }
 
       /* profile · experience · projects */
-      .profile { font-size: calc(8.4pt * var(--pk)); line-height: 1.62; }
-      .job { padding-left: calc(13pt * var(--pk)); padding-bottom: calc(11pt * var(--pk)); border-left-width: 1pt; }
+      .profile { font-size: calc(8.2pt * var(--pk)); line-height: 1.52; }
+      .job { padding-left: calc(13pt * var(--pk)); padding-bottom: calc(7.5pt * var(--pk)); border-left-width: 1pt; }
       .job::before { left: calc(-4pt * var(--pk)); top: calc(2.6pt * var(--pk)); width: calc(7pt * var(--pk)); height: calc(7pt * var(--pk)); box-shadow: 0 0 0 calc(2pt * var(--pk)) rgba(37, 99, 235, 0.14); }
       .job-title { font-size: calc(9.4pt * var(--pk)); }
       .job-date { font-size: calc(6.5pt * var(--pk)); padding: calc(1.7pt * var(--pk)) calc(5.4pt * var(--pk)); border-width: 0.5pt; }
-      .job-org { font-size: calc(7.4pt * var(--pk)); margin: calc(2.2pt * var(--pk)) 0 calc(5.4pt * var(--pk)); }
-      .job ul { gap: calc(3.4pt * var(--pk)); }
-      .job li { font-size: calc(7.9pt * var(--pk)); padding-left: calc(9.5pt * var(--pk)); line-height: 1.5; }
+      .job-org { font-size: calc(7.4pt * var(--pk)); margin: calc(1.8pt * var(--pk)) 0 calc(3.8pt * var(--pk)); }
+      .job ul { gap: calc(2.4pt * var(--pk)); }
+      .job li { font-size: calc(7.7pt * var(--pk)); padding-left: calc(9.5pt * var(--pk)); line-height: 1.42; }
       .job li::before { font-size: calc(6.2pt * var(--pk)); }
-      .proj { padding: calc(5.6pt * var(--pk)) 0; }
+      .proj { padding: calc(4.2pt * var(--pk)) 0; }
       .proj-l b { font-size: calc(8.2pt * var(--pk)); }
       .proj-l p { font-size: calc(7.1pt * var(--pk)); margin-top: calc(1pt * var(--pk)); padding-left: calc(10pt * var(--pk)); }
       .proj-link { font-size: calc(6.5pt * var(--pk)); }
@@ -316,9 +316,9 @@
       <aside class="aside">
         <section class="sec">
           <h2 class="sec-h" data-i18n="h_skills">Skills</h2>
-          <div class="skill-group"><b data-i18n="sg_sap">SAP Platform</b><div class="tags"><span>SAP BTP</span><span>Cloud Foundry</span><span>SAP HANA</span><span>SAPUI5 / Fiori</span><span>XSUAA</span><span>SAP IAS</span><span>SAP Cloud SDK</span></div></div>
-          <div class="skill-group"><b data-i18n="sg_sf">SAP SuccessFactors</b><div class="tags"><span>Employee Central</span><span>Recruiting</span><span>Onboarding</span><span>MDF</span><span>RBP</span></div></div>
-          <div class="skill-group"><b data-i18n="sg_int">SAP Integration</b><div class="tags"><span>SAP Integration Suite</span><span>OData</span><span>SAML Bearer</span><span>Destinations</span></div></div>
+          <div class="skill-group"><b data-i18n="sg_sap">SAP Platform</b><div class="tags"><span>SAP BTP</span><span>Cloud Foundry</span><span>SAP HANA Cloud</span><span>SAPUI5 / Fiori</span><span>XSUAA</span><span>SAP IAS</span><span>SAP Cloud SDK</span><span>Approuter</span></div></div>
+          <div class="skill-group"><b data-i18n="sg_sf">SAP SuccessFactors</b><div class="tags"><span>Employee Central</span><span>Recruiting</span><span>Onboarding</span><span>Intelligent Services</span><span>MDF</span><span>RBP</span><span>Time</span></div></div>
+          <div class="skill-group"><b data-i18n="sg_int">SAP Integration</b><div class="tags"><span>SAP Integration Suite</span><span>OData v2</span><span>SAML Bearer</span><span>Destinations</span><span>Connectivity</span></div></div>
           <div class="skill-group"><b data-i18n="sg_ai">AI &amp; Automation</b><div class="tags"><span>SAP Joule</span><span>LLMs</span><span>RAG</span><span>AI agents</span><span>Workflow automation</span></div></div>
           <div class="skill-group"><b data-i18n="sg_backend">Backend &amp; Data</b><div class="tags"><span>Java</span><span>Spring Boot</span><span>Python</span><span>Node.js</span><span>SQL</span></div></div>
           <div class="skill-group"><b data-i18n="sg_frontend">Frontend</b><div class="tags"><span>React.js</span><span>TypeScript</span><span>React Native</span></div></div>
@@ -433,7 +433,7 @@
         profile_p: "SAP & AI Engineer with over 5 years of experience building and integrating enterprise software on SAP Business Technology Platform. I develop SAP SuccessFactors integrations over OData with OAuth2 SAML Bearer authentication, deliver Java services to Cloud Foundry on SAP HANA with XSUAA and SAP IAS, and build SAPUI5 / Fiori interfaces. I pair that with AI implementation — grounded assistants, RAG knowledge bases and agent workflows that automate processes which previously required manual work.",
         job1_t: "Software Engineer", job1_date: "Jul 2021 — Present",
         job1_li1: "Develop and integrate enterprise software on SAP BTP, deploying Java / Spring services to Cloud Foundry against SAP HANA with XSUAA and SAP IAS authentication.",
-        job1_li2: "Build SAP SuccessFactors integrations over the OData API — Employee Central, Recruiting, Onboarding, MDF and RBP — authenticated with OAuth2 SAML Bearer assertions through BTP destinations.",
+        job1_li2: "Build SAP SuccessFactors integrations over the OData API and Intelligent Services event push — Employee Central, Recruiting, Onboarding, MDF, RBP and Time — authenticated with OAuth2 SAML Bearer assertions through BTP destinations.",
         job1_li3: "Develop SAPUI5 / Fiori interfaces and REST services, and design their migration towards modern React and Python architectures.",
         job1_li4: "Implement AI and LLM solutions — grounded assistants, RAG knowledge bases and agent workflows — to automate complex HR and document processes end to end.",
         job1_li5: "Own cloud infrastructure and CI/CD pipelines across AWS, Azure and GCP, shortening delivery cycles and reducing release risk.",
@@ -460,11 +460,11 @@
         edu3_t: "Más de 100 certificaciones en tecnología", edu3_s: "Aprendizaje continuo — desarrollo, cloud, DevOps e IA", edu3_d: "en curso",
         profile_p: "Ingeniero SAP e IA con más de 5 años de experiencia construyendo e integrando software empresarial sobre SAP Business Technology Platform. Desarrollo integraciones con SAP SuccessFactors vía OData con autenticación OAuth2 SAML Bearer, despliego servicios Java en Cloud Foundry sobre SAP HANA con XSUAA y SAP IAS, y construyo interfaces SAPUI5 / Fiori. A eso sumo la implementación de IA: asistentes fundamentados en el motor de negocio, bases de conocimiento RAG y flujos con agentes que automatizan procesos antes manuales.",
         job1_t: "Ingeniero de Software", job1_date: "Jul 2021 — Actualidad",
-        job1_li1: "Desarrollo e integro software empresarial sobre SAP BTP, desplegando servicios Java / Spring en Cloud Foundry contra SAP HANA con autenticación XSUAA y SAP IAS.",
-        job1_li2: "Construyo integraciones con SAP SuccessFactors vía la API OData — Employee Central, Recruiting, Onboarding, MDF y RBP — autenticadas con aserciones OAuth2 SAML Bearer a través de destinations de BTP.",
+        job1_li1: "Desarrollo e integro software empresarial sobre SAP BTP, desplegando servicios Java / Spring en Cloud Foundry sobre SAP HANA con XSUAA y SAP IAS.",
+        job1_li2: "Construyo integraciones con SAP SuccessFactors vía la API OData y el envío de eventos de Intelligent Services — Employee Central, Recruiting, Onboarding, MDF, RBP y Time — autenticadas con aserciones OAuth2 SAML Bearer a través de destinations de BTP.",
         job1_li3: "Desarrollo interfaces SAPUI5 / Fiori y servicios REST, y diseño su migración hacia arquitecturas modernas en React y Python.",
-        job1_li4: "Implemento soluciones de IA y LLM — asistentes fundamentados, bases de conocimiento RAG y flujos con agentes — para automatizar procesos complejos de RR. HH. y documentos de extremo a extremo.",
-        job1_li5: "Gestiono la infraestructura cloud y los pipelines CI/CD en AWS, Azure y GCP, acortando los ciclos de entrega y reduciendo el riesgo de cada release.",
+        job1_li4: "Implemento soluciones de IA y LLM — asistentes fundamentados, bases de conocimiento RAG y flujos con agentes — para automatizar procesos de RR. HH. y documentos de extremo a extremo.",
+        job1_li5: "Gestiono la infraestructura cloud y los pipelines CI/CD en AWS, Azure y GCP, acortando los ciclos de entrega.",
         job2_t: "Desarrollador Full Stack", job2_date: "Ene 2021 — Jun 2021",
         job2_li1: "Actualicé y mantuve módulos del sistema según la evolución de los requisitos del negocio, monitoreando y resolviendo errores en producción.",
         job2_li2: "Construí nuevos módulos para automatizar procesos internos de la empresa.",
@@ -488,11 +488,11 @@
         edu3_t: "Plus de 100 certifications technologiques", edu3_s: "Apprentissage continu — développement, cloud, DevOps & IA", edu3_d: "en continu",
         profile_p: "Ingénieur SAP & IA avec plus de 5 ans d'expérience dans la construction et l'intégration de logiciels d'entreprise sur SAP Business Technology Platform. Je développe des intégrations SAP SuccessFactors via OData avec authentification OAuth2 SAML Bearer, je déploie des services Java sur Cloud Foundry adossés à SAP HANA avec XSUAA et SAP IAS, et je construis des interfaces SAPUI5 / Fiori. J'y associe l'implémentation d'IA : des assistants fondés sur le moteur métier, des bases de connaissances RAG et des workflows d'agents qui automatisent des processus jusque-là manuels.",
         job1_t: "Ingénieur logiciel", job1_date: "Juil. 2021 — Présent",
-        job1_li1: "Je développe et intègre des logiciels d'entreprise sur SAP BTP, en déployant des services Java / Spring sur Cloud Foundry adossés à SAP HANA avec authentification XSUAA et SAP IAS.",
-        job1_li2: "Je construis des intégrations SAP SuccessFactors via l'API OData — Employee Central, Recruiting, Onboarding, MDF et RBP — authentifiées par assertions OAuth2 SAML Bearer via les destinations BTP.",
+        job1_li1: "Je développe et intègre des logiciels d'entreprise sur SAP BTP, en déployant des services Java / Spring sur Cloud Foundry adossés à SAP HANA avec XSUAA et SAP IAS.",
+        job1_li2: "Je construis des intégrations SAP SuccessFactors via l'API OData et les événements Intelligent Services — Employee Central, Recruiting, Onboarding, MDF, RBP et Time — authentifiées par assertions OAuth2 SAML Bearer via les destinations BTP.",
         job1_li3: "Je développe des interfaces SAPUI5 / Fiori et des services REST, et je conçois leur migration vers des architectures modernes React et Python.",
-        job1_li4: "J'implémente des solutions d'IA et de LLM — assistants fondés, bases de connaissances RAG et workflows d'agents — pour automatiser de bout en bout des processus RH et documentaires complexes.",
-        job1_li5: "Je gère l'infrastructure cloud et les pipelines CI/CD sur AWS, Azure et GCP, raccourcissant les cycles de livraison et réduisant les risques de release.",
+        job1_li4: "J'implémente des solutions d'IA et de LLM — assistants fondés, bases de connaissances RAG et workflows d'agents — pour automatiser les processus RH et documentaires.",
+        job1_li5: "Je gère l'infrastructure cloud et les pipelines CI/CD sur AWS, Azure et GCP, raccourcissant les cycles de livraison.",
         job2_t: "Développeur Full Stack", job2_date: "Janv. 2021 — Juin 2021",
         job2_li1: "Mise à jour et maintenance des modules du système selon l'évolution des besoins métier, avec surveillance et résolution des erreurs en production.",
         job2_li2: "Création de nouveaux modules pour automatiser les processus internes de l'entreprise.",
