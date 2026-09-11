@@ -20,6 +20,9 @@
       --brand-d:  #B25A0E;  /* darker orange wherever it carries small text  */
       --brand-l:  #FFF3E7;  /* tint                                          */
       --brand-xl: #FFFAF6;  /* barely-there tint for zebra rows              */
+      --brand-soft: #F9A75A; /* orange that still reads on the dark band     */
+      --cream:      #FFF8F1; /* the warm band between white sections         */
+      --dark:       #1A1512; /* warm near-black for the Elite band           */
       --ink:      #1C1917;  /* warm near-black                               */
       --ink-2:    #3A3330;
       --muted:    #78706B;
@@ -36,7 +39,13 @@
     }
 
     * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; scroll-padding-top: 92px; }
+    /* No scroll-behavior here: Lenis owns the scroll position, and the native
+       smooth-scroll engine fighting it is what made the page stutter. */
+    html { scroll-padding-top: 92px; }
+    html.lenis, html.lenis body { height: auto; }
+    .lenis.lenis-smooth { scroll-behavior: auto !important; }
+    .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+    .lenis.lenis-stopped { overflow: hidden; }
     body {
       margin: 0;
       font-family: var(--sans);
@@ -56,8 +65,8 @@
     .topbar {
       position: sticky; top: 0; z-index: 50;
       background: rgba(255,255,255,0.72);
-      -webkit-backdrop-filter: saturate(180%) blur(16px);
-      backdrop-filter: saturate(180%) blur(16px);
+      -webkit-backdrop-filter: blur(11px);
+      backdrop-filter: blur(11px);
       border-bottom: 1px solid transparent;
       transition: background 0.45s var(--ease), border-color 0.45s var(--ease), box-shadow 0.45s var(--ease);
     }
@@ -148,8 +157,35 @@
     .callout.plain { margin: 30px 0; }
 
     /* ============ sections ============ */
-    section { padding: 78px 0; border-bottom: 1px solid var(--line-2); }
-    section:last-of-type { border-bottom: 0; }
+    section {
+      padding: 78px 0;
+      /* let the browser skip layout for sections far off screen */
+      content-visibility: auto;
+      contain-intrinsic-size: auto 900px;
+    }
+    /* alternating bands give the eye somewhere to rest on a long document */
+    .band-cream { background: var(--cream); }
+    .band-dark {
+      background: var(--dark);
+      color: rgba(255,255,255,0.76);
+      content-visibility: visible;   /* it carries an image; keep it painted */
+    }
+    .band-dark h2, .band-dark strong, .band-dark b, .band-dark td:first-child { color: #FFFFFF; }
+    .band-dark h3, .band-dark .sec-num { color: var(--brand-soft); }
+    .band-dark .sec-num i { background: var(--brand); color: #FFFFFF; }
+    .band-dark .tier { color: #FFFFFF; background: var(--brand); border-color: var(--brand); }
+    .band-dark .tbl-wrap { border-color: rgba(255,255,255,0.14); }
+    .band-dark table { background: rgba(255,255,255,0.035); }
+    .band-dark thead th { background: var(--brand); }
+    .band-dark tbody td { border-top-color: rgba(255,255,255,0.10); color: rgba(255,255,255,0.74); }
+    .band-dark tbody tr:nth-child(even) { background: rgba(255,255,255,0.04); }
+    .band-dark .callout { background: rgba(255,255,255,0.06); border-left-color: var(--brand); }
+    .band-dark .ideal { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.10); }
+    .band-dark .ideal b { color: var(--brand-soft); }
+    .band-dark .inherits { background: rgba(237,134,40,0.18); border-color: rgba(237,134,40,0.5); color: var(--brand-soft); }
+    .band-dark ol li::before { background: rgba(237,134,40,0.22); color: var(--brand-soft); }
+    .band-dark .note { color: rgba(255,255,255,0.58); }
+    .band-dark .plan-fig { border-color: rgba(255,255,255,0.12); box-shadow: 0 34px 80px -44px rgba(0,0,0,0.8); }
     .sec-num {
       display: inline-flex; align-items: center; gap: 11px;
       font-size: 0.72rem; font-weight: 700; letter-spacing: 0.16em;
@@ -248,7 +284,6 @@
       border-radius: 22px; overflow: hidden; background: var(--white);
       box-shadow: 0 30px 70px -46px rgba(28,25,23,0.55);
     }
-    .plan-fig { will-change: transform; }
     .ideal {
       background: var(--brand-xl); border: 1px solid var(--line-2);
       border-radius: 13px; padding: 16px 20px; margin: 0 0 8px;
@@ -302,7 +337,8 @@
 
     /* ============ reveal base state ============ */
     .rv { opacity: 0; transform: translateY(26px); }
-    .no-anim .rv { opacity: 1 !important; transform: none !important; filter: none !important; }
+    [data-fig] { opacity: 0; transform: translateY(34px) scale(0.955); }
+    .no-anim .rv, .no-anim [data-fig] { opacity: 1 !important; transform: none !important; filter: none !important; }
 
     @media (max-width: 880px) {
       .topnav { display: none; }
@@ -329,7 +365,12 @@
       #comparacion, #transversales { page-break-before: always; }
       h2 { font-size: 16pt; }
       h3 { font-size: 11.5pt; margin: 14pt 0 6pt; }
-      .rv { opacity: 1 !important; transform: none !important; filter: none !important; }
+      .rv, [data-fig] { opacity: 1 !important; transform: none !important; filter: none !important; }
+      section { content-visibility: visible !important; }
+      .band-cream, .band-dark { background: none !important; color: var(--ink-2) !important; }
+      .band-dark h2, .band-dark strong, .band-dark b, .band-dark td:first-child { color: var(--ink) !important; }
+      .band-dark h3, .band-dark .sec-num { color: var(--brand-d) !important; }
+      .band-dark tbody td { color: var(--ink-2) !important; }
       .plan-fig { box-shadow: none; }
       .plan-fig img { transform: none !important; }
       .tbl-wrap, table, tr, .card, .pillar, .rec-card, .callout, .ideal { page-break-inside: avoid; }
@@ -398,7 +439,7 @@
 </section>
 
 <!-- ======================= 02 necesidad ======================= -->
-<section id="necesidad">
+<section id="necesidad" class="band-cream">
   <div class="wrap">
     <p class="sec-num rv"><i>02</i> Necesidad que resuelve</p>
     <h2 class="rv">Un solo lugar para el seguimiento</h2>
@@ -431,7 +472,7 @@
   <div class="wrap">
     <p class="sec-num rv"><i>03</i> Usuarios y permisos</p>
     <h2 class="rv">Cuatro perfiles, un límite claro</h2>
-    <div class="tbl-wrap rv">
+    <div class="tbl-wrap rv" data-lenis-prevent>
       <table>
         <thead><tr><th>Usuario</th><th>Acceso principal</th></tr></thead>
         <tbody>
@@ -451,15 +492,18 @@
 </section>
 
 <!-- ======================= 04 essential ======================= -->
-<section class="plan" id="essential">
+<section class="plan band-cream" id="essential">
   <div class="wrap">
     <p class="sec-num rv"><i>04</i> Opción Essential</p>
     <div class="plan-head">
       <h2 class="rv">Centralizar y dar seguimiento</h2>
       <span class="tier rv">Essential</span>
     </div>
-    <figure class="plan-fig rv" data-fig>
-      <img src="images/essential.png" alt="REVELIO Essential — centraliza y da seguimiento: clientes, compromisos y feedback." width="1672" height="941" />
+    <figure class="plan-fig" data-fig>
+      <picture>
+        <source srcset="images/essential.webp" type="image/webp" />
+        <img src="images/essential.png" alt="REVELIO Essential — centraliza y da seguimiento: clientes, compromisos y feedback." width="1672" height="941" decoding="async" />
+      </picture>
     </figure>
     <p class="ideal rv">
       <b>Ideal para:</b> iniciar con una plataforma funcional que organice la
@@ -467,7 +511,7 @@
     </p>
 
     <h3 class="rv">4.1 · Funcionalidades incluidas</h3>
-    <div class="tbl-wrap rv">
+    <div class="tbl-wrap rv" data-lenis-prevent>
       <table>
         <thead><tr><th>Módulo</th><th>Requerimientos esenciales</th></tr></thead>
         <tbody>
@@ -515,8 +559,11 @@
       <h2 class="rv">Medir avances y mantener el acompañamiento</h2>
       <span class="tier rv">Advanced</span>
     </div>
-    <figure class="plan-fig rv" data-fig>
-      <img src="images/advanced.png" alt="REVELIO Advanced — medición, planes de acción e informes." width="1672" height="941" loading="lazy" />
+    <figure class="plan-fig" data-fig>
+      <picture>
+        <source srcset="images/advanced.webp" type="image/webp" />
+        <img src="images/advanced.png" alt="REVELIO Advanced — medición, planes de acción e informes." width="1672" height="941" loading="lazy" decoding="async" />
+      </picture>
     </figure>
     <p class="inherits rv">
       <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
@@ -528,7 +575,7 @@
     </p>
 
     <h3 class="rv">5.1 · Nuevas funcionalidades</h3>
-    <div class="tbl-wrap rv">
+    <div class="tbl-wrap rv" data-lenis-prevent>
       <table>
         <thead><tr><th>Módulo nuevo</th><th>Requerimientos</th></tr></thead>
         <tbody>
@@ -575,15 +622,18 @@
 </section>
 
 <!-- ======================= 06 elite ======================= -->
-<section class="plan" id="elite">
+<section class="plan band-dark" id="elite">
   <div class="wrap">
     <p class="sec-num rv"><i>06</i> Opción Elite</p>
     <div class="plan-head">
       <h2 class="rv">Sostener hábitos y escalar el acompañamiento</h2>
       <span class="tier tier-elite rv">Elite</span>
     </div>
-    <figure class="plan-fig rv" data-fig>
-      <img src="images/elite.png" alt="REVELIO Elite — retos colaborativos, IA asistida y visión ejecutiva." width="1672" height="941" loading="lazy" />
+    <figure class="plan-fig" data-fig>
+      <picture>
+        <source srcset="images/elite.webp" type="image/webp" />
+        <img src="images/elite.png" alt="REVELIO Elite — retos colaborativos, IA asistida y visión ejecutiva." width="1672" height="941" loading="lazy" decoding="async" />
+      </picture>
     </figure>
     <p class="inherits rv">
       <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
@@ -595,7 +645,7 @@
     </p>
 
     <h3 class="rv">6.1 · Nuevas funcionalidades</h3>
-    <div class="tbl-wrap rv">
+    <div class="tbl-wrap rv" data-lenis-prevent>
       <table>
         <thead><tr><th>Módulo nuevo</th><th>Requerimientos</th></tr></thead>
         <tbody>
@@ -641,11 +691,11 @@
 </section>
 
 <!-- ======================= 07 comparación ======================= -->
-<section id="comparacion">
+<section id="comparacion" class="band-cream">
   <div class="wrap">
     <p class="sec-num rv"><i>07</i> Comparación de las opciones</p>
     <h2 class="rv">Qué incluye cada opción</h2>
-    <div class="tbl-wrap rv">
+    <div class="tbl-wrap rv" data-lenis-prevent>
       <table class="cmp">
         <thead>
           <tr><th>Capacidad</th><th>Essential</th><th>Advanced</th><th>Elite</th></tr>
@@ -737,7 +787,7 @@
 </section>
 
 <!-- ======================= 09 por definir ======================= -->
-<section id="definir">
+<section id="definir" class="band-cream">
   <div class="wrap">
     <p class="sec-num rv"><i>09</i> Aspectos por definir antes de cotizar</p>
     <h2 class="rv">Lo que necesitamos acordar</h2>
@@ -855,22 +905,18 @@
     .from("#heroLede", { y: 20, opacity: 0, filter: "blur(8px)", duration: 0.95 }, 0.45)
     .from("#heroCallout", { y: 24, opacity: 0, filter: "blur(8px)", duration: 0.95 }, 0.6);
 
-  /* ---- section content: rise + focus-in as it enters ---- */
-  gsap.utils.toArray(".rv").forEach(function (el) {
-    if (el.closest("[data-stagger]")) return;   /* staggered groups handled below */
-    if (el.hasAttribute("data-fig")) return;    /* figures get their own reveal  */
-    gsap.to(el, {
-      opacity: 1, y: 0, duration: 1, ease: "power3.out",
-      scrollTrigger: { trigger: el, start: "top 88%" },
-    });
-  });
-
-  /* ---- grids: one after another, not all at once ---- */
-  gsap.utils.toArray("[data-stagger]").forEach(function (group) {
-    gsap.to(group.querySelectorAll(".rv"), {
-      opacity: 1, y: 0, duration: 0.9, ease: "power3.out", stagger: 0.09,
-      scrollTrigger: { trigger: group, start: "top 86%" },
-    });
+  /* ---- one batched trigger for every revealed element.
+         Eighty-seven individual ScrollTriggers was the wrong shape: batch()
+         keeps a single scroll handler and staggers whatever crosses the line
+         together, which is also what the grids wanted. ---- */
+  ScrollTrigger.batch(".rv", {
+    start: "top 88%",
+    onEnter: function (els) {
+      gsap.to(els, {
+        opacity: 1, y: 0, duration: 1, ease: "power3.out",
+        stagger: 0.08, overwrite: true,
+      });
+    },
   });
 
   /* ---- illustrations: the Apple product reveal.
