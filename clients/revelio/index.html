@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>REVELIO — Propuesta funcional · Aplicación web</title>
+  <!-- unlisted page: shared by link only, kept out of search engines -->
+  <meta name="robots" content="noindex, nofollow, noarchive" />
+  <meta name="referrer" content="no-referrer" />
+  <meta name="description" content="Análisis de requerimientos para la aplicación web de acompañamiento de REVELIO." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23102440'/%3E%3Cpath d='M30 72V28h22a13 13 0 0 1 0 26H41l18 18' fill='none' stroke='%23ED8628' stroke-width='9' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+
+  <style>
+    /* ============ tokens ============ */
+    :root {
+      --navy:   #102440;
+      --navy-2: #1C3557;
+      --blue:   #205CA5;
+      --blue-2: #2F7FD4;
+      --orange: #ED8628;
+      --orange-2:#C16C17;
+      --ink:    #243247;
+      --muted:  #52647A;
+      --soft:   #F0F5FA;
+      --soft-2: #F7FAFD;
+      --line:   #D8E0EA;
+      --line-2: #E8EEF5;
+      --white:  #FFFFFF;
+      --ok:     #1C8A5B;
+      --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --display: "Space Grotesk", var(--sans);
+      --wrap: 1120px;
+      --r: 16px;
+      color-scheme: light;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 92px; }
+    body {
+      margin: 0;
+      font-family: var(--sans);
+      font-size: 16.5px;
+      line-height: 1.68;
+      color: var(--ink);
+      background: var(--white);
+      -webkit-font-smoothing: antialiased;
+    }
+    img { max-width: 100%; display: block; }
+
+    .wrap { width: 100%; max-width: var(--wrap); margin: 0 auto; padding: 0 28px; }
+
+    /* ============ top bar ============ */
+    .topbar {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(255,255,255,0.88);
+      -webkit-backdrop-filter: saturate(180%) blur(14px);
+      backdrop-filter: saturate(180%) blur(14px);
+      border-bottom: 1px solid var(--line-2);
+    }
+    .topbar-in {
+      display: flex; align-items: center; gap: 26px;
+      height: 66px;
+      width: 100%; max-width: var(--wrap); margin: 0 auto; padding: 0 28px;
+    }
+    .brand { display: flex; align-items: baseline; gap: 10px; text-decoration: none; flex-shrink: 0; }
+    .brand b {
+      font-family: var(--display); font-weight: 700; font-size: 1.22rem;
+      letter-spacing: -0.02em; color: var(--navy);
+    }
+    .brand span {
+      font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--orange-2); font-weight: 600;
+    }
+    .topnav { display: flex; gap: 3px; margin-left: auto; flex-wrap: wrap; }
+    .topnav a {
+      font-size: 0.82rem; font-weight: 500; color: var(--muted);
+      text-decoration: none; padding: 7px 11px; border-radius: 9px;
+      transition: background 0.18s, color 0.18s;
+      white-space: nowrap;
+    }
+    .topnav a:hover { color: var(--navy); background: var(--soft); }
+    .btn-print {
+      font-family: var(--sans); font-size: 0.82rem; font-weight: 600;
+      color: var(--white); background: var(--navy);
+      border: 0; border-radius: 10px; padding: 9px 16px; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 8px;
+      transition: background 0.18s;
+      flex-shrink: 0;
+    }
+    .btn-print:hover { background: var(--blue); }
+    .btn-print svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* ============ hero ============ */
+    .hero {
+      padding: 86px 0 68px;
+      background:
+        radial-gradient(900px 420px at 88% -12%, rgba(237,134,40,0.10), transparent 62%),
+        radial-gradient(760px 420px at 4% 4%, rgba(32,92,165,0.10), transparent 60%),
+        var(--white);
+      border-bottom: 1px solid var(--line-2);
+    }
+    .eyebrow {
+      font-size: 0.73rem; font-weight: 700; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--orange-2); margin: 0 0 18px;
+    }
+    .hero h1 {
+      font-family: var(--display); font-weight: 700;
+      font-size: clamp(3.2rem, 9vw, 5.6rem); line-height: 0.94;
+      letter-spacing: -0.035em; color: var(--navy); margin: 0 0 18px;
+    }
+    .hero .lede {
+      font-size: clamp(1.12rem, 2.3vw, 1.42rem); font-weight: 300;
+      color: var(--muted); margin: 0; max-width: 34ch; line-height: 1.42;
+    }
+    .hero .lede b { font-weight: 600; color: var(--navy-2); }
+
+    .callout {
+      background: var(--soft);
+      border-left: 4px solid var(--orange);
+      border-radius: 0 14px 14px 0;
+      padding: 20px 26px;
+      margin: 38px 0 0;
+      max-width: 760px;
+      font-size: 1.04rem;
+    }
+    .callout strong { color: var(--navy); }
+    .callout.plain { margin: 30px 0; }
+
+    /* ============ sections ============ */
+    section { padding: 74px 0; border-bottom: 1px solid var(--line-2); }
+    section:last-of-type { border-bottom: 0; }
+    .sec-num {
+      display: inline-flex; align-items: center; gap: 11px;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--orange-2); margin-bottom: 14px;
+    }
+    .sec-num i {
+      font-style: normal; display: grid; place-items: center;
+      width: 27px; height: 27px; border-radius: 8px;
+      background: var(--navy); color: var(--white);
+      font-size: 0.76rem; letter-spacing: 0;
+    }
+    h2 {
+      font-family: var(--display); font-weight: 700;
+      font-size: clamp(1.85rem, 4vw, 2.6rem); line-height: 1.12;
+      letter-spacing: -0.025em; color: var(--navy); margin: 0 0 10px;
+    }
+    .sec-sub {
+      font-size: 1.14rem; color: var(--muted); font-weight: 300;
+      margin: 0 0 30px; max-width: 62ch;
+    }
+    h3 {
+      font-family: var(--display); font-weight: 600;
+      font-size: 1.16rem; color: var(--blue);
+      margin: 40px 0 14px; letter-spacing: -0.01em;
+    }
+    p { margin: 0 0 15px; max-width: 76ch; }
+    strong { color: var(--navy-2); font-weight: 600; }
+
+    ul, ol { margin: 0 0 16px; padding-left: 0; max-width: 76ch; }
+    ul { list-style: none; }
+    ul li {
+      position: relative; padding-left: 26px; margin-bottom: 9px;
+    }
+    ul li::before {
+      content: ""; position: absolute; left: 6px; top: 0.68em;
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--orange);
+    }
+    ol { counter-reset: n; list-style: none; }
+    ol li {
+      position: relative; padding-left: 34px; margin-bottom: 10px;
+      counter-increment: n;
+    }
+    ol li::before {
+      content: counter(n); position: absolute; left: 0; top: 0.12em;
+      width: 22px; height: 22px; border-radius: 7px;
+      background: var(--soft); color: var(--blue);
+      font-size: 0.76rem; font-weight: 700;
+      display: grid; place-items: center;
+    }
+
+    /* ============ pillars ============ */
+    .pillars {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px; margin: 26px 0 0;
+    }
+    .pillar {
+      border: 1px solid var(--line); border-radius: var(--r);
+      padding: 22px; background: var(--white);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .pillar:hover { border-color: var(--blue-2); box-shadow: 0 12px 30px -18px rgba(16,36,64,0.34); }
+    .pillar b {
+      display: block; font-family: var(--display); font-size: 1.55rem;
+      color: var(--orange); line-height: 1; margin-bottom: 10px;
+    }
+    .pillar span { font-weight: 600; color: var(--navy); font-size: 1rem; }
+
+    /* ============ tables ============ */
+    .tbl-wrap { overflow-x: auto; margin: 22px 0 8px; border-radius: var(--r); border: 1px solid var(--line); }
+    table { width: 100%; border-collapse: collapse; font-size: 0.95rem; min-width: 520px; background: var(--white); }
+    thead th {
+      background: var(--navy); color: var(--white);
+      text-align: left; font-weight: 600; font-size: 0.82rem;
+      letter-spacing: 0.05em; text-transform: uppercase;
+      padding: 14px 18px;
+    }
+    tbody td { border-top: 1px solid var(--line-2); padding: 14px 18px; vertical-align: top; }
+    tbody tr:nth-child(even) { background: var(--soft-2); }
+    tbody td:first-child { color: var(--navy); font-weight: 600; width: 27%; }
+    .center { text-align: center; }
+    .yes, .no { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; }
+    .yes { background: rgba(28,138,91,0.12); color: var(--ok); }
+    .no  { background: var(--soft); color: #A9B7C8; }
+    .yes svg, .no svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+    .cmp thead th:not(:first-child) { text-align: center; width: 16%; }
+    .cmp tbody td:first-child { width: 52%; font-weight: 500; color: var(--ink); }
+
+    /* ============ plan blocks ============ */
+    .plan { padding-top: 74px; }
+    .plan-head { display: flex; align-items: flex-start; gap: 18px; flex-wrap: wrap; margin-bottom: 8px; }
+    .tier {
+      font-family: var(--display); font-size: 0.74rem; font-weight: 700;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 7px 14px; border-radius: 999px; white-space: nowrap;
+      border: 1.5px solid currentColor;
+    }
+    .tier-essential { color: var(--blue); }
+    .tier-advanced  { color: var(--orange-2); }
+    .tier-elite     { color: var(--navy); background: linear-gradient(120deg, rgba(237,134,40,0.14), rgba(32,92,165,0.12)); }
+    .plan-fig {
+      margin: 30px 0 6px; border: 1px solid var(--line);
+      border-radius: 20px; overflow: hidden; background: var(--white);
+      box-shadow: 0 26px 60px -38px rgba(16,36,64,0.42);
+    }
+    .ideal {
+      background: var(--soft-2); border: 1px solid var(--line-2);
+      border-radius: 13px; padding: 16px 20px; margin: 0 0 8px;
+      font-size: 0.97rem; max-width: 76ch;
+    }
+    .ideal b { color: var(--orange-2); }
+    .inherits {
+      display: inline-flex; align-items: center; gap: 9px;
+      font-size: 0.88rem; font-weight: 500; color: var(--blue);
+      background: rgba(32,92,165,0.07); border: 1px dashed rgba(32,92,165,0.32);
+      border-radius: 10px; padding: 9px 15px; margin: 0 0 18px;
+    }
+    .inherits svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* ============ cards grid ============ */
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(268px, 1fr)); gap: 16px; margin: 24px 0 0; }
+    .card {
+      border: 1px solid var(--line); border-radius: var(--r);
+      padding: 22px 24px; background: var(--white);
+    }
+    .card b { display: block; color: var(--navy); font-size: 1.02rem; margin-bottom: 6px; font-weight: 600; }
+    .card p { font-size: 0.95rem; color: var(--muted); margin: 0; }
+
+    .rec { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; margin: 28px 0 0; }
+    .rec-card {
+      border: 1px solid var(--line); border-radius: var(--r);
+      padding: 26px; position: relative; overflow: hidden; background: var(--white);
+    }
+    .rec-card::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; }
+    .rec-card.e::before { background: var(--blue); }
+    .rec-card.a::before { background: var(--orange); }
+    .rec-card.l::before { background: linear-gradient(90deg, var(--orange), var(--blue)); }
+    .rec-card b { display: block; font-family: var(--display); font-size: 1.24rem; color: var(--navy); margin-bottom: 8px; }
+    .rec-card p { font-size: 0.96rem; margin: 0; color: var(--muted); }
+
+    .note { font-size: 0.92rem; color: var(--muted); }
+
+    /* ============ footer ============ */
+    footer {
+      background: var(--navy); color: #A9BCD4;
+      padding: 52px 0; margin-top: 20px;
+      font-size: 0.9rem;
+    }
+    footer .wrap { display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; align-items: center; }
+    footer b { color: var(--white); font-family: var(--display); font-size: 1.05rem; display: block; margin-bottom: 4px; }
+    footer a { color: #8FB4E0; text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ============ reveal ============ */
+    .rv { opacity: 0; transform: translateY(22px); transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.22,1,0.36,1); }
+    .rv.in { opacity: 1; transform: none; }
+
+    @media (max-width: 880px) {
+      .topnav { display: none; }
+      section { padding: 54px 0; }
+      .plan { padding-top: 54px; }
+      .hero { padding: 62px 0 50px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .rv { opacity: 1; transform: none; transition: none; }
+    }
+
+    /* ============ print ============ */
+    @page { size: A4; margin: 14mm 13mm; }
+    @media print {
+      html { scroll-padding-top: 0; }
+      body { font-size: 10pt; line-height: 1.46; color: #243247; }
+      .topbar, .btn-print { display: none !important; }
+      .wrap { max-width: none; padding: 0; }
+      .hero { padding: 0 0 18pt; border-bottom: 1px solid var(--line); background: none; }
+      .hero h1 { font-size: 34pt; }
+      .hero .lede { font-size: 12pt; }
+      section { padding: 16pt 0; border-bottom: 0; }
+      .plan { padding-top: 0; page-break-before: always; }
+      #comparacion, #transversales { page-break-before: always; }
+      h2 { font-size: 16pt; }
+      h3 { font-size: 11.5pt; margin: 14pt 0 6pt; }
+      .rv { opacity: 1 !important; transform: none !important; }
+      .plan-fig { box-shadow: none; }
+      .tbl-wrap, table, tr, .card, .pillar, .rec-card, .callout, .ideal { page-break-inside: avoid; }
+      thead th { background: #102440 !important; color: #fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      tbody tr:nth-child(even) { background: #F7FAFD !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .yes, .no, .rec-card::before, .tier { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      footer { background: none; color: var(--muted); border-top: 1px solid var(--line); padding: 14pt 0 0; }
+      footer b { color: var(--navy); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ======================= top bar ======================= -->
+<div class="topbar">
+  <div class="topbar-in">
+    <a class="brand" href="#top"><b>REVELIO</b><span>Propuesta</span></a>
+    <nav class="topnav">
+      <a href="#objetivo">Objetivo</a>
+      <a href="#usuarios">Usuarios</a>
+      <a href="#essential">Essential</a>
+      <a href="#advanced">Advanced</a>
+      <a href="#elite">Elite</a>
+      <a href="#comparacion">Comparación</a>
+      <a href="#definir">Por definir</a>
+    </nav>
+    <button class="btn-print" onclick="window.print()">
+      <svg viewBox="0 0 24 24"><path d="M6 9V3h12v6M6 18H4v-7h16v7h-2M8 14h8v7H8z"/></svg>
+      PDF
+    </button>
+  </div>
+</div>
+
+<!-- ======================= hero ======================= -->
+<header class="hero" id="top">
+  <div class="wrap">
+    <p class="eyebrow">Propuesta funcional · Aplicación web</p>
+    <h1>REVELIO</h1>
+    <p class="lede">Análisis de requerimientos<br><b>Opciones Essential, Advanced y Elite</b></p>
+    <div class="callout">
+      <strong>De la experiencia al hábito:</strong> vivir la cultura, acompañar
+      los compromisos y hacer visible el progreso.
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- ======================= 01 objetivo ======================= -->
+<section id="objetivo">
+  <div class="wrap rv">
+    <p class="sec-num"><i>01</i> Objetivo del proyecto</p>
+    <h2>Extender el acompañamiento más allá del taller</h2>
+    <p>
+      Desarrollar una <strong>aplicación web que complemente las experiencias y
+      consultorías de REVELIO</strong>, permitiendo dar seguimiento a las empresas
+      atendidas, recoger feedback y visualizar los avances de sus equipos.
+    </p>
+    <p>
+      No se plantea inicialmente como un software de recursos humanos ni como una
+      herramienta de vigilancia o calificación de empleados, sino como un
+      <strong>espacio de acompañamiento y seguimiento de la transformación
+      cultural</strong>.
+    </p>
+  </div>
+</section>
+
+<!-- ======================= 02 necesidad ======================= -->
+<section id="necesidad">
+  <div class="wrap rv">
+    <p class="sec-num"><i>02</i> Necesidad que resuelve</p>
+    <h2>Un solo lugar para el seguimiento</h2>
+    <p class="sec-sub">
+      Actualmente REVELIO no cuenta con una plataforma propia para centralizar el
+      seguimiento a sus clientes. La solución debe permitir:
+    </p>
+    <ul>
+      <li>Organizar empresas, equipos, participantes y programas.</li>
+      <li>Registrar las experiencias realizadas y los compromisos adquiridos.</li>
+      <li>Recoger feedback después de las intervenciones.</li>
+      <li>Consultar avances y detectar compromisos pendientes.</li>
+      <li>Entregar a cada empresa una vista clara de su proceso.</li>
+      <li>Mantener la continuidad entre talleres y sesiones de acompañamiento.</li>
+    </ul>
+
+    <h3>Los cuatro pilares de REVELIO</h3>
+    <p class="note">Los programas podrán clasificarse según:</p>
+    <div class="pillars">
+      <div class="pillar"><b>01</b><span>Liderazgo cercano</span></div>
+      <div class="pillar"><b>02</b><span>Comercialización y ventas</span></div>
+      <div class="pillar"><b>03</b><span>Habilidades blandas e improvisación</span></div>
+      <div class="pillar"><b>04</b><span>IA y pensamiento digital</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 03 usuarios ======================= -->
+<section id="usuarios">
+  <div class="wrap rv">
+    <p class="sec-num"><i>03</i> Usuarios y permisos</p>
+    <h2>Cuatro perfiles, un límite claro</h2>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Usuario</th><th>Acceso principal</th></tr></thead>
+        <tbody>
+          <tr><td>Administrador REVELIO</td><td>Gestiona empresas, usuarios, programas y configuración de la plataforma.</td></tr>
+          <tr><td>Consultor REVELIO</td><td>Administra los procesos de las empresas asignadas, registra sesiones y realiza seguimiento.</td></tr>
+          <tr><td>Líder de la empresa cliente</td><td>Consulta los programas, compromisos e indicadores autorizados de su empresa.</td></tr>
+          <tr><td>Participante</td><td>Consulta sus actividades, responde feedback y actualiza sus compromisos.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout plain">
+      <strong>Regla transversal:</strong> cada empresa solo podrá acceder a su propia
+      información. El acceso a respuestas individuales y notas privadas deberá
+      definirse expresamente, no darse por sentado.
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 04 essential ======================= -->
+<section class="plan" id="essential">
+  <div class="wrap rv">
+    <p class="sec-num"><i>04</i> Opción Essential</p>
+    <div class="plan-head">
+      <h2>Centralizar y dar seguimiento</h2>
+      <span class="tier tier-essential">Essential</span>
+    </div>
+    <figure class="plan-fig">
+      <img src="images/essential.png" alt="REVELIO Essential — centraliza y da seguimiento: clientes, compromisos y feedback." width="1600" height="900" />
+    </figure>
+    <p class="ideal">
+      <b>Ideal para:</b> iniciar con una plataforma funcional que organice la
+      operación y permita a los clientes consultar su proceso.
+    </p>
+
+    <h3>4.1 · Funcionalidades incluidas</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Módulo</th><th>Requerimientos esenciales</th></tr></thead>
+        <tbody>
+          <tr><td>Acceso y usuarios</td><td>Inicio de sesión, recuperación de contraseña y permisos según rol.</td></tr>
+          <tr><td>Empresas y equipos</td><td>Crear empresas, contactos, equipos y participantes.</td></tr>
+          <tr><td>Programas de acompañamiento</td><td>Registrar objetivo, pilar de REVELIO, consultor responsable, fechas y estado.</td></tr>
+          <tr><td>Sesiones y experiencias</td><td>Registrar talleres, asistentes, observaciones y materiales de apoyo.</td></tr>
+          <tr><td>Compromisos</td><td>Crear compromisos con responsable, fecha límite y estado: pendiente, en proceso o completado.</td></tr>
+          <tr><td>Feedback básico</td><td>Formulario estándar después de cada sesión, con valoración y comentarios.</td></tr>
+          <tr><td>Panel de seguimiento</td><td>Visualizar sesiones realizadas, compromisos completados y pendientes, y feedback recibido.</td></tr>
+          <tr><td>Portal del cliente</td><td>Permitir que el líder consulte el avance autorizado de su empresa y sus materiales.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>4.2 · ¿Cómo funcionaría?</h3>
+    <ol>
+      <li>REVELIO registra una empresa y crea su programa.</li>
+      <li>El consultor registra el taller y sus participantes.</li>
+      <li>Se asignan compromisos derivados de la experiencia.</li>
+      <li>Los participantes responden el feedback y actualizan sus compromisos.</li>
+      <li>REVELIO y el líder consultan el seguimiento desde la plataforma.</li>
+    </ol>
+
+    <h3>4.3 · Valor para el cliente</h3>
+    <div class="callout plain">
+      <strong>Un solo lugar para consultar qué se hizo, qué se acordó y qué falta
+      por hacer.</strong>
+    </div>
+
+    <h3>4.4 · Criterio clave de aceptación</h3>
+    <p>
+      REVELIO debe poder gestionar un programa completo, desde el registro de la
+      empresa hasta la consulta de compromisos y feedback, sin depender de hojas de
+      cálculo para ese flujo.
+    </p>
+  </div>
+</section>
+
+<!-- ======================= 05 advanced ======================= -->
+<section class="plan" id="advanced">
+  <div class="wrap rv">
+    <p class="sec-num"><i>05</i> Opción Advanced</p>
+    <div class="plan-head">
+      <h2>Medir avances y mantener el acompañamiento</h2>
+      <span class="tier tier-advanced">Advanced</span>
+    </div>
+    <figure class="plan-fig">
+      <img src="images/advanced.png" alt="REVELIO Advanced — medición, planes de acción e informes." width="1600" height="900" loading="lazy" />
+    </figure>
+    <p class="inherits">
+      <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+      Incluye todo lo de Essential
+    </p>
+    <p class="ideal">
+      <b>Ideal para:</b> REVELIO cuando necesita gestionar varios procesos
+      simultáneos y ofrecer un acompañamiento más estructurado.
+    </p>
+
+    <h3>5.1 · Nuevas funcionalidades</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Módulo nuevo</th><th>Requerimientos</th></tr></thead>
+        <tbody>
+          <tr><td>Evaluaciones personalizadas</td><td>Crear cuestionarios según el programa: comunicación asertiva, liderazgo, colaboración o adopción digital.</td></tr>
+          <tr><td>Medición inicial y posterior</td><td>Aplicar evaluaciones comparables al inicio y al cierre de una intervención, con seguimientos intermedios si se requieren.</td></tr>
+          <tr><td>Planes de acción</td><td>Agrupar compromisos en objetivos, hitos y actividades por equipo.</td></tr>
+          <tr><td>Recordatorios automáticos</td><td>Enviar correos por actividades próximas a vencer, evaluaciones pendientes y nuevos materiales.</td></tr>
+          <tr><td>Paneles comparativos</td><td>Consultar evolución por periodo, programa o equipo, mostrando también participación y cantidad de respuestas.</td></tr>
+          <tr><td>Feedback confidencial</td><td>Habilitar encuestas con resultados agregados y un umbral mínimo de respuestas para reducir el riesgo de identificar personas.</td></tr>
+          <tr><td>Informes descargables</td><td>Generar informes PDF con identidad de REVELIO y exportar datos autorizados a Excel o CSV.</td></tr>
+          <tr><td>Biblioteca por programa</td><td>Organizar guías, ejercicios y recursos de consulta asociados al acompañamiento.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>5.2 · Ejemplo de uso</h3>
+    <p>Después de un taller de liderazgo cercano:</p>
+    <ul>
+      <li>El equipo responde una evaluación inicial.</li>
+      <li>Se asigna un plan de acción para las semanas siguientes.</li>
+      <li>La plataforma recuerda los compromisos.</li>
+      <li>Se aplica una segunda evaluación.</li>
+      <li>REVELIO presenta cambios observados y tareas que requieren refuerzo.</li>
+    </ul>
+    <p class="note">
+      <strong>Importante:</strong> la comparación muestra evolución en los
+      indicadores recogidos; por sí sola no demuestra que el taller haya causado
+      todos los cambios.
+    </p>
+
+    <h3>5.3 · Valor para el cliente</h3>
+    <div class="callout plain">
+      <strong>Pasar del registro de actividades a un seguimiento medible y
+      continuo.</strong>
+    </div>
+
+    <h3>5.4 · Criterio clave de aceptación</h3>
+    <p>
+      El sistema debe permitir comparar dos mediciones del mismo programa y generar
+      un informe que indique resultados, fechas, participación y compromisos
+      pendientes.
+    </p>
+  </div>
+</section>
+
+<!-- ======================= 06 elite ======================= -->
+<section class="plan" id="elite">
+  <div class="wrap rv">
+    <p class="sec-num"><i>06</i> Opción Elite</p>
+    <div class="plan-head">
+      <h2>Sostener hábitos y escalar el acompañamiento</h2>
+      <span class="tier tier-elite">Elite</span>
+    </div>
+    <figure class="plan-fig">
+      <img src="images/elite.png" alt="REVELIO Elite — retos colaborativos, IA asistida y visión ejecutiva." width="1600" height="900" loading="lazy" />
+    </figure>
+    <p class="inherits">
+      <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+      Incluye todo lo de Advanced
+    </p>
+    <p class="ideal">
+      <b>Ideal para:</b> consolidar la plataforma como un diferencial de REVELIO y
+      mantener la participación entre intervenciones presenciales.
+    </p>
+
+    <h3>6.1 · Nuevas funcionalidades</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Módulo nuevo</th><th>Requerimientos</th></tr></thead>
+        <tbody>
+          <tr><td>Retos y misiones de equipo</td><td>Crear desafíos digitales vinculados a comportamientos reales: practicar escucha activa, compartir aprendizajes o realizar conversaciones de feedback.</td></tr>
+          <tr><td>Gamificación colaborativa</td><td>Reconocer hitos colectivos mediante insignias y progreso compartido, evitando rankings individuales de desempeño.</td></tr>
+          <tr><td>Rutas de aprendizaje</td><td>Organizar secuencias de actividades, recursos y evaluaciones por pilar y equipo.</td></tr>
+          <tr><td>Asistente de análisis con IA</td><td>Elaborar borradores de resúmenes de feedback agregado y sugerencias de seguimiento para revisión del consultor.</td></tr>
+          <tr><td>Alertas configurables</td><td>Notificar baja participación, compromisos vencidos o descensos en indicadores según reglas acordadas con REVELIO.</td></tr>
+          <tr><td>Panel ejecutivo</td><td>Consolidar resultados por sedes, áreas y programas, respetando permisos y mínimos de agregación.</td></tr>
+          <tr><td>Integraciones empresariales</td><td>Conectar con herramientas acordadas, como Microsoft Teams o calendarios, según disponibilidad de sus API y licencias.</td></tr>
+          <tr><td>Acceso corporativo y auditoría</td><td>Incorporar inicio de sesión empresarial mediante un proveedor acordado y registro de acciones relevantes.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>6.2 · Ejemplo de uso</h3>
+    <p>Después de una experiencia sobre comunicación asertiva:</p>
+    <ol>
+      <li>Los equipos reciben una misión semanal.</li>
+      <li>Registran una breve reflexión sobre su aplicación.</li>
+      <li>La plataforma muestra el progreso colectivo.</li>
+      <li>Las reglas de seguimiento alertan al consultor si disminuye la participación.</li>
+      <li>La IA prepara un resumen de tendencias del feedback agregado.</li>
+      <li>El consultor revisa el contenido y decide cómo continuar el acompañamiento.</li>
+    </ol>
+    <div class="callout plain">
+      <strong>La IA apoya al consultor; no diagnostica personas ni toma decisiones
+      laborales.</strong>
+    </div>
+
+    <h3>6.3 · Valor para el cliente</h3>
+    <div class="callout plain">
+      <strong>Convertir los aprendizajes del taller en prácticas sostenidas, con una
+      experiencia digital alineada con el juego serio de REVELIO.</strong>
+    </div>
+
+    <h3>6.4 · Criterio clave de aceptación</h3>
+    <p>
+      REVELIO debe poder publicar una ruta con misiones, consultar su participación
+      y revisar un resumen asistido por IA antes de compartirlo con el cliente.
+    </p>
+  </div>
+</section>
+
+<!-- ======================= 07 comparación ======================= -->
+<section id="comparacion">
+  <div class="wrap rv">
+    <p class="sec-num"><i>07</i> Comparación de las opciones</p>
+    <h2>Qué incluye cada opción</h2>
+    <div class="tbl-wrap">
+      <table class="cmp">
+        <thead>
+          <tr><th>Capacidad</th><th>Essential</th><th>Advanced</th><th>Elite</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Gestión de empresas, equipos y programas</td>
+            <td class="center"><span class="yes"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span></td>
+            <td class="center"><span class="yes"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span></td>
+            <td class="center"><span class="yes"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span></td>
+          </tr>
+          <tr>
+            <td>Sesiones, materiales y compromisos</td>
+            <td class="center"><span class="yes"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span></td>
+            <td class="center"><span class="yes"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span></td>
+            <td class="center"><span class="yes"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span></td>
+          </tr>
+          <tr>
+            <td>Feedback básico y portal del cliente</td>
+            <td class="center"><span class="yes"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span></td>
+            <td class="center"><span class="yes"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span></td>
+            <td class="center"><span class="yes"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span></td>
+          </tr>
+          <tr>
+            <td>Evaluaciones personalizadas y comparativas</td>
+            <td class="center"><span class="no"><svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg></span></td>
+            <td class="center"><span class="yes"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span></td>
+            <td class="center"><span class="yes"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span></td>
+          </tr>
+          <tr>
+            <td>Planes de acción y recordatorios automáticos</td>
+            <td class="center"><span class="no"><svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg></span></td>
+            <td class="center"><span class="yes"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span></td>
+            <td class="center"><span class="yes"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span></td>
+          </tr>
+          <tr>
+            <td>Informes descargables</td>
+            <td class="center"><span class="no"><svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg></span></td>
+            <td class="center"><span class="yes"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span></td>
+            <td class="center"><span class="yes"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span></td>
+          </tr>
+          <tr>
+            <td>Retos colaborativos y rutas de aprendizaje</td>
+            <td class="center"><span class="no"><svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg></span></td>
+            <td class="center"><span class="no"><svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg></span></td>
+            <td class="center"><span class="yes"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span></td>
+          </tr>
+          <tr>
+            <td>Resúmenes asistidos por IA</td>
+            <td class="center"><span class="no"><svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg></span></td>
+            <td class="center"><span class="no"><svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg></span></td>
+            <td class="center"><span class="yes"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span></td>
+          </tr>
+          <tr>
+            <td>Panel ejecutivo consolidado</td>
+            <td class="center"><span class="no"><svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg></span></td>
+            <td class="center"><span class="no"><svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg></span></td>
+            <td class="center"><span class="yes"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span></td>
+          </tr>
+          <tr>
+            <td>Integraciones y acceso corporativo</td>
+            <td class="center"><span class="no"><svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg></span></td>
+            <td class="center"><span class="no"><svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg></span></td>
+            <td class="center"><span class="yes"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 08 transversales ======================= -->
+<section id="transversales">
+  <div class="wrap rv">
+    <p class="sec-num"><i>08</i> Requerimientos transversales</p>
+    <h2>Aplican a las tres opciones</h2>
+    <p class="sec-sub">La seguridad básica no debe depender del plan contratado.</p>
+    <div class="cards">
+      <div class="card"><b>Diseño adaptable</b><p>Uso desde computador, tableta y celular.</p></div>
+      <div class="card"><b>Usabilidad y accesibilidad</b><p>Navegación clara, contraste adecuado y formularios comprensibles.</p></div>
+      <div class="card"><b>Seguridad</b><p>Conexión HTTPS, contraseñas protegidas y permisos verificados en el servidor.</p></div>
+      <div class="card"><b>Aislamiento de información</b><p>Separación efectiva entre empresas.</p></div>
+      <div class="card"><b>Respaldo y recuperación</b><p>Copias de seguridad con periodicidad y retención acordadas.</p></div>
+      <div class="card"><b>Protección de datos</b><p>Diseño alineado con la Ley 1581 de 2012 y normativa colombiana aplicable, sujeto a validación jurídica.</p></div>
+      <div class="card"><b>Privacidad del feedback</b><p>Definir quién ve respuestas, qué se agrega y cuánto tiempo se conserva.</p></div>
+      <div class="card"><b>Indicadores transparentes</b><p>Documentar fórmulas, fuentes y periodos. Cumplir actividades no equivale automáticamente a mejorar la cultura.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 09 por definir ======================= -->
+<section id="definir">
+  <div class="wrap rv">
+    <p class="sec-num"><i>09</i> Aspectos por definir antes de cotizar</p>
+    <h2>Lo que necesitamos acordar</h2>
+    <ol>
+      <li>Número estimado de empresas, usuarios y usuarios simultáneos.</li>
+      <li>Cuestionarios e indicadores que aportará REVELIO.</li>
+      <li>Visibilidad de respuestas individuales y notas del consultor.</li>
+      <li>Volumen de archivos y necesidad de importar información existente.</li>
+      <li>Integraciones concretas para Elite.</li>
+      <li>Presupuesto de alojamiento, correo, IA, soporte y mantenimiento.</li>
+    </ol>
+    <div class="callout plain">
+      <strong>Alcance inicial excluido:</strong> aplicación móvil nativa, nómina,
+      facturación, CRM comercial completo y producción de contenidos metodológicos,
+      salvo contratación expresa.
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 10 recomendación ======================= -->
+<section id="recomendacion">
+  <div class="wrap rv">
+    <p class="sec-num"><i>10</i> Recomendación</p>
+    <h2>Cómo elegir</h2>
+    <div class="rec">
+      <div class="rec-card e">
+        <b>Essential</b>
+        <p>Permite validar el uso real de la plataforma.</p>
+      </div>
+      <div class="rec-card a">
+        <b>Advanced</b>
+        <p>Ofrece el equilibrio más directo entre seguimiento, medición y valor para las empresas clientes.</p>
+      </div>
+      <div class="rec-card l">
+        <b>Elite</b>
+        <p>Añade el diferencial más alineado con REVELIO: prolongar la experiencia lúdica mediante retos, aprendizaje continuo y acompañamiento asistido por tecnología.</p>
+      </div>
+    </div>
+    <div class="callout">
+      <strong>REVELIO:</strong> la cultura no solo se conversa, sino que se vive.
+      La plataforma propuesta permite acompañar esa experiencia y hacer visible su
+      continuidad.
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <b>Juan Andres Baron Baron</b>
+      Desarrollo de software a la medida · Pereira, Risaralda · Colombia
+    </div>
+    <div>
+      <a href="mailto:juanandresbaronbaron2001@gmail.com">juanandresbaronbaron2001@gmail.com</a><br>
+      <a href="https://juanandresbaronbaron.github.io/cv/" target="_blank" rel="noopener">juanandresbaronbaron.github.io/cv</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  /* Reveal on scroll — presentation only; the page is fully readable without it. */
+  (function () {
+    var items = document.querySelectorAll(".rv");
+    if (!("IntersectionObserver" in window)) {
+      Array.prototype.forEach.call(items, function (el) { el.classList.add("in"); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+      });
+    }, { rootMargin: "0px 0px -8% 0px", threshold: 0.04 });
+    Array.prototype.forEach.call(items, function (el) { io.observe(el); });
+  })();
+</script>
+
+</body>
+</html>
