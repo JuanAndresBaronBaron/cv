@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plataforma de gestión para restaurantes — Propuesta</title>
+  <!-- unlisted page: shared by link only, kept out of search engines -->
+  <meta name="robots" content="noindex, nofollow, noarchive" />
+  <meta name="referrer" content="no-referrer" />
+  <meta name="description" content="Análisis de requerimientos de una plataforma por suscripción para la gestión de restaurantes." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2312294D'/%3E%3Cg stroke='%23F0811F' stroke-width='8' stroke-linecap='round' fill='none'%3E%3Cpath d='M32 24v26a8 8 0 0 0 16 0V24M40 50v26'/%3E%3Cpath d='M66 24c-6 6-6 20 0 24v28'/%3E%3C/g%3E%3C/svg%3E" />
+
+  <style>
+    /* ============ tokens — navy, blue and orange, from the plan art ============ */
+    :root {
+      --navy:    #12294D;
+      --navy-2:  #1B3B6F;
+      --blue:    #2563C7;
+      --blue-2:  #4A8BE8;
+      --blue-l:  #EAF1FC;
+      --blue-xl: #F5F9FE;
+      --orange:  #F0811F;
+      --orange-d:#C2410C;
+      --ink:     #16202E;
+      --ink-2:   #33415A;
+      --muted:   #5C6B80;
+      --line:    #E2E9F2;
+      --line-2:  #EFF4F9;
+      --soft:    #F5F8FC;
+      --white:   #FFFFFF;
+      --ok:      #157A4C;
+
+      --silver:  #8A98AB;
+      --gold:    #C99530;
+      --diamond: #3E9BD6;
+      --enterprise: #1B3B6F;
+
+      --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --display: "Space Grotesk", var(--sans);
+      --wrap: 1160px;
+      --r: 16px;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+      color-scheme: light;
+    }
+
+    * { box-sizing: border-box; }
+    /* No scroll-behavior: Lenis owns the scroll position and the native
+       smooth-scroll engine fighting it is what makes a page stutter. */
+    html { scroll-padding-top: 88px; }
+    html.lenis, html.lenis body { height: auto; }
+    .lenis.lenis-smooth { scroll-behavior: auto !important; }
+    .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+    .lenis.lenis-stopped { overflow: hidden; }
+
+    body {
+      margin: 0; font-family: var(--sans); font-size: 16.5px; line-height: 1.68;
+      color: var(--ink-2); background: var(--white); -webkit-font-smoothing: antialiased;
+    }
+    /* height:auto keeps the width/height attributes from stretching the art */
+    img { max-width: 100%; height: auto; display: block; }
+    .wrap { width: 100%; max-width: var(--wrap); margin: 0 auto; padding: 0 28px; }
+
+    /* ============ scroll progress ============ */
+    .prog {
+      position: fixed; top: 0; left: 0; height: 3px; width: 100%;
+      transform: scaleX(0); transform-origin: 0 50%;
+      background: linear-gradient(90deg, var(--blue), var(--orange));
+      z-index: 60;
+    }
+
+    /* ============ top bar ============ */
+    .topbar {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(255,255,255,0.74);
+      -webkit-backdrop-filter: blur(11px); backdrop-filter: blur(11px);
+      border-bottom: 1px solid transparent;
+      transition: background 0.45s var(--ease), border-color 0.45s var(--ease), box-shadow 0.45s var(--ease);
+    }
+    .topbar.is-stuck {
+      background: rgba(255,255,255,0.94);
+      border-bottom-color: var(--line);
+      box-shadow: 0 8px 28px -22px rgba(18,41,77,0.5);
+    }
+    /* Height stays fixed: a sticky bar sits in normal flow, so animating its
+       height shortens the document and jerks everything below it. */
+    .topbar-in {
+      display: flex; align-items: center; gap: 24px; height: 66px;
+      width: 100%; max-width: var(--wrap); margin: 0 auto; padding: 0 28px;
+    }
+    .brand { display: flex; align-items: center; gap: 11px; text-decoration: none; flex-shrink: 0; }
+    .brand svg { width: 26px; height: 26px; }
+    .brand b { font-family: var(--display); font-weight: 700; font-size: 1.02rem; letter-spacing: -0.015em; color: var(--navy); }
+    .topnav { display: flex; gap: 1px; margin-left: auto; flex-wrap: wrap; }
+    .topnav a {
+      position: relative; font-size: 0.8rem; font-weight: 500; color: var(--muted);
+      text-decoration: none; padding: 7px 11px; border-radius: 9px; white-space: nowrap;
+      transition: color 0.3s var(--ease), background 0.3s var(--ease);
+    }
+    .topnav a:hover { color: var(--navy); background: var(--blue-l); }
+    .topnav a.is-active { color: var(--blue); }
+    .topnav a.is-active::after {
+      content: ""; position: absolute; left: 11px; right: 11px; bottom: 2px;
+      height: 2px; border-radius: 2px; background: var(--orange);
+    }
+    .btn {
+      font-family: var(--sans); font-size: 0.81rem; font-weight: 600;
+      border: 0; border-radius: 10px; padding: 10px 16px; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 8px; flex-shrink: 0;
+      text-decoration: none;
+      transition: transform 0.35s var(--ease), background 0.3s var(--ease), box-shadow 0.35s var(--ease);
+    }
+    .btn-primary { color: var(--white); background: var(--navy); box-shadow: 0 8px 20px -12px rgba(18,41,77,0.9); }
+    .btn-primary:hover { background: var(--blue); transform: translateY(-1px); }
+    .btn-primary:active { transform: translateY(0) scale(0.98); }
+    .btn svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* ============ hero ============ */
+    .hero {
+      padding: 92px 0 74px; overflow: hidden;
+      background:
+        radial-gradient(1000px 480px at 86% -16%, rgba(240,129,31,0.16), transparent 62%),
+        radial-gradient(860px 460px at 0% 4%, rgba(37,99,199,0.14), transparent 60%),
+        var(--white);
+      border-bottom: 1px solid var(--line-2);
+    }
+    .eyebrow {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--orange-d); margin: 0 0 18px;
+    }
+    .hero h1 {
+      font-family: var(--display); font-weight: 700;
+      font-size: clamp(2.5rem, 6.4vw, 4.5rem); line-height: 1.0;
+      letter-spacing: -0.035em; color: var(--navy); margin: 0 0 22px; max-width: 16ch;
+    }
+    .hero h1 em { font-style: normal; color: var(--orange); }
+    .hero .lede { font-size: clamp(1.06rem, 2.1vw, 1.3rem); font-weight: 300; color: var(--muted); margin: 0; max-width: 56ch; }
+    .hero-tags { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 30px; }
+    .htag {
+      font-size: 0.78rem; font-weight: 600; color: var(--navy-2);
+      background: var(--blue-l); border: 1px solid rgba(37,99,199,0.18);
+      border-radius: 999px; padding: 7px 14px;
+    }
+
+    .callout {
+      background: var(--blue-l); border-left: 4px solid var(--orange);
+      border-radius: 0 14px 14px 0; padding: 20px 26px; margin: 34px 0 0;
+      max-width: 780px; font-size: 1.02rem;
+    }
+    .callout strong { color: var(--navy); }
+    .callout.plain { margin: 28px 0; }
+    .callout.warn { background: #FFF6EC; border-left-color: var(--orange); }
+
+    /* ============ sections ============ */
+    section { padding: 78px 0; }
+    .band { background: var(--soft); }
+    .band-dark {
+      background: var(--navy); color: rgba(255,255,255,0.78);
+    }
+    .band-dark h2, .band-dark strong, .band-dark b { color: #FFFFFF; }
+    .band-dark .sec-num, .band-dark h3 { color: #FFB06A; }
+    .band-dark .sec-num i { background: var(--orange); color: #FFFFFF; }
+    .band-dark .callout { background: rgba(255,255,255,0.07); }
+    .band-dark .note { color: rgba(255,255,255,0.6); }
+
+    .sec-num {
+      display: inline-flex; align-items: center; gap: 11px;
+      font-size: 0.71rem; font-weight: 700; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--orange-d); margin-bottom: 14px;
+    }
+    .sec-num i {
+      font-style: normal; display: grid; place-items: center;
+      width: 27px; height: 27px; border-radius: 8px;
+      background: var(--navy); color: var(--white); font-size: 0.75rem; letter-spacing: 0;
+    }
+    h2 {
+      font-family: var(--display); font-weight: 700;
+      font-size: clamp(1.8rem, 3.8vw, 2.5rem); line-height: 1.12;
+      letter-spacing: -0.026em; color: var(--navy); margin: 0 0 10px;
+    }
+    .sec-sub { font-size: 1.12rem; color: var(--muted); font-weight: 300; margin: 0 0 30px; max-width: 64ch; }
+    h3 { font-family: var(--display); font-weight: 600; font-size: 1.1rem; color: var(--blue); margin: 38px 0 12px; }
+    p { margin: 0 0 15px; max-width: 78ch; }
+    strong { color: var(--navy); font-weight: 600; }
+    .note { font-size: 0.9rem; color: var(--muted); }
+
+    ul, ol { margin: 0 0 16px; padding-left: 0; max-width: 78ch; }
+    ul { list-style: none; }
+    ul li { position: relative; padding-left: 25px; margin-bottom: 8px; }
+    ul li::before { content: ""; position: absolute; left: 6px; top: 0.68em; width: 7px; height: 7px; border-radius: 50%; background: var(--orange); }
+    ol { counter-reset: n; list-style: none; }
+    ol li { position: relative; padding-left: 34px; margin-bottom: 9px; counter-increment: n; }
+    ol li::before {
+      content: counter(n); position: absolute; left: 0; top: 0.12em;
+      width: 22px; height: 22px; border-radius: 7px; background: var(--blue-l);
+      color: var(--blue); font-size: 0.75rem; font-weight: 700; display: grid; place-items: center;
+    }
+
+    /* ============ tables ============ */
+    .tbl-wrap { overflow-x: auto; margin: 22px 0 8px; border-radius: var(--r); border: 1px solid var(--line); }
+    table { width: 100%; border-collapse: collapse; font-size: 0.94rem; min-width: 560px; background: var(--white); }
+    thead th {
+      background: var(--navy); color: var(--white); text-align: left;
+      font-weight: 600; font-size: 0.79rem; letter-spacing: 0.05em;
+      text-transform: uppercase; padding: 14px 17px;
+    }
+    tbody td { border-top: 1px solid var(--line-2); padding: 13px 17px; vertical-align: top; }
+    tbody tr:nth-child(even) { background: var(--blue-xl); }
+    tbody td:first-child { color: var(--navy); font-weight: 600; }
+    .center { text-align: center; }
+
+    /* ============ hierarchy diagram ============ */
+    .tree { margin: 26px 0 0; display: grid; gap: 12px; }
+    .tree-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+    .node {
+      display: inline-flex; align-items: center; gap: 10px;
+      border: 1px solid var(--line); border-radius: 12px; background: var(--white);
+      padding: 12px 18px; font-weight: 600; color: var(--navy); font-size: 0.93rem;
+      transition: border-color 0.35s var(--ease), transform 0.35s var(--ease), box-shadow 0.35s var(--ease);
+    }
+    .node:hover { border-color: var(--blue-2); transform: translateY(-2px); box-shadow: 0 14px 30px -20px rgba(18,41,77,0.5); }
+    .node small { font-weight: 400; color: var(--muted); font-size: 0.8rem; }
+    .node-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--orange); flex-shrink: 0; }
+    .tree-row.indent-1 { padding-left: 30px; }
+    .tree-row.indent-2 { padding-left: 60px; }
+    .tree-row.indent-3 { padding-left: 90px; }
+    .tree-arrow { color: var(--line); flex-shrink: 0; }
+
+    /* ============ role cards ============ */
+    .roles { display: grid; grid-template-columns: repeat(auto-fit, minmax(258px, 1fr)); gap: 14px; margin-top: 26px; }
+    .role {
+      border: 1px solid var(--line); border-radius: var(--r); padding: 20px 22px;
+      background: var(--white);
+      transition: border-color 0.35s var(--ease), transform 0.35s var(--ease), box-shadow 0.35s var(--ease);
+    }
+    .role:hover { border-color: var(--blue-2); transform: translateY(-3px); box-shadow: 0 18px 38px -26px rgba(18,41,77,0.55); }
+    .role-top { display: flex; align-items: center; gap: 11px; margin-bottom: 8px; }
+    .role-ic { width: 34px; height: 34px; border-radius: 10px; background: var(--blue-l); display: grid; place-items: center; flex-shrink: 0; }
+    .role-ic svg { width: 18px; height: 18px; stroke: var(--blue); fill: none; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+    .role b { color: var(--navy); font-size: 0.98rem; font-weight: 600; }
+    .role p { font-size: 0.9rem; color: var(--muted); margin: 0; }
+
+    /* ============ module accordion ============ */
+    .mods { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 14px; margin-top: 28px; align-items: start; }
+    .mod { border: 1px solid var(--line); border-radius: var(--r); background: var(--white); overflow: hidden; }
+    .mod-h {
+      display: flex; align-items: center; gap: 13px; width: 100%;
+      padding: 18px 20px; background: none; border: 0; cursor: pointer;
+      font-family: var(--sans); text-align: left;
+      transition: background 0.3s var(--ease);
+    }
+    .mod-h:hover { background: var(--blue-xl); }
+    .mod-ic { width: 36px; height: 36px; border-radius: 10px; background: var(--blue-l); display: grid; place-items: center; flex-shrink: 0; }
+    .mod-ic svg { width: 19px; height: 19px; stroke: var(--blue); fill: none; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+    .mod-t { flex: 1; min-width: 0; }
+    .mod-t b { display: block; color: var(--navy); font-size: 0.99rem; font-weight: 600; line-height: 1.3; }
+    .mod-t span { font-size: 0.84rem; color: var(--muted); }
+    .mod-x { width: 22px; height: 22px; flex-shrink: 0; stroke: var(--blue); fill: none; stroke-width: 2.2; stroke-linecap: round; transition: transform 0.4s var(--ease); }
+    .mod.is-open .mod-x { transform: rotate(45deg); }
+    .mod-b { display: none; padding: 0 20px 20px 69px; }
+    .mod.is-open .mod-b { display: block; }
+    .mod-b ul { margin: 0; }
+    .mod-b li { font-size: 0.92rem; }
+    .mod-b .flag {
+      display: block; margin-top: 12px; font-size: 0.87rem;
+      background: #FFF6EC; border-left: 3px solid var(--orange);
+      border-radius: 0 9px 9px 0; padding: 11px 15px; color: var(--ink-2);
+    }
+    .mod-b .flag b { color: var(--orange-d); }
+
+    /* ============ flow ============ */
+    .flow { display: grid; grid-template-columns: repeat(auto-fit, minmax(184px, 1fr)); gap: 12px; margin-top: 28px; }
+    .step {
+      border: 1px solid var(--line); border-radius: var(--r); background: var(--white);
+      padding: 20px; position: relative; overflow: hidden;
+      transition: border-color 0.35s var(--ease), transform 0.35s var(--ease), box-shadow 0.35s var(--ease);
+    }
+    .step:hover { border-color: var(--orange); transform: translateY(-3px); box-shadow: 0 18px 38px -26px rgba(240,129,31,0.6); }
+    .step::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 3px; background: var(--orange); opacity: 0.5; }
+    .step i {
+      font-style: normal; display: grid; place-items: center;
+      width: 30px; height: 30px; border-radius: 9px; background: var(--navy);
+      color: var(--white); font-size: 0.8rem; font-weight: 700; margin-bottom: 12px;
+    }
+    .step b { display: block; color: var(--navy); font-size: 1rem; margin-bottom: 5px; }
+    .step p { font-size: 0.88rem; color: var(--muted); margin: 0; }
+
+    /* ============ plan switcher ============ */
+    .plan-tabs { display: flex; flex-wrap: wrap; gap: 9px; margin: 30px 0 26px; }
+    .ptab {
+      font-family: var(--display); font-size: 0.88rem; font-weight: 600;
+      letter-spacing: 0.02em; padding: 11px 22px; border-radius: 999px;
+      border: 1.5px solid var(--line); background: var(--white); color: var(--muted);
+      cursor: pointer;
+      transition: color 0.3s var(--ease), border-color 0.3s var(--ease), background 0.3s var(--ease), transform 0.3s var(--ease);
+    }
+    .ptab:hover { transform: translateY(-2px); color: var(--navy); }
+    .ptab.is-on { color: var(--white); border-color: transparent; }
+    .ptab[data-plan="silver"].is-on { background: var(--silver); }
+    .ptab[data-plan="gold"].is-on { background: var(--gold); }
+    .ptab[data-plan="diamond"].is-on { background: var(--diamond); }
+    .ptab[data-plan="enterprise"].is-on { background: var(--enterprise); }
+
+    .panel { display: none; }
+    .panel.is-on { display: block; }
+    .plan-fig {
+      border: 1px solid var(--line); border-radius: 20px; overflow: hidden;
+      background: var(--white); box-shadow: 0 30px 70px -46px rgba(18,41,77,0.55);
+    }
+    .plan-grid { display: grid; grid-template-columns: 1.25fr 1fr; gap: 30px; align-items: start; }
+    .plan-meta h3 { margin-top: 0; color: var(--navy); font-size: 1.5rem; font-family: var(--display); }
+    .plan-promise {
+      font-size: 1.08rem; color: var(--ink-2); font-style: italic;
+      border-left: 3px solid var(--orange); padding-left: 15px; margin: 0 0 18px;
+    }
+    .plan-seats {
+      display: inline-flex; align-items: baseline; gap: 9px; margin-bottom: 16px;
+      background: var(--blue-l); border-radius: 11px; padding: 10px 16px;
+    }
+    .plan-seats b { font-family: var(--display); font-size: 1.3rem; color: var(--navy); }
+    .plan-seats span { font-size: 0.85rem; color: var(--muted); }
+    .plan-meta ul li { font-size: 0.94rem; }
+
+    /* ============ comparison ============ */
+    .cmp tbody td:first-child { width: 40%; font-weight: 500; color: var(--ink-2); }
+    .cmp thead th:not(:first-child) { text-align: center; width: 15%; cursor: pointer; }
+    .cmp th.col-on { background: var(--blue); }
+    .cmp td.col-on { background: var(--blue-l) !important; }
+    .yes, .no, .part { display: inline-grid; place-items: center; min-width: 22px; height: 22px; border-radius: 999px; padding: 0 8px; font-size: 0.74rem; font-weight: 600; }
+    .yes { background: rgba(21,122,76,0.12); color: var(--ok); }
+    .no { background: #EEF1F5; color: #A7B2C0; }
+    .part { background: rgba(240,129,31,0.15); color: var(--orange-d); }
+    .yes svg, .no svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 3.2; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* ============ stages ============ */
+    .stages { display: grid; grid-template-columns: repeat(auto-fit, minmax(232px, 1fr)); gap: 14px; margin-top: 28px; }
+    .stage { border: 1px solid var(--line); border-radius: var(--r); background: var(--white); padding: 22px; }
+    .stage-n { font-family: var(--display); font-size: 0.74rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--orange-d); margin-bottom: 9px; }
+    .stage b { display: block; color: var(--navy); font-size: 1.06rem; margin-bottom: 9px; font-family: var(--display); }
+    .stage ul li { font-size: 0.88rem; margin-bottom: 5px; }
+    .stage .out { margin-top: 13px; padding-top: 12px; border-top: 1px dashed var(--line); font-size: 0.86rem; color: var(--blue); font-weight: 600; }
+
+    /* ============ cards ============ */
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(262px, 1fr)); gap: 14px; margin-top: 26px; }
+    .card { border: 1px solid var(--line); border-radius: var(--r); padding: 20px 22px; background: var(--white); transition: border-color 0.35s var(--ease), transform 0.35s var(--ease); }
+    .card:hover { border-color: var(--blue-2); transform: translateY(-3px); }
+    .card b { display: block; color: var(--navy); font-size: 0.99rem; margin-bottom: 5px; font-weight: 600; }
+    .card p { font-size: 0.9rem; color: var(--muted); margin: 0; }
+
+    /* ============ footer ============ */
+    footer { background: var(--navy); color: rgba(255,255,255,0.72); padding: 56px 0; font-size: 0.9rem; }
+    footer .wrap { display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; align-items: center; }
+    footer b { color: var(--white); font-family: var(--display); font-size: 1.05rem; display: block; margin-bottom: 4px; }
+    footer a { color: #9FC4F5; text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ============ reveal ============ */
+    .rv { opacity: 0; transform: translateY(26px); }
+    [data-fig] { opacity: 0; transform: translateY(30px) scale(0.96); }
+    .no-anim .rv, .no-anim [data-fig] { opacity: 1 !important; transform: none !important; }
+
+    @media (max-width: 980px) { .plan-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 880px) {
+      .topnav { display: none; }
+      section { padding: 54px 0; }
+      .hero { padding: 62px 0 50px; }
+      .mod-b { padding-left: 20px; }
+    }
+    @media (prefers-reduced-motion: reduce) { .rv, [data-fig] { opacity: 1; transform: none; } }
+
+    /* ============ print ============ */
+    @page { size: A4; margin: 13mm 12mm; }
+    @media print {
+      body { font-size: 9.6pt; line-height: 1.44; }
+      .topbar, .prog, .btn, .plan-tabs { display: none !important; }
+      .wrap { max-width: none; padding: 0; }
+      .hero { padding: 0 0 16pt; background: none; border-bottom: 1px solid var(--line); }
+      .hero h1 { font-size: 30pt; }
+      section { padding: 14pt 0; }
+      .band, .band-dark { background: none !important; color: var(--ink-2) !important; }
+      .band-dark h2, .band-dark strong, .band-dark b { color: var(--navy) !important; }
+      .band-dark .sec-num, .band-dark h3 { color: var(--orange-d) !important; }
+      h2 { font-size: 15pt; }
+      h3 { font-size: 11pt; margin: 12pt 0 5pt; }
+      .rv, [data-fig] { opacity: 1 !important; transform: none !important; }
+      /* every module opens, so the printed copy is complete */
+      .mod-b { display: block !important; }
+      .mod-x { display: none; }
+      .panel { display: block !important; page-break-before: always; }
+      .plan-fig { box-shadow: none; }
+      #planes { page-break-before: always; }
+      .tbl-wrap, table, tr, .card, .role, .mod, .step, .stage, .callout { page-break-inside: avoid; }
+      thead th, .yes, .part, .step::before { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      footer { background: none !important; color: var(--muted); border-top: 2px solid var(--navy); padding: 12pt 0 0; }
+      footer b, footer a { color: var(--navy); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="prog" id="prog"></div>
+
+<div class="topbar" id="topbar">
+  <div class="topbar-in">
+    <a class="brand" href="#top">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="22" fill="#12294D"/><g stroke="#F0811F" stroke-width="8" stroke-linecap="round" fill="none"><path d="M32 24v26a8 8 0 0 0 16 0V24M40 50v26"/><path d="M66 24c-6 6-6 20 0 24v28"/></g></svg>
+      <b>Plataforma para restaurantes</b>
+    </a>
+    <nav class="topnav" id="topnav">
+      <a href="#objetivo">Objetivo</a>
+      <a href="#estructura">Estructura</a>
+      <a href="#usuarios">Usuarios</a>
+      <a href="#modulos">Módulos</a>
+      <a href="#flujo">Flujo</a>
+      <a href="#planes">Planes</a>
+      <a href="#comparativo">Comparativo</a>
+      <a href="#etapas">Etapas</a>
+      <a href="#decisiones">Por definir</a>
+    </nav>
+    <button class="btn btn-primary" onclick="window.print()">
+      <svg viewBox="0 0 24 24"><path d="M6 9V3h12v6M6 18H4v-7h16v7h-2M8 14h8v7H8z"/></svg>
+      PDF
+    </button>
+  </div>
+</div>
+
+<!-- ======================= hero ======================= -->
+<header class="hero" id="top">
+  <div class="wrap">
+    <p class="eyebrow">Análisis de requerimientos · Plataforma SaaS</p>
+    <h1>Gestión de restaurantes, de la mesa al <em>cierre de caja</em></h1>
+    <p class="lede">
+      Plataforma por suscripción para múltiples empresas de restaurantes: marcas,
+      sedes, empleados, mesas, pedidos, cocina, caja y proveedores en un mismo
+      sistema. El cliente pide escaneando un código QR y recibe atención de un
+      mesero virtual por chat o voz.
+    </p>
+    <div class="hero-tags">
+      <span class="htag">Multiempresa</span>
+      <span class="htag">Pedidos por QR</span>
+      <span class="htag">Comandas a cocina</span>
+      <span class="htag">Caja y cierre</span>
+      <span class="htag">Inventario y recetas</span>
+      <span class="htag">Compras automatizadas</span>
+      <span class="htag">Mesero virtual con IA</span>
+    </div>
+    <div class="callout">
+      <strong>Cuatro planes: Silver, Gold, Diamond y Enterprise.</strong> Los límites
+      de sedes y funcionalidades son una propuesta comercial inicial; los precios y
+      las cuotas de inteligencia artificial deben definirse según costos operativos
+      y validación del mercado.
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- ======================= 01 objetivo ======================= -->
+<section id="objetivo">
+  <div class="wrap">
+    <p class="sec-num rv"><i>01</i> Objetivo del producto</p>
+    <h2 class="rv">Centralizar y automatizar la operación</h2>
+    <div class="cards" data-stagger>
+      <div class="card rv"><b>Menos errores</b><p>Reducir equivocaciones al tomar y entregar pedidos.</p></div>
+      <div class="card rv"><b>Comunicación ágil</b><p>Conectar mesas, meseros, cocina y caja en tiempo real.</p></div>
+      <div class="card rv"><b>Visibilidad por sede</b><p>Dar al propietario una vista clara de todas sus sedes.</p></div>
+      <div class="card rv"><b>Pedido sin app</b><p>Permitir pedir desde la mesa sin instalar nada.</p></div>
+      <div class="card rv"><b>Control financiero</b><p>Administrar ventas, efectivo, inventario y compras.</p></div>
+      <div class="card rv"><b>Abastecimiento automático</b><p>Automatizar compras con reglas y supervisión humana.</p></div>
+      <div class="card rv"><b>Atención con IA</b><p>Incorporar mesero virtual por chat y por voz.</p></div>
+      <div class="card rv"><b>Modelo por suscripción</b><p>Comercializar la solución a muchas empresas por planes.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 02 estructura ======================= -->
+<section id="estructura" class="band">
+  <div class="wrap">
+    <p class="sec-num rv"><i>02</i> Estructura de empresas y sedes</p>
+    <h2 class="rv">Una jerarquía que soporta cadenas</h2>
+    <p class="sec-sub rv">
+      Una empresa puede tener una sola marca y sede, o varias marcas con múltiples
+      sedes. El plan contratado determina capacidades, límites y servicios.
+    </p>
+
+    <div class="tree rv">
+      <div class="tree-row"><span class="node"><span class="node-dot"></span>Administrador general de la plataforma</span></div>
+      <div class="tree-row indent-1"><span class="node"><span class="node-dot"></span>Empresa <small>Grupo Gastronómico del Norte</small></span></div>
+      <div class="tree-row indent-2"><span class="node"><span class="node-dot"></span>Marca <small>Restaurante El Jardín</small></span></div>
+      <div class="tree-row indent-3">
+        <span class="node"><span class="node-dot"></span>Sede Centro</span>
+        <span class="node"><span class="node-dot"></span>Sede Norte</span>
+      </div>
+      <div class="tree-row indent-2"><span class="node"><span class="node-dot"></span>Marca <small>Hamburguesas La Esquina</small></span></div>
+      <div class="tree-row indent-3"><span class="node"><span class="node-dot"></span>Sede Principal</span></div>
+      <div class="tree-row indent-3"><span class="node"><span class="node-dot"></span>Áreas · Mesas · Cajas · Estaciones de preparación</span></div>
+    </div>
+
+    <h3 class="rv">Reglas esenciales</h3>
+    <ul class="rv">
+      <li>Cada empresa debe tener sus datos separados de las demás.</li>
+      <li>Un propietario puede gestionar varias empresas si tiene permisos.</li>
+      <li>Cada sede puede tener menú, precios, horarios, empleados e inventario propios.</li>
+      <li>La empresa puede compartir un catálogo base entre sedes.</li>
+      <li>Los reportes deben poder consultarse por sede, marca y empresa.</li>
+    </ul>
+    <div class="callout warn rv">
+      <strong>Importante:</strong> la separación de empresas debe aplicarse en el
+      servidor, los archivos, los reportes y las consultas. No basta con ocultar
+      información en la interfaz.
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 03 usuarios ======================= -->
+<section id="usuarios">
+  <div class="wrap">
+    <p class="sec-num rv"><i>03</i> Tipos de usuarios y permisos</p>
+    <h2 class="rv">Nueve perfiles, permisos configurables</h2>
+    <div class="roles" data-stagger>
+      <div class="role rv"><div class="role-top"><span class="role-ic"><svg viewBox="0 0 24 24"><path d="M12 3l8 4v6c0 4.5-3.2 7.6-8 9-4.8-1.4-8-4.5-8-9V7z"/></svg></span><b>Administrador general</b></div><p>Empresas, planes, suscripciones, consumos, soporte e integraciones.</p></div>
+      <div class="role rv"><div class="role-top"><span class="role-ic"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6"/></svg></span><b>Propietario de empresa</b></div><p>Su organización, sedes, usuarios, configuración y resultados.</p></div>
+      <div class="role rv"><div class="role-top"><span class="role-ic"><svg viewBox="0 0 24 24"><path d="M4 20V8l8-4 8 4v12M4 20h16M10 20v-5h4v5"/></svg></span><b>Administrador de sede</b></div><p>La operación de una o varias sedes autorizadas.</p></div>
+      <div class="role rv"><div class="role-top"><span class="role-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3.4"/><path d="M5 21c0-4 3.1-6.6 7-6.6s7 2.6 7 6.6"/></svg></span><b>Mesero</b></div><p>Crear pedidos, gestionar mesas, consultar estados y pedir cuentas.</p></div>
+      <div class="role rv"><div class="role-top"><span class="role-ic"><svg viewBox="0 0 24 24"><path d="M6 13h12l-1 8H7zM8 13a4 4 0 0 1 8 0M12 4v3"/></svg></span><b>Cocina o barra</b></div><p>Recibir comandas y actualizar estados de preparación.</p></div>
+      <div class="role rv"><div class="role-top"><span class="role-ic"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 11h18M7 15h4"/></svg></span><b>Cajero</b></div><p>Abrir caja, registrar pagos, gestionar movimientos y cerrar turno.</p></div>
+      <div class="role rv"><div class="role-top"><span class="role-ic"><svg viewBox="0 0 24 24"><path d="M4 7h16l-1.5 12h-13zM9 7V5a3 3 0 0 1 6 0v2"/></svg></span><b>Responsable de compras</b></div><p>Proveedores, inventario y órdenes de compra.</p></div>
+      <div class="role rv"><div class="role-top"><span class="role-ic"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6zM14 3v5h5M9 13h7M9 17h5"/></svg></span><b>Contador o auditor</b></div><p>Reportes, cierres y movimientos según permisos.</p></div>
+      <div class="role rv"><div class="role-top"><span class="role-ic"><svg viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M11 18h2"/></svg></span><b>Cliente</b></div><p>Consultar el menú, pedir desde la mesa y hablar con el mesero virtual.</p></div>
+    </div>
+    <div class="callout plain rv">
+      <strong>Los permisos deben ser configurables.</strong> Por ejemplo, un mesero
+      podría solicitar una anulación pero necesitar autorización para ejecutarla.
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 04 módulos ======================= -->
+<section id="modulos" class="band">
+  <div class="wrap">
+    <p class="sec-num rv"><i>04</i> Requerimientos funcionales</p>
+    <h2 class="rv">Trece módulos</h2>
+    <p class="sec-sub rv">Toca cada módulo para ver su alcance y los puntos que requieren una decisión.</p>
+    <div class="mods" id="mods">
+
+      <div class="mod rv">
+        <button class="mod-h" type="button">
+          <span class="mod-ic"><svg viewBox="0 0 24 24"><path d="M4 21V9l8-5 8 5v12M4 21h16M10 21v-6h4v6"/><circle cx="12" cy="10.5" r="1.4"/></svg></span>
+          <span class="mod-t"><b>4.1 · Registro y configuración inicial</b><span>Alta de empresa, plan y asistente de arranque</span></span>
+          <svg class="mod-x" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <div class="mod-b">
+          <ul>
+            <li>Registrar empresa y propietario, con verificación de correo.</li>
+            <li>Seleccionar plan y gestionar la suscripción.</li>
+            <li>Datos comerciales y tributarios; moneda, zona horaria, impuestos y cargos.</li>
+            <li>Crear marcas y sedes según los límites contratados.</li>
+            <li>Logotipo, colores y datos de contacto.</li>
+            <li>Invitar empleados y asignar permisos.</li>
+            <li>Asistente inicial de menú, mesas, cocina y caja.</li>
+          </ul>
+          <span class="flag"><b>Decisión:</b> la suscripción contempla prueba, activa, pago pendiente, suspendida y cancelada. Una reducción de plan no debe borrar información: hace falta un procedimiento para resolver excesos de sedes.</span>
+        </div>
+      </div>
+
+      <div class="mod rv">
+        <button class="mod-h" type="button">
+          <span class="mod-ic"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span>
+          <span class="mod-t"><b>4.2 · Sedes y mesas</b><span>Áreas, mesas, estaciones, cajas y turnos</span></span>
+          <svg class="mod-x" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <div class="mod-b">
+          <ul>
+            <li>Dirección, ubicación y horarios por sede.</li>
+            <li>Áreas: salón, terraza, barra y zonas privadas.</li>
+            <li>Mesas, capacidad y numeración; estaciones de preparación.</li>
+            <li>Cajas, turnos, empleados asignados y métodos de pago.</li>
+            <li>Impresoras y pantallas de cocina compatibles.</li>
+          </ul>
+          <span class="flag"><b>Gestión de mesas:</b> libres, ocupadas y pendientes de pago; apertura y cierre de sesión de atención; cambio de mesa con trazabilidad; unión y división de cuentas; mesero responsable.</span>
+        </div>
+      </div>
+
+      <div class="mod rv">
+        <button class="mod-h" type="button">
+          <span class="mod-ic"><svg viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h10"/></svg></span>
+          <span class="mod-t"><b>4.3 · Menú digital y productos</b><span>Categorías, modificadores, alérgenos y recetas</span></span>
+          <svg class="mod-x" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <div class="mod-b">
+          <ul>
+            <li>Categorías, productos, descripciones y fotografías.</li>
+            <li>Precios por sede; tamaños, acompañamientos, adicionales y exclusiones.</li>
+            <li>Ingredientes y alérgenos declarados por el restaurante.</li>
+            <li>Agotados temporales y disponibilidad por horario o día.</li>
+            <li>Promociones y combinaciones; estación de preparación por producto.</li>
+            <li>Vínculo con recetas e insumos cuando se habilite inventario avanzado.</li>
+          </ul>
+          <span class="flag"><b>Ejemplo:</b> una hamburguesa puede permitir término de cocción, retirar cebolla y agregar queso con costo adicional.</span>
+        </div>
+      </div>
+
+      <div class="mod rv">
+        <button class="mod-h" type="button">
+          <span class="mod-ic"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM19 19h2v2h-2z"/></svg></span>
+          <span class="mod-t"><b>4.4 · Pedidos por código QR</b><span>Del escaneo a la comanda, sin instalar nada</span></span>
+          <svg class="mod-x" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <div class="mod-b">
+          <ul>
+            <li>Funciona desde el navegador; registro del cliente opcional.</li>
+            <li>Identifica sede, mesa y sesión de atención.</li>
+            <li>Carrito con precios y cargos visibles antes de confirmar.</li>
+            <li>Varios comensales en una misma mesa.</li>
+            <li>Solicitud de mesero o de cuenta; estado del pedido actualizado.</li>
+            <li>Configurable: envío directo a cocina, validación de mesero o pago previo.</li>
+          </ul>
+          <span class="flag"><b>Riesgo:</b> un QR impreso puede fotografiarse y usarse fuera del restaurante. Hace falta validación configurable por sesión activa, código temporal o autorización del personal, más límites de frecuencia y control de duplicados.</span>
+        </div>
+      </div>
+
+      <div class="mod rv">
+        <button class="mod-h" type="button">
+          <span class="mod-ic"><svg viewBox="0 0 24 24"><path d="M5 4h14l-1 16H6zM9 9h6M9 13h4"/></svg></span>
+          <span class="mod-t"><b>4.5 · Pedidos y comandas</b><span>Dos conceptos que conviene separar</span></span>
+          <svg class="mod-x" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <div class="mod-b">
+          <ul>
+            <li><strong>Pedido:</strong> lo que solicita el cliente, con valores y condiciones.</li>
+            <li><strong>Comanda:</strong> las instrucciones de preparación por estación.</li>
+            <li>Origen identificable: QR, mesero o caja.</li>
+            <li>Observaciones, ampliaciones, cancelaciones, devoluciones y descuentos.</li>
+            <li>Historial de cambios y tiempos por responsable.</li>
+          </ul>
+          <span class="flag"><b>Estados:</b> pendiente de validación → confirmado → en preparación → listo → entregado. El pago va por separado: un pedido puede estar entregado y sin pagar, o pagado antes de prepararse.</span>
+        </div>
+      </div>
+
+      <div class="mod rv">
+        <button class="mod-h" type="button">
+          <span class="mod-ic"><svg viewBox="0 0 24 24"><path d="M6 13h12l-1 8H7zM8 13a4 4 0 0 1 8 0M12 4v3"/></svg></span>
+          <span class="mod-t"><b>4.6 · Operación de cocina</b><span>Pantalla de comandas en tiempo real</span></span>
+          <svg class="mod-x" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <div class="mod-b">
+          <ul>
+            <li>Nuevas comandas en tiempo real, separadas por estación.</li>
+            <li>Mesa, hora y observaciones; modificaciones y advertencias resaltadas.</li>
+            <li>Marcar preparación iniciada y terminada, con tiempos transcurridos.</li>
+            <li>Avisar al mesero cuando un producto esté listo.</li>
+            <li>Gestionar productos de un pedido que terminan en momentos distintos.</li>
+          </ul>
+          <span class="flag"><b>Condición crítica:</b> si se interrumpe la conexión, las comandas confirmadas deben recuperarse sin perderse ni duplicarse.</span>
+        </div>
+      </div>
+
+      <div class="mod rv">
+        <button class="mod-h" type="button">
+          <span class="mod-ic"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 11h18M7 15h4"/></svg></span>
+          <span class="mod-t"><b>4.7 · Caja, pagos y cierre</b><span>Apertura, operación y cuadre de turno</span></span>
+          <svg class="mod-x" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <div class="mod-b">
+          <ul>
+            <li>Apertura con sede, caja, turno, responsable y fondo inicial.</li>
+            <li>Pagos en efectivo, tarjeta, transferencia y otros; parciales y combinados.</li>
+            <li>División de cuenta, descuentos con permisos y propinas separadas.</li>
+            <li>Entradas y salidas de efectivo justificadas; anulaciones autorizadas.</li>
+            <li>Cierre con desglose por método, efectivo contado, diferencia y justificación.</li>
+            <li>Exportación del cierre y bloqueo de edición posterior salvo corrección auditada.</li>
+          </ul>
+          <span class="flag"><b>Fórmula base:</b> efectivo esperado = fondo inicial + cobros en efectivo + entradas − salidas − devoluciones en efectivo. <b>Ojo:</b> registrar pagos no es procesarlos; el cobro en línea exige integrar un proveedor de pagos, y la facturación electrónica depende del país.</span>
+        </div>
+      </div>
+
+      <div class="mod rv">
+        <button class="mod-h" type="button">
+          <span class="mod-ic"><svg viewBox="0 0 24 24"><path d="M3 8l9-5 9 5-9 5zM3 8v8l9 5 9-5V8"/></svg></span>
+          <span class="mod-t"><b>4.8 · Inventario y recetas</b><span>La base para que las compras sean confiables</span></span>
+          <svg class="mod-x" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <div class="mod-b">
+          <ul>
+            <li>Ingredientes, insumos y unidades de medida; existencias por sede.</li>
+            <li>Recetas y consumo por producto vendido; mínimos y cantidades objetivo.</li>
+            <li>Compras, mermas, ajustes, devoluciones y conteos físicos.</li>
+            <li>Transferencias entre sedes con control de salida y recepción.</li>
+            <li>Alertas: bajo mínimo, próximos a agotarse, diferencias teórico/real, vencimientos.</li>
+          </ul>
+          <span class="flag"><b>Decisión:</b> definir cuándo se descuenta inventario y cómo se tratan las cancelaciones. Cancelar un plato ya preparado no recupera sus ingredientes.</span>
+        </div>
+      </div>
+
+      <div class="mod rv">
+        <button class="mod-h" type="button">
+          <span class="mod-ic"><svg viewBox="0 0 24 24"><path d="M3 7h13v10H3zM16 10h3.5l1.5 3v4h-5"/><circle cx="7" cy="18.5" r="1.6"/><circle cx="17.5" cy="18.5" r="1.6"/></svg></span>
+          <span class="mod-t"><b>4.9 · Proveedores y compras</b><span>Sugerencia, aprobación o envío automático</span></span>
+          <svg class="mod-x" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <div class="mod-b">
+          <ul>
+            <li>Proveedores con contactos autorizados, productos, precios, días de entrega, mínimos y condiciones de pago.</li>
+            <li>Reposición calculada sobre existencias, consumo esperado, pedidos en tránsito, tiempo de entrega y presupuesto.</li>
+            <li>Tres modalidades: sugerencia, aprobación previa o envío automático dentro de reglas.</li>
+            <li>Órdenes por correo con registro de envío y errores.</li>
+            <li>Llamada con IA: identificarse como asistente, consultar disponibilidad, comunicar una orden autorizada y pedir confirmación escrita.</li>
+            <li>Estados: borrador, pendiente de aprobación, enviada, confirmada, recibida y cancelada.</li>
+          </ul>
+          <span class="flag"><b>Controles obligatorios:</b> límites por compra, proveedor y período; horarios de contacto; prohibición de aceptar sustituciones o aumentos no autorizados; trazabilidad; intervención humana si no puede confirmarse. <b>Un correo enviado no es una compra confirmada.</b></span>
+        </div>
+      </div>
+
+      <div class="mod rv">
+        <button class="mod-h" type="button">
+          <span class="mod-ic"><svg viewBox="0 0 24 24"><path d="M20 15a3 3 0 0 1-3 3H8l-4 3V6a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3z"/></svg></span>
+          <span class="mod-t"><b>4.10 · Mesero virtual por chat</b><span>Explica, recomienda y arma el pedido</span></span>
+          <svg class="mod-x" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <div class="mod-b">
+          <ul>
+            <li>Explicar productos, precios y disponibilidad; recomendar según preferencias.</li>
+            <li>Informar ingredientes declarados y ayudar con adicionales.</li>
+            <li>Construir un pedido, mostrar resumen y pedir confirmación.</li>
+            <li>Consultar el estado de pedidos autorizados de la mesa.</li>
+            <li>Solicitar un mesero humano.</li>
+          </ul>
+          <span class="flag"><b>Restricciones:</b> no inventar platos, precios ni promociones; no enviar pedidos sin confirmación; no aplicar descuentos fuera de las reglas; no garantizar que un alimento sea seguro para una alergia. El asistente interpreta; <b>el sistema de pedidos valida precios, permisos y disponibilidad antes de ejecutar</b>.</span>
+        </div>
+      </div>
+
+      <div class="mod rv">
+        <button class="mod-h" type="button">
+          <span class="mod-ic"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></span>
+          <span class="mod-t"><b>4.11 · Mesero virtual por voz</b><span>Lo mismo, hablando</span></span>
+          <svg class="mod-x" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <div class="mod-b">
+          <ul>
+            <li>Permiso explícito para acceder al micrófono.</li>
+            <li>Transcripción de voz y respuesta hablada, con interrupciones y correcciones.</li>
+            <li>Confirmación clara de cantidades y modificaciones; resumen visual antes de enviar.</li>
+            <li>Alternativa de chat si hay ruido; botón para terminar y derivación al personal.</li>
+          </ul>
+          <span class="flag"><b>Medición separada:</b> la voz desde el navegador y las llamadas telefónicas a proveedores son servicios distintos y deben medirse por separado.</span>
+        </div>
+      </div>
+
+      <div class="mod rv">
+        <button class="mod-h" type="button">
+          <span class="mod-ic"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span>
+          <span class="mod-t"><b>4.12 · Reportes</b><span>Operativos, administrativos y de consumo de IA</span></span>
+          <svg class="mod-x" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <div class="mod-b">
+          <ul>
+            <li><strong>Operativos:</strong> ventas por fecha, sede, producto y categoría; pedidos abiertos y completados; tiempos de preparación; más vendidos; cancelaciones y devoluciones; cierres y diferencias de caja.</li>
+            <li><strong>Administrativos:</strong> comparativos entre sedes; consumo y costo de ingredientes; mermas; compras por proveedor; rentabilidad estimada.</li>
+            <li><strong>IA:</strong> conversaciones y minutos, pedidos asistidos, derivaciones a humanos, compras propuestas y confirmadas, costos externos.</li>
+          </ul>
+          <span class="flag"><b>Honestidad comercial:</b> las predicciones de demanda son estimaciones y requieren historial suficiente. No deben prometerse como resultados garantizados.</span>
+        </div>
+      </div>
+
+      <div class="mod rv">
+        <button class="mod-h" type="button">
+          <span class="mod-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg></span>
+          <span class="mod-t"><b>4.13 · Administración de la plataforma</b><span>Empresas, planes, consumos y soporte</span></span>
+          <svg class="mod-x" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <div class="mod-b">
+          <ul>
+            <li>Crear, consultar, suspender y reactivar empresas.</li>
+            <li>Planes, precios, límites y complementos; suscripciones y pagos.</li>
+            <li>Consumos de IA, integraciones e indicadores de operación del servicio.</li>
+            <li>Soporte e incidencias; períodos de prueba; auditoría de acciones administrativas.</li>
+          </ul>
+          <span class="flag"><b>Privacidad:</b> el acceso de soporte a información de restaurantes debe ser restringido, temporal y registrado, preferiblemente con autorización de la empresa.</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 05 flujo ======================= -->
+<section id="flujo" class="band-dark">
+  <div class="wrap">
+    <p class="sec-num rv"><i>05</i> El flujo que hay que construir primero</p>
+    <h2 class="rv">Mesa → pedido → cocina → pago → cierre</h2>
+    <p class="sec-sub rv" style="color:rgba(255,255,255,0.66)">
+      La recomendación principal: hacer sólido este ciclo antes de incorporar
+      inventario y compras, y automatizar con IA solo sobre datos ya confiables.
+    </p>
+    <div class="flow" data-stagger>
+      <div class="step rv"><i>1</i><b>Mesa</b><p>El cliente escanea el QR; el sistema identifica sede, mesa y sesión.</p></div>
+      <div class="step rv"><i>2</i><b>Pedido</b><p>Selecciona productos y modificaciones, revisa el total y confirma.</p></div>
+      <div class="step rv"><i>3</i><b>Cocina</b><p>Las comandas se reparten por estación y avanzan de estado.</p></div>
+      <div class="step rv"><i>4</i><b>Pago</b><p>Caja registra el cobro, divide cuentas y separa propinas.</p></div>
+      <div class="step rv"><i>5</i><b>Cierre</b><p>Efectivo esperado contra contado, diferencias justificadas y exportación.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 06 planes ======================= -->
+<section id="planes">
+  <div class="wrap">
+    <p class="sec-num rv"><i>06</i> Propuesta de planes</p>
+    <h2 class="rv">Cuatro planes, un mismo ciclo completo</h2>
+    <p class="sec-sub rv">
+      Todos permiten operar un restaurante de principio a fin. La diferencia está en
+      cantidad de sedes, control administrativo, automatización e inteligencia
+      artificial — nunca en bloquear funciones esenciales como cerrar caja.
+    </p>
+
+    <div class="plan-tabs rv" id="planTabs" role="tablist">
+      <button class="ptab is-on" data-plan="silver" role="tab">Silver</button>
+      <button class="ptab" data-plan="gold" role="tab">Gold</button>
+      <button class="ptab" data-plan="diamond" role="tab">Diamond</button>
+      <button class="ptab" data-plan="enterprise" role="tab">Enterprise</button>
+    </div>
+
+    <div class="panel is-on" data-panel="silver">
+      <figure class="plan-fig" data-fig>
+        <picture>
+          <source srcset="images/silver.webp" type="image/webp" />
+          <img src="images/silver.png" alt="Plan Silver — digitaliza tu restaurante y organiza cada pedido: menú y pedidos QR, comandas a cocina, control de caja." width="1672" height="941" decoding="async" />
+        </picture>
+      </figure>
+      <div class="plan-grid" style="margin-top:28px">
+        <div class="plan-meta">
+          <h3>Silver</h3>
+          <p class="plan-promise">“Digitaliza tu restaurante y organiza cada pedido”</p>
+          <div class="plan-seats"><b>1</b><span>sede incluida</span></div>
+          <p><strong>Enfoque:</strong> restaurantes pequeños o una primera sede.</p>
+          <p>Incluye el ciclo esencial completo: menú, mesas, QR, pedidos, cocina, pagos registrados, caja y reportes básicos.</p>
+        </div>
+        <div class="plan-meta">
+          <h3 style="font-size:1.05rem">Incluye</h3>
+          <ul>
+            <li>Menú digital y mesas QR</li>
+            <li>Pedidos y comandas a cocina</li>
+            <li>Caja y cierre de turnos</li>
+            <li>Usuarios y permisos básicos</li>
+            <li>Reportes operativos</li>
+            <li>Soporte estándar</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" data-panel="gold">
+      <figure class="plan-fig" data-fig>
+        <picture>
+          <source srcset="images/gold.webp" type="image/webp" />
+          <img src="images/gold.png" alt="Plan Gold — conecta tus sedes y atiende con inteligencia: gestión de sedes, inventario y compras, mesero virtual por chat." width="1672" height="941" loading="lazy" decoding="async" />
+        </picture>
+      </figure>
+      <div class="plan-grid" style="margin-top:28px">
+        <div class="plan-meta">
+          <h3>Gold</h3>
+          <p class="plan-promise">“Conecta tus sedes y atiende con inteligencia”</p>
+          <div class="plan-seats"><b>Hasta 3</b><span>sedes incluidas</span></div>
+          <p><strong>Enfoque:</strong> negocios en crecimiento que necesitan controlar varias sedes, inventario y compras.</p>
+          <p>Añade control centralizado, recetas, inventario, compras por correo con aprobación y mesero virtual por chat.</p>
+        </div>
+        <div class="plan-meta">
+          <h3 style="font-size:1.05rem">Suma sobre Silver</h3>
+          <ul>
+            <li>Consolidado entre sedes</li>
+            <li>Recetas e inventario avanzado</li>
+            <li>Proveedores y compras manuales</li>
+            <li>Reposición sugerida y correo con aprobación</li>
+            <li>Mesero virtual por chat (con cuota)</li>
+            <li>Mesero virtual por voz (complemento)</li>
+            <li>Soporte prioritario</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" data-panel="diamond">
+      <figure class="plan-fig" data-fig>
+        <picture>
+          <source srcset="images/diamond.webp" type="image/webp" />
+          <img src="images/diamond.png" alt="Plan Diamond — automatiza tu operación y eleva la experiencia: mesero virtual por voz, compras automatizadas, llamadas con IA." width="1672" height="941" loading="lazy" decoding="async" />
+        </picture>
+      </figure>
+      <div class="plan-grid" style="margin-top:28px">
+        <div class="plan-meta">
+          <h3>Diamond</h3>
+          <p class="plan-promise">“Automatiza tu operación y eleva la experiencia”</p>
+          <div class="plan-seats"><b>Hasta 10</b><span>sedes incluidas</span></div>
+          <p><strong>Enfoque:</strong> restaurantes y grupos que buscan automatización avanzada.</p>
+          <p>Añade atención por voz, llamadas a proveedores, compras automáticas con límites y análisis avanzado.</p>
+        </div>
+        <div class="plan-meta">
+          <h3 style="font-size:1.05rem">Suma sobre Gold</h3>
+          <ul>
+            <li>Compras automáticas bajo reglas</li>
+            <li>Llamadas con IA a proveedores (con cuota)</li>
+            <li>Mesero virtual por chat con cuota ampliada</li>
+            <li>Mesero virtual por voz (con cuota)</li>
+            <li>Analítica avanzada y previsiones según historial</li>
+            <li>Integraciones a medida (complemento)</li>
+            <li>Soporte preferente</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" data-panel="enterprise">
+      <figure class="plan-fig" data-fig>
+        <picture>
+          <source srcset="images/enterprise.webp" type="image/webp" />
+          <img src="images/enterprise.png" alt="Plan Enterprise — controla tu cadena con una solución a tu medida: control centralizado, integraciones a medida, soporte especializado." width="1672" height="941" loading="lazy" decoding="async" />
+        </picture>
+      </figure>
+      <div class="plan-grid" style="margin-top:28px">
+        <div class="plan-meta">
+          <h3>Enterprise</h3>
+          <p class="plan-promise">“Controla tu cadena con una solución a tu medida”</p>
+          <div class="plan-seats"><b>A convenir</b><span>sedes</span></div>
+          <p><strong>Enfoque:</strong> cadenas, franquicias y grupos gastronómicos.</p>
+          <p>Añade condiciones contractuales particulares, integraciones, acompañamiento, permisos avanzados y capacidades ajustadas al volumen.</p>
+        </div>
+        <div class="plan-meta">
+          <h3 style="font-size:1.05rem">Suma sobre Diamond</h3>
+          <ul>
+            <li>Sedes y cuotas de IA a convenir</li>
+            <li>Integraciones según contrato</li>
+            <li>Analítica personalizada</li>
+            <li>Permisos avanzados para franquicias</li>
+            <li>Migraciones de gran volumen</li>
+            <li>Acuerdo de soporte específico</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="rv">Modelo de cobro recomendado</h3>
+    <ul class="rv">
+      <li>Suscripción mensual o anual, más sedes adicionales.</li>
+      <li>Bolsas de conversaciones por chat y de minutos de voz.</li>
+      <li>Minutos de llamadas a proveedores.</li>
+      <li>Implementación, migración y capacitación opcionales.</li>
+      <li>Integraciones especiales cotizadas por separado.</li>
+    </ul>
+    <div class="callout warn rv">
+      <strong>No conviene ofrecer voz y llamadas con IA ilimitadas:</strong> generan
+      costos variables de telefonía, transcripción, generación de voz y procesamiento.
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 07 comparativo ======================= -->
+<section id="comparativo" class="band">
+  <div class="wrap">
+    <p class="sec-num rv"><i>07</i> Comparativo</p>
+    <h2 class="rv">Qué incluye cada plan</h2>
+    <p class="sec-sub rv">Toca el nombre de un plan para resaltar su columna.</p>
+    <div class="tbl-wrap rv" data-lenis-prevent>
+      <table class="cmp" id="cmp">
+        <thead>
+          <tr>
+            <th>Funcionalidad</th>
+            <th data-col="silver">Silver</th>
+            <th data-col="gold">Gold</th>
+            <th data-col="diamond">Diamond</th>
+            <th data-col="enterprise">Enterprise</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Sedes incluidas</td><td class="center"><span class="part">1</span></td><td class="center"><span class="part">Hasta 3</span></td><td class="center"><span class="part">Hasta 10</span></td><td class="center"><span class="part">A convenir</span></td></tr>
+          <tr><td>Menú digital y mesas QR</td><td class="center"><span class="yes">Sí</span></td><td class="center"><span class="yes">Sí</span></td><td class="center"><span class="yes">Sí</span></td><td class="center"><span class="yes">Sí</span></td></tr>
+          <tr><td>Pedidos y comandas a cocina</td><td class="center"><span class="yes">Sí</span></td><td class="center"><span class="yes">Sí</span></td><td class="center"><span class="yes">Sí</span></td><td class="center"><span class="yes">Sí</span></td></tr>
+          <tr><td>Caja y cierre de turnos</td><td class="center"><span class="yes">Sí</span></td><td class="center"><span class="yes">Sí</span></td><td class="center"><span class="yes">Sí</span></td><td class="center"><span class="yes">Sí</span></td></tr>
+          <tr><td>Usuarios y permisos básicos</td><td class="center"><span class="yes">Sí</span></td><td class="center"><span class="yes">Sí</span></td><td class="center"><span class="yes">Sí</span></td><td class="center"><span class="yes">Sí</span></td></tr>
+          <tr><td>Reportes operativos</td><td class="center"><span class="yes">Sí</span></td><td class="center"><span class="yes">Sí</span></td><td class="center"><span class="yes">Sí</span></td><td class="center"><span class="yes">Sí</span></td></tr>
+          <tr><td>Consolidado entre sedes</td><td class="center"><span class="no">—</span></td><td class="center"><span class="yes">Sí</span></td><td class="center"><span class="yes">Sí</span></td><td class="center"><span class="yes">Sí</span></td></tr>
+          <tr><td>Recetas e inventario avanzado</td><td class="center"><span class="no">—</span></td><td class="center"><span class="yes">Sí</span></td><td class="center"><span class="yes">Sí</span></td><td class="center"><span class="yes">Sí</span></td></tr>
+          <tr><td>Proveedores y compras manuales</td><td class="center"><span class="no">—</span></td><td class="center"><span class="yes">Sí</span></td><td class="center"><span class="yes">Sí</span></td><td class="center"><span class="yes">Sí</span></td></tr>
+          <tr><td>Reposición sugerida y correo con aprobación</td><td class="center"><span class="no">—</span></td><td class="center"><span class="yes">Sí</span></td><td class="center"><span class="yes">Sí</span></td><td class="center"><span class="yes">Sí</span></td></tr>
+          <tr><td>Compras automáticas bajo reglas</td><td class="center"><span class="no">—</span></td><td class="center"><span class="no">—</span></td><td class="center"><span class="yes">Sí</span></td><td class="center"><span class="yes">Sí</span></td></tr>
+          <tr><td>Llamadas con IA a proveedores</td><td class="center"><span class="no">—</span></td><td class="center"><span class="no">—</span></td><td class="center"><span class="part">Con cuota</span></td><td class="center"><span class="part">A convenir</span></td></tr>
+          <tr><td>Mesero virtual por chat</td><td class="center"><span class="no">—</span></td><td class="center"><span class="part">Con cuota</span></td><td class="center"><span class="part">Cuota ampliada</span></td><td class="center"><span class="part">A convenir</span></td></tr>
+          <tr><td>Mesero virtual por voz</td><td class="center"><span class="no">—</span></td><td class="center"><span class="part">Complemento</span></td><td class="center"><span class="part">Con cuota</span></td><td class="center"><span class="part">A convenir</span></td></tr>
+          <tr><td>Analítica avanzada y previsiones</td><td class="center"><span class="no">—</span></td><td class="center"><span class="no">—</span></td><td class="center"><span class="part">Según historial</span></td><td class="center"><span class="part">Personalizada</span></td></tr>
+          <tr><td>Integraciones a medida</td><td class="center"><span class="no">—</span></td><td class="center"><span class="no">—</span></td><td class="center"><span class="part">Complemento</span></td><td class="center"><span class="part">Según contrato</span></td></tr>
+          <tr><td>Soporte</td><td class="center"><span class="part">Estándar</span></td><td class="center"><span class="part">Prioritario</span></td><td class="center"><span class="part">Preferente</span></td><td class="center"><span class="part">Específico</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 08 no funcionales ======================= -->
+<section id="nofuncionales">
+  <div class="wrap">
+    <p class="sec-num rv"><i>08</i> Requerimientos no funcionales</p>
+    <h2 class="rv">Lo que no se ve pero sostiene todo</h2>
+    <div class="tbl-wrap rv" data-lenis-prevent>
+      <table>
+        <thead><tr><th>Área</th><th>Requerimiento</th></tr></thead>
+        <tbody>
+          <tr><td>Seguridad</td><td>Conexiones cifradas, protección de credenciales y autenticación reforzada para perfiles sensibles.</td></tr>
+          <tr><td>Separación de empresas</td><td>Ninguna empresa puede acceder a datos, archivos o reportes de otra.</td></tr>
+          <tr><td>Permisos</td><td>Validación en el servidor para cada acción y recurso.</td></tr>
+          <tr><td>Rendimiento</td><td>Menú y operación de caja ágiles; objetivos medibles validados con carga real.</td></tr>
+          <tr><td>Tiempo real</td><td>Actualización de pedidos y comandas con confirmación de recepción.</td></tr>
+          <tr><td>Continuidad</td><td>Reintentos controlados, recuperación de eventos y prevención de duplicados.</td></tr>
+          <tr><td>Disponibilidad</td><td>Como referencia inicial, evaluar una meta mensual del 99,9 % y su costo operativo.</td></tr>
+          <tr><td>Respaldo</td><td>Copias de seguridad y pruebas periódicas de restauración.</td></tr>
+          <tr><td>Escalabilidad</td><td>Crecimiento en empresas, sedes y pedidos sin mezclar información.</td></tr>
+          <tr><td>Usabilidad</td><td>Interfaz adaptable a celulares, tabletas y computadores.</td></tr>
+          <tr><td>Accesibilidad</td><td>Contraste, navegación accesible y alternativas al uso de voz.</td></tr>
+          <tr><td>Auditoría</td><td>Historial de cambios en caja, pedidos, inventario, compras y permisos.</td></tr>
+          <tr><td>Privacidad</td><td>Políticas de conservación, exportación y eliminación según obligaciones aplicables.</td></tr>
+          <tr><td>Costos de IA</td><td>Cuotas, alertas y límites de consumo por empresa.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout warn rv">
+      <strong>Sobre la operación sin conexión:</strong> debe definirse como un alcance
+      específico. No conviene prometer funcionamiento completo sin internet si cocina,
+      pagos e inteligencia artificial dependen de servicios remotos.
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 09 etapas ======================= -->
+<section id="etapas" class="band">
+  <div class="wrap">
+    <p class="sec-num rv"><i>09</i> Alcance por etapas</p>
+    <h2 class="rv">Cada etapa habilita un plan</h2>
+    <div class="stages" data-stagger>
+      <div class="stage rv">
+        <div class="stage-n">Etapa 1</div>
+        <b>Operación esencial</b>
+        <ul>
+          <li>Registro de empresas y suscripciones</li>
+          <li>Separación de datos y permisos</li>
+          <li>Sedes, usuarios y mesas</li>
+          <li>Menú digital y QR</li>
+          <li>Pedidos y pantalla de cocina</li>
+          <li>Caja y cierre; reportes básicos</li>
+          <li>Administrador general</li>
+        </ul>
+        <div class="out">Resultado: producto comercializable con Silver</div>
+      </div>
+      <div class="stage rv">
+        <div class="stage-n">Etapa 2</div>
+        <b>Control y asistencia</b>
+        <ul>
+          <li>Consolidación entre sedes</li>
+          <li>Inventario y recetas</li>
+          <li>Proveedores y compras</li>
+          <li>Correo con aprobación</li>
+          <li>Mesero virtual por chat</li>
+        </ul>
+        <div class="out">Resultado: habilitación de Gold</div>
+      </div>
+      <div class="stage rv">
+        <div class="stage-n">Etapa 3</div>
+        <b>Automatización avanzada</b>
+        <ul>
+          <li>Atención por voz</li>
+          <li>Llamadas a proveedores</li>
+          <li>Reposición automática con controles</li>
+          <li>Analítica avanzada</li>
+          <li>Medición y cobro de consumos</li>
+        </ul>
+        <div class="out">Resultado: habilitación de Diamond</div>
+      </div>
+      <div class="stage rv">
+        <div class="stage-n">Etapa 4</div>
+        <b>Cadenas e integraciones</b>
+        <ul>
+          <li>Funcionalidades para franquicias</li>
+          <li>Integraciones contables y administrativas</li>
+          <li>Migraciones de gran volumen</li>
+          <li>Acuerdos de disponibilidad y soporte</li>
+        </ul>
+        <div class="out">Resultado: oferta Enterprise</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 10 criterios ======================= -->
+<section id="criterios">
+  <div class="wrap">
+    <p class="sec-num rv"><i>10</i> Criterios de aceptación prioritarios</p>
+    <h2 class="rv">Cómo se comprueba que funciona</h2>
+    <ol class="rv">
+      <li><strong>Separación de empresas:</strong> un usuario de una empresa no puede acceder a información de otra, ni manipulando identificadores o enlaces.</li>
+      <li><strong>Pedidos QR:</strong> el pedido confirmado llega a la sede, mesa y estación correctas.</li>
+      <li><strong>No duplicación:</strong> un doble toque o reintento de conexión no crea dos pedidos.</li>
+      <li><strong>Disponibilidad:</strong> si un producto se agota antes de confirmar, el sistema informa y evita enviarlo sin validación.</li>
+      <li><strong>Cocina:</strong> una reconexión recupera comandas pendientes sin repetirlas.</li>
+      <li><strong>Caja:</strong> el cierre muestra efectivo esperado, contado y diferencias verificables.</li>
+      <li><strong>Compras:</strong> una orden fuera del presupuesto exige aprobación.</li>
+      <li><strong>Proveedores:</strong> una llamada fallida no se registra como compra confirmada.</li>
+      <li><strong>Mesero virtual:</strong> ningún pedido se envía sin confirmación explícita.</li>
+      <li><strong>Planes:</strong> los límites se validan en el servidor y los excesos generan alertas.</li>
+      <li><strong>Auditoría:</strong> anulaciones, devoluciones y ajustes registran responsable, fecha y motivo.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ======================= 11 decisiones ======================= -->
+<section id="decisiones" class="band">
+  <div class="wrap">
+    <p class="sec-num rv"><i>11</i> Decisiones que deben cerrarse</p>
+    <h2 class="rv">Antes de empezar el desarrollo</h2>
+    <div class="cards" data-stagger>
+      <div class="card rv"><b>País de lanzamiento</b><p>Determina impuestos, facturación, protección de datos y reglas de llamadas.</p></div>
+      <div class="card rv"><b>Canales iniciales</b><p>Solo consumo en mesa, o también recogida y entrega a domicilio.</p></div>
+      <div class="card rv"><b>Pagos</b><p>Registro manual, pago desde el QR o ambos.</p></div>
+      <div class="card rv"><b>Equipos</b><p>Impresoras, tabletas y dispositivos que se soportarán.</p></div>
+      <div class="card rv"><b>Autorización de pedidos</b><p>Envío directo, aprobación de mesero o pago previo.</p></div>
+      <div class="card rv"><b>Inventario</b><p>Control simple, o recetas, lotes y vencimientos desde el inicio.</p></div>
+      <div class="card rv"><b>Automatización</b><p>Límites de compra y responsables de aprobación.</p></div>
+      <div class="card rv"><b>Suscripción</b><p>Contratación por empresa y condiciones para sedes adicionales.</p></div>
+      <div class="card rv"><b>Cuotas de IA</b><p>Conversaciones, minutos incluidos y tratamiento de excedentes.</p></div>
+      <div class="card rv"><b>Continuidad</b><p>Alcance real de operación ante caídas de internet.</p></div>
+    </div>
+    <div class="callout rv">
+      <strong>Recomendación principal:</strong> construir primero un flujo sólido de
+      mesa → pedido → cocina → pago → cierre. Después incorporar inventario y compras;
+      finalmente, automatizar con inteligencia artificial sobre datos y procesos ya
+      confiables.
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <b>Juan Andres Baron Baron</b>
+      Desarrollo de software a la medida · Pereira, Risaralda · Colombia
+    </div>
+    <div>
+      <a href="mailto:juanandresbaronbaron2001@gmail.com">juanandresbaronbaron2001@gmail.com</a><br>
+      <a href="https://juanandresbaronbaron.github.io/cv/" target="_blank" rel="noopener">juanandresbaronbaron.github.io/cv</a>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  /* ---------------------------------------------------------------
+     Interaction first, and deliberately independent of the animation
+     libraries: the accordion, the plan switcher and the column
+     highlight must work even if a CDN is blocked on the client's
+     network. Only the motion depends on GSAP.
+     --------------------------------------------------------------- */
+
+  /* module accordion */
+  var mods = document.getElementById("mods");
+  if (mods) {
+    mods.addEventListener("click", function (e) {
+      var h = e.target.closest(".mod-h");
+      if (!h) return;
+      h.parentNode.classList.toggle("is-open");
+    });
+  }
+
+  /* plan switcher — tabs drive the panels and the comparison column */
+  var tabs = document.getElementById("planTabs");
+  var cmp = document.getElementById("cmp");
+
+  function highlightColumn(plan) {
+    if (!cmp) return;
+    var heads = cmp.querySelectorAll("thead th");
+    var index = -1;
+    heads.forEach(function (th, i) {
+      var on = th.getAttribute("data-col") === plan;
+      th.classList.toggle("col-on", on);
+      if (on) index = i;
+    });
+    cmp.querySelectorAll("tbody tr").forEach(function (tr) {
+      Array.prototype.forEach.call(tr.children, function (td, i) {
+        td.classList.toggle("col-on", i === index);
+      });
+    });
+  }
+
+  function selectPlan(plan) {
+    document.querySelectorAll(".ptab").forEach(function (b) {
+      b.classList.toggle("is-on", b.getAttribute("data-plan") === plan);
+    });
+    document.querySelectorAll(".panel").forEach(function (p) {
+      p.classList.toggle("is-on", p.getAttribute("data-panel") === plan);
+    });
+    highlightColumn(plan);
+    if (window.ScrollTrigger) ScrollTrigger.refresh();
+  }
+
+  if (tabs) {
+    tabs.addEventListener("click", function (e) {
+      var b = e.target.closest(".ptab");
+      if (b) selectPlan(b.getAttribute("data-plan"));
+    });
+  }
+  /* the comparison header is a second way into the same selection */
+  if (cmp) {
+    cmp.addEventListener("click", function (e) {
+      var th = e.target.closest("th[data-col]");
+      if (th) selectPlan(th.getAttribute("data-col"));
+    });
+  }
+  selectPlan("silver");
+
+  /* ---------------------------------------------------------------
+     Motion. Everything below degrades to a static, fully readable
+     page if the libraries are missing or motion is unwanted.
+     --------------------------------------------------------------- */
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var hasGsap = typeof window.gsap !== "undefined" && typeof window.ScrollTrigger !== "undefined";
+
+  if (reduced || !hasGsap) {
+    document.documentElement.classList.add("no-anim");
+    var bar0 = document.getElementById("topbar");
+    var t0 = false;
+    window.addEventListener("scroll", function () {
+      if (t0) return;
+      t0 = true;
+      requestAnimationFrame(function () {
+        if (bar0) bar0.classList.toggle("is-stuck", (window.scrollY || 0) > 60);
+        t0 = false;
+      });
+    }, { passive: true });
+    return;
+  }
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  /* Lenis: weighted, decelerating scroll. Kept short so the page
+     answers quickly rather than feeling like it floats. */
+  if (typeof window.Lenis !== "undefined") {
+    var lenis = new Lenis({
+      duration: 0.85,
+      easing: function (t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); },
+      smoothWheel: true,
+      touchMultiplier: 1.7,
+    });
+    lenis.on("scroll", ScrollTrigger.update);
+    gsap.ticker.add(function (time) { lenis.raf(time * 1000); });
+    gsap.ticker.lagSmoothing(0);
+
+    document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        var t = document.querySelector(a.getAttribute("href"));
+        if (!t) return;
+        e.preventDefault();
+        lenis.scrollTo(t, { offset: -76, duration: 1.2 });
+      });
+    });
+  }
+
+  /* hero intro */
+  gsap.timeline({ defaults: { ease: "power3.out" } })
+    .from(".hero .eyebrow", { y: 16, opacity: 0, duration: 0.8 }, 0.1)
+    .from(".hero h1", { y: 30, opacity: 0, filter: "blur(10px)", duration: 1.1 }, 0.2)
+    .from(".hero .lede", { y: 22, opacity: 0, duration: 0.95 }, 0.42)
+    .from(".hero .htag", { y: 14, opacity: 0, duration: 0.6, stagger: 0.05 }, 0.58)
+    .from(".hero .callout", { y: 20, opacity: 0, duration: 0.9 }, 0.72);
+
+  /* one batched trigger for everything that reveals, instead of one
+     ScrollTrigger per element */
+  ScrollTrigger.batch(".rv", {
+    start: "top 88%",
+    onEnter: function (els) {
+      gsap.to(els, { opacity: 1, y: 0, duration: 1, ease: "power3.out", stagger: 0.07, overwrite: true });
+    },
+  });
+
+  /* the plan art settles as a whole card — scaling the image inside a
+     fixed frame would crop it, and these illustrations carry their own
+     titles and labels at the edges */
+  ScrollTrigger.batch("[data-fig]", {
+    start: "top 90%",
+    onEnter: function (els) {
+      gsap.to(els, { opacity: 1, y: 0, scale: 1, duration: 1.2, ease: "power3.out", overwrite: true });
+    },
+  });
+
+  /* scroll progress */
+  var prog = document.getElementById("prog");
+  if (prog) {
+    gsap.to(prog, {
+      scaleX: 1, ease: "none",
+      scrollTrigger: { start: 0, end: "max", scrub: 0.25 },
+    });
+  }
+
+  /* top bar and active link, driven by ScrollTrigger so nothing
+     measures the document on every frame */
+  var bar = document.getElementById("topbar");
+  var links = Array.prototype.slice.call(document.querySelectorAll("#topnav a"));
+
+  ScrollTrigger.create({
+    start: "top -60", end: "max",
+    onToggle: function (self) { if (bar) bar.classList.toggle("is-stuck", self.isActive); },
+  });
+
+  links.forEach(function (a, i) {
+    var sec = document.querySelector(a.getAttribute("href"));
+    if (!sec) return;
+    ScrollTrigger.create({
+      trigger: sec, start: "top 35%", end: "bottom 35%",
+      onToggle: function (self) {
+        if (!self.isActive) return;
+        links.forEach(function (b, j) { b.classList.toggle("is-active", i === j); });
+      },
+    });
+  });
+
+  /* printing must never capture a mid-animation frame, and every
+     module should be open on paper */
+  window.addEventListener("beforeprint", function () {
+    document.documentElement.classList.add("no-anim");
+    ScrollTrigger.getAll().forEach(function (t) { t.disable(false); });
+  });
+})();
+</script>
+
+</body>
+</html>
