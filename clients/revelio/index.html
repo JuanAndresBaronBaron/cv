@@ -17,12 +17,13 @@
     /* ============ brand tokens — REVELIO is orange on white ============ */
     :root {
       --brand:    #ED8628;  /* the orange, for fills, rules and large display */
-      --brand-d:  #B25A0E;  /* darker orange wherever it carries small text  */
+      --brand-d:  #C2410C;  /* deep orange: hue pushed toward red so that going
+                               dark does not turn it brown. 5.18:1 on white.   */
       --brand-l:  #FFF3E7;  /* tint                                          */
       --brand-xl: #FFFAF6;  /* barely-there tint for zebra rows              */
       --brand-soft: #F9A75A; /* orange that still reads on the dark band     */
       --cream:      #FFF8F1; /* the warm band between white sections         */
-      --dark:       #1A1512; /* warm near-black for the Elite band           */
+      --dark:       #151110; /* near-black, warm but deliberately not brown     */
       --ink:      #1C1917;  /* warm near-black                               */
       --ink-2:    #3A3330;
       --muted:    #78706B;
@@ -75,13 +76,13 @@
       border-bottom-color: var(--line);
       box-shadow: 0 8px 28px -22px rgba(28,25,23,0.5);
     }
+    /* Height stays put. A sticky bar sits in normal flow, so animating its
+       height shortens the document and jerks the content below it. */
     .topbar-in {
       display: flex; align-items: center; gap: 26px;
-      height: 68px;
+      height: 66px;
       width: 100%; max-width: var(--wrap); margin: 0 auto; padding: 0 28px;
-      transition: height 0.45s var(--ease);
     }
-    .topbar.is-stuck .topbar-in { height: 58px; }
     .brand { display: flex; align-items: baseline; gap: 10px; text-decoration: none; flex-shrink: 0; }
     .brand b {
       font-family: var(--display); font-weight: 700; font-size: 1.22rem;
@@ -157,18 +158,12 @@
     .callout.plain { margin: 30px 0; }
 
     /* ============ sections ============ */
-    section {
-      padding: 78px 0;
-      /* let the browser skip layout for sections far off screen */
-      content-visibility: auto;
-      contain-intrinsic-size: auto 900px;
-    }
+    section { padding: 78px 0; }
     /* alternating bands give the eye somewhere to rest on a long document */
     .band-cream { background: var(--cream); }
     .band-dark {
       background: var(--dark);
       color: rgba(255,255,255,0.76);
-      content-visibility: visible;   /* it carries an image; keep it painted */
     }
     .band-dark h2, .band-dark strong, .band-dark b, .band-dark td:first-child { color: #FFFFFF; }
     .band-dark h3, .band-dark .sec-num { color: var(--brand-soft); }
@@ -366,7 +361,6 @@
       h2 { font-size: 16pt; }
       h3 { font-size: 11.5pt; margin: 14pt 0 6pt; }
       .rv, [data-fig] { opacity: 1 !important; transform: none !important; filter: none !important; }
-      section { content-visibility: visible !important; }
       .band-cream, .band-dark { background: none !important; color: var(--ink-2) !important; }
       .band-dark h2, .band-dark strong, .band-dark b, .band-dark td:first-child { color: var(--ink) !important; }
       .band-dark h3, .band-dark .sec-num { color: var(--brand-d) !important; }
@@ -863,7 +857,17 @@
      The proposal must always be readable — the animation is decoration. */
   if (reduced || !hasGsap) {
     document.documentElement.classList.add("no-anim");
-    initTopbar();
+    /* no Lenis here, so a plain listener is cheap and correct */
+    var bar0 = document.getElementById("topbar");
+    var ticking = false;
+    window.addEventListener("scroll", function () {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function () {
+        if (bar0) bar0.classList.toggle("is-stuck", (window.scrollY || 0) > 60);
+        ticking = false;
+      });
+    }, { passive: true });
     return;
   }
 
@@ -872,7 +876,7 @@
   /* ---- Lenis: the weighted, decelerating scroll iOS uses ---- */
   if (typeof window.Lenis !== "undefined") {
     var lenis = new Lenis({
-      duration: 1.15,
+      duration: 0.85,
       easing: function (t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); },
       smoothWheel: true,
       touchMultiplier: 1.7,
@@ -933,31 +937,38 @@
       });
   });
 
-  initTopbar();
-
-  /* ---- top bar: condenses once you leave the hero, and tracks the section ---- */
-  function initTopbar() {
+  /* ---- top bar, driven by ScrollTrigger.
+         It already tracks where every section is, so nothing has to measure
+         the document on each frame. ---- */
+  (function () {
     var bar = document.getElementById("topbar");
     var links = Array.prototype.slice.call(document.querySelectorAll("#topnav a"));
-    var targets = links.map(function (a) { return document.querySelector(a.getAttribute("href")); });
 
-    function onScroll() {
-      var y = window.scrollY || document.documentElement.scrollTop;
-      if (bar) bar.classList.toggle("is-stuck", y > 40);
-      var active = -1;
-      for (var i = 0; i < targets.length; i++) {
-        if (targets[i] && targets[i].getBoundingClientRect().top <= 140) active = i;
-      }
-      links.forEach(function (a, i) { a.classList.toggle("is-active", i === active); });
-    }
-    var ticking = false;
-    window.addEventListener("scroll", function () {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(function () { onScroll(); ticking = false; });
-    }, { passive: true });
-    onScroll();
-  }
+    ScrollTrigger.create({
+      start: "top -60",
+      end: "max",
+      onToggle: function (self) { if (bar) bar.classList.toggle("is-stuck", self.isActive); },
+    });
+
+    links.forEach(function (a, i) {
+      var sec = document.querySelector(a.getAttribute("href"));
+      if (!sec) return;
+      ScrollTrigger.create({
+        trigger: sec,
+        start: "top 35%",
+        end: "bottom 35%",
+        onToggle: function (self) {
+          if (!self.isActive) return;
+          links.forEach(function (b, j) { b.classList.toggle("is-active", i === j); });
+        },
+      });
+    });
+  })();
+
+  /* the wordmark no longer needs its own layers once it has landed */
+  tl.eventCallback("onComplete", function () {
+    gsap.set("#heroTitle .ch", { clearProps: "willChange" });
+  });
 
   /* printing must never capture a mid-animation frame */
   window.addEventListener("beforeprint", function () {
