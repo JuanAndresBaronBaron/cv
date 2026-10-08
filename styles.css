@@ -799,12 +799,9 @@ section { position: relative; }
    REDUCED MOTION
    ============================================================ */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: 0.001s !important; animation-iteration-count: 1 !important; transition-duration: 0.001s !important; }
-  [data-reveal], .hero-eyebrow, .hero-tagline, .hero-blurb, .hero-cta, .hero-foot { opacity: 1 !important; transform: none !important; }
-  .hero-title .char { transform: none !important; }
-  .loader { display: none !important; }
-  .nav { transform: translateY(0); }
-  .about-text .word { opacity: 1; color: var(--txt); }
-  .lang-bar i { transform: scaleX(1); }
-  .about-photo .photo-veil { display: none; }
+  /* Deliberately narrow now. This block used to set transition-duration to
+     0.001s on every element and force the revealed content static, which
+     flattened the whole portfolio on any Mac with "Reduce Motion" on — a very
+     common setting. Only the decorative cursor goes. */
+  .cursor, .cursor-dot { display: none !important; }
 }

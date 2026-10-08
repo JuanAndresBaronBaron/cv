@@ -12,7 +12,13 @@ if (typeof gsap === "undefined" || typeof ScrollTrigger === "undefined") {
 }
 gsap.registerPlugin(ScrollTrigger);
 ScrollTrigger.config({ ignoreMobileResize: true });
-const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+/* macOS enables "Reduce Motion" very widely, and honouring it here switched off
+   the entire portfolio — intro, reveals, smooth scroll, sphere and faces — which
+   is why the site looked broken on Macs. The motion IS the work being shown, so
+   it keeps running. osReducedMotion is still read, and still used to drop the
+   decorative cursor, which is the one effect that is purely ornamental. */
+const osReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const prefersReduced = false;
 const isTouch = window.matchMedia("(hover: none), (pointer: coarse)").matches;
 
 /* ---- theme ASAP so canvases read correct CSS vars ---- */
@@ -408,7 +414,7 @@ copyBtn.addEventListener("click", async () => {
 /* ============================================================
    CURSOR (Figma-style) + MAGNETIC + TILT + SPOTLIGHT
    ============================================================ */
-if (!isTouch && !prefersReduced) {
+if (!isTouch && !osReducedMotion) {
   const cursor = document.getElementById("cursor");
   const cursorLabel = document.getElementById("cursorLabel");
   const dot = document.getElementById("cursorDot");
@@ -1010,7 +1016,7 @@ safe(function pipeline() {
    WORK — pinned horizontal gallery (Apple/agency style)
    ============================================================ */
 const mm = gsap.matchMedia();
-safe(() => mm.add("(min-width: 901px) and (prefers-reduced-motion: no-preference)", () => {
+safe(() => mm.add("(min-width: 901px)", () => {
   const track = document.getElementById("workTrack");
   const stage = document.getElementById("workStage");
   const dist = () => Math.max(0, track.scrollWidth - innerWidth);
@@ -1085,3 +1091,9 @@ applyLang(currentLang);
 /* recalc scroll positions once assets settle */
 window.addEventListener("load", () => setTimeout(() => ScrollTrigger.refresh(), 300));
 window.addEventListener("orientationchange", () => setTimeout(() => ScrollTrigger.refresh(), 250));
+
+/* ---- tell the head watchdog that the script parsed and ran ----
+   If this never fires — an old TV browser choking on ES6 syntax, a CDN blocked,
+   a runtime error — the watchdog forces the static variant so the page is
+   readable instead of invisible. */
+if (typeof window.__jbBooted === "function") window.__jbBooted();

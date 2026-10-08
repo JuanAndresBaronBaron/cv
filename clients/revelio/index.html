@@ -850,12 +850,29 @@
 (function () {
   "use strict";
 
+  /* Older smart-TV browsers (WebOS/Tizen pre-2017) ship neither
+     NodeList.forEach nor Element.closest. These two keep the interactions
+     working there; the page is often shown on a TV or a meeting-room screen. */
+  function each(list, fn) { Array.prototype.forEach.call(list, fn); }
+  function up(el, sel) {
+    while (el && el.nodeType === 1) {
+      var m = el.matches || el.msMatchesSelector || el.webkitMatchesSelector;
+      if (m && m.call(el, sel)) return el;
+      el = el.parentNode;
+    }
+    return null;
+  }
+
+
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var hasGsap = typeof window.gsap !== "undefined" && typeof window.ScrollTrigger !== "undefined";
 
   /* If the CDN is blocked or motion is unwanted, show everything immediately.
      The proposal must always be readable — the animation is decoration. */
-  if (reduced || !hasGsap) {
+  /* Only a missing library forces the static variant now. Reduced motion no
+     longer switches the page off: the CSS above already reveals the content for
+     that setting, so there is nothing left to protect by killing the rest. */
+  if (!hasGsap) {
     document.documentElement.classList.add("no-anim");
     /* no Lenis here, so a plain listener is cheap and correct */
     var bar0 = document.getElementById("topbar");
@@ -886,7 +903,7 @@
     gsap.ticker.lagSmoothing(0);
 
     /* anchor links drive Lenis instead of the native jump */
-    document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+    each(document.querySelectorAll('a[href^="#"]'), function (a) {
       a.addEventListener("click", function (e) {
         var t = document.querySelector(a.getAttribute("href"));
         if (!t) return;

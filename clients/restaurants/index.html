@@ -1158,6 +1158,20 @@
 (function () {
   "use strict";
 
+  /* Older smart-TV browsers (WebOS/Tizen pre-2017) ship neither
+     NodeList.forEach nor Element.closest. These two keep the interactions
+     working there; the page is often shown on a TV or a meeting-room screen. */
+  function each(list, fn) { Array.prototype.forEach.call(list, fn); }
+  function up(el, sel) {
+    while (el && el.nodeType === 1) {
+      var m = el.matches || el.msMatchesSelector || el.webkitMatchesSelector;
+      if (m && m.call(el, sel)) return el;
+      el = el.parentNode;
+    }
+    return null;
+  }
+
+
   /* ---------------------------------------------------------------
      Interaction first, and deliberately independent of the animation
      libraries: the accordion, the plan switcher and the column
@@ -1169,7 +1183,7 @@
   var mods = document.getElementById("mods");
   if (mods) {
     mods.addEventListener("click", function (e) {
-      var h = e.target.closest(".mod-h");
+      var h = up(e.target, ".mod-h");
       if (!h) return;
       h.parentNode.classList.toggle("is-open");
     });
@@ -1183,12 +1197,12 @@
     if (!cmp) return;
     var heads = cmp.querySelectorAll("thead th");
     var index = -1;
-    heads.forEach(function (th, i) {
+    each(heads, function (th, i) {
       var on = th.getAttribute("data-col") === plan;
       th.classList.toggle("col-on", on);
       if (on) index = i;
     });
-    cmp.querySelectorAll("tbody tr").forEach(function (tr) {
+    each(cmp.querySelectorAll("tbody tr"), function (tr) {
       Array.prototype.forEach.call(tr.children, function (td, i) {
         td.classList.toggle("col-on", i === index);
       });
@@ -1196,10 +1210,10 @@
   }
 
   function selectPlan(plan) {
-    document.querySelectorAll(".ptab").forEach(function (b) {
+    each(document.querySelectorAll(".ptab"), function (b) {
       b.classList.toggle("is-on", b.getAttribute("data-plan") === plan);
     });
-    document.querySelectorAll(".panel").forEach(function (p) {
+    each(document.querySelectorAll(".panel"), function (p) {
       p.classList.toggle("is-on", p.getAttribute("data-panel") === plan);
     });
     highlightColumn(plan);
@@ -1208,14 +1222,14 @@
 
   if (tabs) {
     tabs.addEventListener("click", function (e) {
-      var b = e.target.closest(".ptab");
+      var b = up(e.target, ".ptab");
       if (b) selectPlan(b.getAttribute("data-plan"));
     });
   }
   /* the comparison header is a second way into the same selection */
   if (cmp) {
     cmp.addEventListener("click", function (e) {
-      var th = e.target.closest("th[data-col]");
+      var th = up(e.target, "th[data-col]");
       if (th) selectPlan(th.getAttribute("data-col"));
     });
   }
@@ -1228,7 +1242,10 @@
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var hasGsap = typeof window.gsap !== "undefined" && typeof window.ScrollTrigger !== "undefined";
 
-  if (reduced || !hasGsap) {
+  /* Only a missing library forces the static variant now. Reduced motion no
+     longer switches the page off: the CSS above already reveals the content for
+     that setting, so there is nothing left to protect by killing the rest. */
+  if (!hasGsap) {
     document.documentElement.classList.add("no-anim");
     var bar0 = document.getElementById("topbar");
     var t0 = false;
@@ -1258,7 +1275,7 @@
     gsap.ticker.add(function (time) { lenis.raf(time * 1000); });
     gsap.ticker.lagSmoothing(0);
 
-    document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+    each(document.querySelectorAll('a[href^="#"]'), function (a) {
       a.addEventListener("click", function (e) {
         var t = document.querySelector(a.getAttribute("href"));
         if (!t) return;
